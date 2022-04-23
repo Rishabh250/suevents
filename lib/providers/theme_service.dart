@@ -50,9 +50,9 @@ class MyThemes {
       scaffoldBackgroundColor: HexColor("#010A1C"),
       splashColor: Colors.transparent,
       primaryColor: Colors.white,
-      cardColor: const Color(0xff00C798),
+      cardColor: const Color.fromARGB(255, 8, 92, 217),
       colorScheme: const ColorScheme.dark(
-          primary: Color.fromRGBO(0, 199, 152, 1),
+          primary: Color.fromARGB(255, 92, 133, 228),
           secondary: Color(0xffFFFFFF)));
 
   static final lightTheme = ThemeData(
@@ -80,8 +80,8 @@ class MyThemes {
       scaffoldBackgroundColor: HexColor("F3F6F9"),
       primaryColor: const Color.fromARGB(255, 22, 116, 10),
       splashColor: Colors.transparent,
-      cardColor: const Color(0xff00C798),
+      cardColor: const Color.fromARGB(255, 3, 99, 242),
       colorScheme: const ColorScheme.light(
-          primary: Color.fromRGBO(0, 199, 152, 1),
+          primary: Color.fromARGB(255, 92, 133, 228),
           secondary: Color(0xffFFFFFF)));
 }
