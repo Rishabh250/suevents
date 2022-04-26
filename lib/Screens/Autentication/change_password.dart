@@ -5,22 +5,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/Screens/Autentication/forgetpassword.dart';
 import 'package:suevents/providers/const.dart';
 import 'package:suevents/providers/global_snackbar.dart';
 
 import '../../providers/theme_service.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ChangePassword> createState() => _ChangePasswordState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  TextEditingController email = TextEditingController();
+class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController password = TextEditingController();
+  var getEmail = Get.arguments;
+  String email = "";
+  @override
+  void initState() {
+    super.initState();
+    email = getEmail[0]["email"];
+  }
 
   bool isPassVisible = true;
 
@@ -75,15 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Login",
+                      child: Text("Reset Password",
                           style: GoogleFonts.poppins(
                               fontSize: 20.sp, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Please sign in to continue",
-                          style: GoogleFonts.poppins(
-                              fontSize: 12.sp, fontWeight: FontWeight.w400)),
                     ),
                     const SizedBox(
                       height: 20,
@@ -92,14 +91,14 @@ class _LoginPageState extends State<LoginPage> {
                       child: SizedBox(
                         width: _width * 0.9,
                         child: TextField(
+                          readOnly: true,
                           style: GoogleFonts.poppins(
                               fontSize: 11.5.sp, fontWeight: FontWeight.w600),
-                          controller: email,
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: true,
                           decoration: InputDecoration(
-                              hintText: "Sharda Email ID",
-                              hintStyle: GoogleFonts.poppins(fontSize: 12.sp),
+                              hintText: getEmail[0]["email"],
+                              hintStyle: GoogleFonts.poppins(fontSize: 11.sp),
                               prefixIcon: const Icon(Icons.mail),
                               border: OutlineInputBorder(
                                   borderSide:
@@ -115,11 +114,10 @@ class _LoginPageState extends State<LoginPage> {
                       child: SizedBox(
                         width: _width * 0.9,
                         child: TextFormField(
+                          obscureText: isPassVisible,
                           controller: password,
                           style: GoogleFonts.poppins(
                               fontSize: 12.sp, fontWeight: FontWeight.w600),
-                          obscureText: isPassVisible,
-                          enableSuggestions: true,
                           decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                   onTap: () {
@@ -130,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Icon(isPassVisible == true
                                       ? Icons.visibility
                                       : Icons.visibility_off)),
-                              hintText: "Password",
+                              hintText: "New Password",
                               hintStyle: GoogleFonts.poppins(fontSize: 12.sp),
                               prefixIcon: const Icon(Icons.lock),
                               border: OutlineInputBorder(
@@ -141,37 +139,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.only(right: 20),
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => const ForgotPassword(),
-                                    transition: Transition.fadeIn);
-                              },
-                              child: Text(
-                                "Forgot Password ?",
-                                style: textStyle(
-                                    10.sp,
-                                    FontWeight.w800,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : const Color.fromARGB(
-                                            255, 11, 112, 234),
-                                    FontStyle.normal),
-                              ),
-                            )),
-                      ],
+                      height: 20,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: SizedBox(
                         height: 40,
-                        width: _width * 0.4,
+                        width: _width * 0.5,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 4,
@@ -180,30 +154,13 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(10),
                               )),
                           onPressed: () async {
-                            if (email.text.isEmpty) {
-                              showError(
-                                  "Empty Field", "Enter your Sharda Email ID");
-                              return;
-                            }
-                            if (email.text.toString().split(".")[0].length !=
-                                10) {
-                              showError("Invalid Sharda Mail ID",
-                                  "Please enter a valid sharda mail id");
-                              return;
-                            }
-                            if (!email.text.toString().contains("@")) {
-                              showError("Invalid Sharda Mail ID",
-                                  "Please enter a valid sharda mail id");
-                              return;
-                            }
-
                             if (password.text.isEmpty) {
                               showError("Empty Field", "Enter your password");
                               return;
                             } else {
                               EasyLoading.show();
-                              await userLogin(email.text.toString(),
-                                  password.text.toString());
+                              await resetPassword(
+                                  email.toString(), password.text.toString());
                               EasyLoading.dismiss();
                             }
                           },
@@ -211,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, left: 15, right: 15),
                             child: Text(
-                              "Login",
+                              "Reset Password",
                               style: textStyle(12.sp, FontWeight.bold,
                                   Colors.white, FontStyle.normal),
                             ),

@@ -18,9 +18,10 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  TextEditingController otp = TextEditingController();
 
   bool isPassVisible = true;
+  String buttonName = "Send OTP";
 
   @override
   Widget build(BuildContext context) {
@@ -44,29 +45,38 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Text("Sharda University",
-                          style: Theme.of(context).textTheme.headline1),
-                    ),
-                    Center(
-                      child: Text("A Truly Global University",
-                          style: GoogleFonts.poppins(
-                              fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/shardaLogo.png",
+                          width: 10.h,
+                          height: 10.h,
+                        ),
+                        Column(
+                          children: [
+                            Center(
+                              child: Text("Sharda University",
+                                  style: Theme.of(context).textTheme.headline1),
+                            ),
+                            Center(
+                              child: Text("A Truly Global University",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 15.h,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Forget Password",
+                      child: Text("Reset Password",
                           style: GoogleFonts.poppins(
                               fontSize: 20.sp, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Please sign in to continue",
-                          style: GoogleFonts.poppins(
-                              fontSize: 12.sp, fontWeight: FontWeight.w400)),
                     ),
                     const SizedBox(
                       height: 20,
@@ -98,22 +108,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       child: SizedBox(
                         width: _width * 0.9,
                         child: TextFormField(
-                          controller: password,
+                          controller: otp,
+                          keyboardType: TextInputType.number,
+                          maxLength: 6,
                           style: GoogleFonts.poppins(
                               fontSize: 12.sp, fontWeight: FontWeight.w600),
-                          obscureText: isPassVisible,
                           enableSuggestions: true,
                           decoration: InputDecoration(
-                              suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      isPassVisible = !isPassVisible;
-                                    });
-                                  },
-                                  child: Icon(isPassVisible == true
-                                      ? Icons.visibility
-                                      : Icons.visibility_off)),
-                              hintText: "New Password",
+                              counterText: "",
+                              hintText: "OTP",
                               hintStyle: GoogleFonts.poppins(fontSize: 12.sp),
                               prefixIcon: const Icon(Icons.lock),
                               border: OutlineInputBorder(
@@ -124,7 +127,65 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       ),
                     ),
                     const SizedBox(
-                      height: 25,
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (buttonName == "Submit") {
+                                  if (email.text.isEmpty) {
+                                    showError("Empty Field",
+                                        "Enter your Sharda Email ID");
+                                    return;
+                                  }
+                                  if (email.text
+                                          .toString()
+                                          .split(".")[0]
+                                          .length !=
+                                      10) {
+                                    showError("Invalid Sharda Mail ID",
+                                        "Please enter a valid sharda mail id");
+                                    return;
+                                  }
+                                  if (!email.text.toString().contains("@")) {
+                                    showError("Invalid Sharda Mail ID",
+                                        "Please enter a valid sharda mail id");
+                                    return;
+                                  } else {
+                                    EasyLoading.show();
+                                    var isSend =
+                                        await sendOTP(email.text.toString());
+                                    EasyLoading.dismiss();
+                                    if (isSend == true) {
+                                      setState(() {
+                                        buttonName = "Submit";
+                                      });
+                                    }
+
+                                    return;
+                                  }
+                                }
+                              },
+                              child: Text(
+                                "Resend OTP",
+                                style: textStyle(
+                                    10.sp,
+                                    FontWeight.w800,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : const Color.fromARGB(
+                                            255, 11, 112, 234),
+                                    FontStyle.normal),
+                              ),
+                            )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0),
@@ -139,38 +200,70 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 borderRadius: BorderRadius.circular(10),
                               )),
                           onPressed: () async {
-                            if (email.text.isEmpty) {
-                              showError(
-                                  "Empty Field", "Enter your Sharda Email ID");
-                              return;
-                            }
-                            if (email.text.toString().split(".")[0].length !=
-                                10) {
-                              showError("Invalid Sharda Mail ID",
-                                  "Please enter a valid sharda mail id");
-                              return;
-                            }
-                            if (!email.text.toString().contains("@")) {
-                              showError("Invalid Sharda Mail ID",
-                                  "Please enter a valid sharda mail id");
-                              return;
-                            }
+                            if (buttonName == "Send OTP") {
+                              if (email.text.isEmpty) {
+                                showError("Empty Field",
+                                    "Enter your Sharda Email ID");
+                                return;
+                              }
+                              if (email.text.toString().split(".")[0].length !=
+                                  10) {
+                                showError("Invalid Sharda Mail ID",
+                                    "Please enter a valid sharda mail id");
+                                return;
+                              }
+                              if (!email.text.toString().contains("@")) {
+                                showError("Invalid Sharda Mail ID",
+                                    "Please enter a valid sharda mail id");
+                                return;
+                              } else {
+                                EasyLoading.show();
+                                var isSend =
+                                    await sendOTP(email.text.toString());
+                                EasyLoading.dismiss();
+                                if (isSend == true) {
+                                  setState(() {
+                                    buttonName = "Submit";
+                                  });
+                                }
 
-                            if (password.text.isEmpty) {
-                              showError("Empty Field", "Enter your password");
-                              return;
-                            } else {
-                              EasyLoading.show();
-                              await resetPassword(email.text.toString(),
-                                  password.text.toString());
-                              EasyLoading.dismiss();
+                                return;
+                              }
+                            }
+                            if (buttonName == "Submit") {
+                              if (email.text.isEmpty) {
+                                showError("Empty Field",
+                                    "Enter your Sharda Email ID");
+                                return;
+                              }
+                              if (email.text.toString().split(".")[0].length !=
+                                  10) {
+                                showError("Invalid Sharda Mail ID",
+                                    "Please enter a valid sharda mail id");
+                                return;
+                              }
+                              if (!email.text.toString().contains("@")) {
+                                showError("Invalid Sharda Mail ID",
+                                    "Please enter a valid sharda mail id");
+                                return;
+                              }
+
+                              if (otp.text.isEmpty) {
+                                showError("Empty Field", "Enter your OTP");
+                                return;
+                              } else {
+                                EasyLoading.show();
+                                await verifyOTP(
+                                    email.text.toString(), otp.text.toString());
+                                EasyLoading.dismiss();
+                              }
                             }
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, left: 15, right: 15),
                             child: Text(
-                              "Submit",
+                              buttonName,
                               style: textStyle(12.sp, FontWeight.bold,
                                   Colors.white, FontStyle.normal),
                             ),
