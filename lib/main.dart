@@ -7,6 +7,8 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Screens/Autentication/login.dart';
 import 'package:suevents/providers/theme_service.dart';
 
+import 'Screens/Navigation Bar/navigation_bar.dart';
+
 var isLog;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +50,9 @@ class _MyAppState extends State<MyApp> {
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
-                home: const LoginPage(),
+                home: isLog == true
+                    ? const NavigationBarPage()
+                    : const LoginPage(),
                 builder: EasyLoading.init(builder: (context, builder) {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);

@@ -36,7 +36,7 @@ class MyThemes {
             fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
         headline2: GoogleFonts.poppins(
             fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             color: HexColor("##A2A2A2")),
         headline3: GoogleFonts.poppins(
             fontSize: 14.sp,
@@ -63,9 +63,7 @@ class MyThemes {
             fontWeight: FontWeight.bold,
             color: HexColor("1A1B1D")),
         headline2: GoogleFonts.poppins(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            color: const Color.fromARGB(255, 146, 146, 146)),
+            fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.black),
         headline3: GoogleFonts.poppins(
           fontSize: 14.sp,
           color: const Color.fromRGBO(112, 116, 119, 1),

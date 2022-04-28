@@ -50,6 +50,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "custom_navigation_bar",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/custom_navigation_bar-0.8.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "fake_async",
       "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0",
       "packageUri": "lib/",
@@ -290,6 +296,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "shimmer",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shimmer-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sizer",
       "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/sizer-2.0.15",
       "packageUri": "lib/",
@@ -374,7 +386,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-04-26T16:38:35.179950Z",
+  "generated": "2022-04-28T11:36:19.278554Z",
   "generator": "pub",
   "generatorVersion": "2.16.2"
 }

@@ -30,6 +30,10 @@ cupertino_icons
 2.12
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.4/
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.4/lib/
+custom_navigation_bar
+2.12
+file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/custom_navigation_bar-0.8.2/
+file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/custom_navigation_bar-0.8.2/lib/
 fake_async
 2.12
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/
@@ -178,6 +182,10 @@ shared_preferences_windows
 2.12
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.1.0/
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.1.0/lib/
+shimmer
+2.12
+file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shimmer-2.0.0/
+file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shimmer-2.0.0/lib/
 sizer
 2.12
 file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/sizer-2.0.15/

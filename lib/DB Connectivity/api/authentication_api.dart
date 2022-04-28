@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
 import 'package:suevents/Screens/Autentication/change_password.dart';
 import 'package:suevents/Screens/Autentication/login.dart';
+import 'package:suevents/Screens/Navigation%20Bar/navigation_bar.dart';
 import 'package:suevents/SharedPreferences/token.dart';
 import 'package:suevents/providers/global_snackbar.dart';
 
@@ -22,6 +23,8 @@ userLogin(email, pass) async {
     if (response.statusCode == 200) {
       accessToken(jsonDecode(response.body)["token"]);
       EasyLoading.dismiss();
+      loginStatus(true);
+      Get.off(const NavigationBarPage(), transition: Transition.fadeIn);
     } else {
       if (body['msg'] == "Password wrong") {
         showError("Invaild Details", "You have entered wrong password");
@@ -94,6 +97,22 @@ verifyOTP(email, opt) async {
   } catch (e) {
     showError("Something went wrong", "Can't send OTP at $email");
 
+    debugPrint(e.toString());
+  }
+}
+
+getUserData(token) async {
+  try {
+    var response = await https
+        .get(Uri.parse("https://suevents.herokuapp.com/userInfo"), headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token.toString()
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
     debugPrint(e.toString());
   }
 }
