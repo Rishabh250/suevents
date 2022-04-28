@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
 import 'package:suevents/Screens/Autentication/change_password.dart';
 import 'package:suevents/Screens/Autentication/login.dart';
-import 'package:suevents/Screens/Navigation%20Bar/navigation_bar.dart';
+import 'package:suevents/Screens/Navigation%20Bar/zoom_drawer.dart';
 import 'package:suevents/SharedPreferences/token.dart';
 import 'package:suevents/providers/global_snackbar.dart';
 
@@ -24,7 +24,7 @@ userLogin(email, pass) async {
       accessToken(jsonDecode(response.body)["token"]);
       EasyLoading.dismiss();
       loginStatus(true);
-      Get.off(const NavigationBarPage(), transition: Transition.fadeIn);
+      Get.off(const MainScreen(), transition: Transition.fadeIn);
     } else {
       if (body['msg'] == "Password wrong") {
         showError("Invaild Details", "You have entered wrong password");

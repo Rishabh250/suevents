@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -7,7 +9,7 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Screens/Autentication/login.dart';
 import 'package:suevents/providers/theme_service.dart';
 
-import 'Screens/Navigation Bar/navigation_bar.dart';
+import 'Screens/Navigation Bar/zoom_drawer.dart';
 
 var isLog;
 void main() async {
@@ -50,9 +52,7 @@ class _MyAppState extends State<MyApp> {
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
-                home: isLog == true
-                    ? const NavigationBarPage()
-                    : const LoginPage(),
+                home: isLog == true ? const MainScreen() : const LoginPage(),
                 builder: EasyLoading.init(builder: (context, builder) {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
