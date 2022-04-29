@@ -45,6 +45,7 @@ dependencies:
   custom_navigation_bar: ^0.8.2
   shimmer: ^2.0.0
   flutter_zoom_drawer: ^3.0.1
+  package_info_plus: ^1.4.2
 
 dev_dependencies:
   flutter_test:

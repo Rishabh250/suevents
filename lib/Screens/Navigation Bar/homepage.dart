@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage>
   String greet = "";
   String searchEvents = "";
   String searchValue = "";
+  int eventsIndexLength = 1;
   int eventSearchLength = 0;
   var time = DateTime.now().hour;
 
@@ -323,15 +324,31 @@ class _HomePageState extends State<HomePage>
                           }
                           if (snapshot.hasData) {
                             if (eventData["events"].length > 0) {
+                              eventsIndexLength = eventData["events"].length;
+                              if (searchEvents != "") {
+                                for (int i = 0;
+                                    i < eventData["events"].length;
+                                    i++) {
+                                  if (eventData["events"][i]["title"]
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(
+                                              searchEvents.toLowerCase()) ==
+                                      true) {
+                                    eventSearchLength += 1;
+                                  }
+                                  if (eventSearchLength == 0) {
+                                    eventsIndexLength = 1;
+                                  }
+                                }
+                              }
                               return SizedBox(
                                 width: _width,
                                 height: textScale == 1.0 ? 270.0 : 320,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     shrinkWrap: true,
-                                    itemCount: eventSearchLength == 0
-                                        ? 1
-                                        : eventData["events"].length,
+                                    itemCount: eventsIndexLength,
                                     itemBuilder: (context, index) {
                                       if (eventData["events"][index]["title"]
                                               .toString()
@@ -339,7 +356,6 @@ class _HomePageState extends State<HomePage>
                                               .contains(
                                                   searchEvents.toLowerCase()) ||
                                           searchEvents.toString().isEmpty) {
-                                        eventSearchLength += 1;
                                         return Padding(
                                           padding: const EdgeInsets.only(
                                               top: 8.0, right: 8),
@@ -581,45 +597,45 @@ class _HomePageState extends State<HomePage>
                                               )),
                                         );
                                       }
-                                      return Card(
-                                        shadowColor: themeProvider.isDarkMode
-                                            ? const Color.fromARGB(
-                                                255, 125, 125, 125)
-                                            : Colors.grey,
-                                        color: Colors.transparent,
-                                        elevation: 4,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        child: Container(
-                                            width: _width * 0.9,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 0.2,
-                                                    color: themeProvider
-                                                            .isDarkMode
-                                                        ? Colors.white
-                                                        : const Color.fromARGB(
-                                                            255, 151, 194, 8)),
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: themeProvider.isDarkMode
-                                                    ? HexColor("#020E26")
-                                                    : Colors.white),
-                                            child: Center(
-                                              child: Text(
-                                                "No Events Available",
-                                                style: textStyle(
-                                                    14.sp,
-                                                    FontWeight.w600,
-                                                    themeProvider.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                            )),
-                                      );
+
+                                      return Container();
                                     }),
+                              );
+                            } else {
+                              return Card(
+                                shadowColor: themeProvider.isDarkMode
+                                    ? const Color.fromARGB(255, 125, 125, 125)
+                                    : Colors.grey,
+                                color: Colors.transparent,
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Container(
+                                    width: _width * 0.9,
+                                    height: 250.0,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 0.2,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : const Color.fromARGB(
+                                                    255, 151, 194, 8)),
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: themeProvider.isDarkMode
+                                            ? HexColor("#020E26")
+                                            : Colors.white),
+                                    child: Center(
+                                      child: Text(
+                                        "No Events Available",
+                                        style: textStyle(
+                                            14.sp,
+                                            FontWeight.w600,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
+                                      ),
+                                    )),
                               );
                             }
                           }
@@ -638,7 +654,7 @@ class _HomePageState extends State<HomePage>
 
   Stream getEvents() async* {
     while (true) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(minutes: 1));
       eventData = await getAllEvents();
       yield eventData;
     }

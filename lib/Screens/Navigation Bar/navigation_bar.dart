@@ -29,6 +29,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: PageView(
           physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
@@ -40,14 +41,9 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
         bottomNavigationBar: CustomNavigationBar(
           elevation: 0,
           iconSize: 30.0,
-          selectedColor: themeProvider.isDarkMode
-              ? Colors.white
-              : const Color.fromARGB(255, 0, 4, 255),
-          strokeColor: themeProvider.isDarkMode
-              ? Colors.white
-              : const Color.fromARGB(255, 5, 135, 241),
-          unSelectedColor:
-              themeProvider.isDarkMode ? const Color(0xff6c788a) : Colors.black,
+          selectedColor: const Color.fromARGB(255, 0, 4, 255),
+          strokeColor: const Color.fromARGB(255, 5, 135, 241),
+          unSelectedColor: Colors.black,
           backgroundColor: Colors.transparent,
           items: [
             CustomNavigationBarItem(
