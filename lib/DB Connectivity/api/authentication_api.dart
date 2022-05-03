@@ -96,7 +96,6 @@ verifyOTP(email, opt) async {
     }
   } catch (e) {
     showError("Something went wrong", "Can't send OTP at $email");
-
     debugPrint(e.toString());
   }
 }

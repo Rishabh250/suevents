@@ -1,4 +1,10 @@
 # This is a generated file; do not edit or check into version control.
+firebase_auth=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth-3.3.16\\
+firebase_auth_web=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_auth_web-3.3.13\\
+firebase_core=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core-1.15.0\\
+firebase_core_web=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_core_web-1.6.2\\
+firebase_storage=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_storage-10.2.14\\
+firebase_storage_web=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\firebase_storage_web-3.2.13\\
 hexcolor=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\hexcolor-2.0.6\\
 package_info_plus=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\package_info_plus-1.4.2\\
 package_info_plus_linux=D:\\Flutter\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\package_info_plus_linux-1.0.5\\

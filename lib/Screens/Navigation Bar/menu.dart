@@ -106,15 +106,19 @@ class _MenuScreenState extends State<MenuScreen> {
             EasyLoading.show();
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
-            loginStatus(false);
+            loginStatus(false); 
             Get.offAll(() => const LoginPage());
           },
-          title: Text("Logout",
-              style: textStyle(
-                  10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
-          leading: const Icon(
-            Icons.logout_rounded,
-            color: Colors.white,
+          title: Row(
+            children: [
+              const Icon(Icons.logout_rounded, color: Colors.white),
+              const SizedBox(
+                width: 10,
+              ),
+              Text("Logout",
+                  style: textStyle(
+                      10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
+            ],
           ),
         ),
         SizedBox(

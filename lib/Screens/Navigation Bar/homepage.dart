@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/Events%20API/events_api.dart';
 import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
+import 'package:suevents/Screens/Events/events_detail.dart';
 import 'package:suevents/providers/const.dart';
 
 import '../../providers/theme_service.dart';
@@ -396,8 +398,12 @@ class _HomePageState extends State<HomePage>
                                                             .start,
                                                     children: [
                                                       Center(
-                                                        child: SizedBox(
-                                                          height: 50,
+                                                        child: Hero(
+                                                          transitionOnUserGestures:
+                                                              true,
+                                                          tag: eventData[
+                                                                  "events"]
+                                                              [index]["title"],
                                                           child: Text(
                                                             eventData["events"]
                                                                     [index]
@@ -534,7 +540,20 @@ class _HomePageState extends State<HomePage>
                                                                       64,
                                                                       181),
                                                               elevation: 4),
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            Get.to(
+                                                                () =>
+                                                                    const EventDetail(),
+                                                                transition: Transition.fadeIn,
+                                                                duration: const Duration(milliseconds: 500),
+                                                                arguments: {
+                                                                  "eventData":
+                                                                      eventData[
+                                                                              "events"]
+                                                                          [
+                                                                          index]
+                                                                });
+                                                          },
                                                           child: Center(
                                                             child: Text(
                                                               "Participate",
@@ -654,7 +673,7 @@ class _HomePageState extends State<HomePage>
 
   Stream getEvents() async* {
     while (true) {
-      await Future.delayed(const Duration(minutes: 1));
+      await Future.delayed(const Duration(hours: 1));
       eventData = await getAllEvents();
       yield eventData;
     }
