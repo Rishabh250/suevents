@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -12,8 +13,9 @@ import 'package:suevents/providers/theme_service.dart';
 import 'Screens/Navigation Bar/zoom_drawer.dart';
 
 var isLog;
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   isLog = sharedPreferences.getBool("isLogged");
   runApp(const MyApp());

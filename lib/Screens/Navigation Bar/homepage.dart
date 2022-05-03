@@ -673,7 +673,7 @@ class _HomePageState extends State<HomePage>
 
   Stream getEvents() async* {
     while (true) {
-      await Future.delayed(const Duration(hours: 1));
+      await Future.delayed(const Duration(seconds: 1));
       eventData = await getAllEvents();
       yield eventData;
     }

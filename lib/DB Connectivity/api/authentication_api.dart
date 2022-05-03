@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -110,6 +111,28 @@ getUserData(token) async {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+uploadProfileImage(token, image) async {
+  var headers = {
+    "Content-Type": "application/json",
+    "x-access-token": token.toString()
+  };
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents.herokuapp.com/uploadImage"),
+        headers: headers,
+        body: jsonEncode({"profileImage": image.toString()}));
+    log(response.body.toString());
+    if (response.statusCode == 200) {
+      showConfirm(
+          "Profile Updated", "Profile pic has been upload successfully");
+    } else {
+      showError("Something went wrong", "Please try again later");
     }
   } catch (e) {
     debugPrint(e.toString());
