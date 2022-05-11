@@ -32,6 +32,7 @@ void configLoading() {
     ..dismissOnTap = true;
 }
 
+// Rishabh Bansal
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
