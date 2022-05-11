@@ -34,6 +34,7 @@ class _EventDetailState extends State<EventDetail> {
     getData();
   }
 
+//Rishabh
   getData() async {
     user = await getUserData.fetchUserData();
     eventList = user["user"]["events"];
