@@ -8,7 +8,7 @@ import 'package:suevents/providers/global_snackbar.dart';
 getAllEvents() async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents.herokuapp.com/getAllEvents"),
+        Uri.parse("https://suevents2022.herokuapp.com/getAllEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -26,7 +26,7 @@ applyEvent(token, eventID, event) async {
     };
 
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/applyEvent"),
+        Uri.parse("https://suevents2022.herokuapp.com/applyEvent"),
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
 

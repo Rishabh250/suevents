@@ -10,10 +10,10 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/Events%20API/events_api.dart';
 import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/Screens/Events/events_detail.dart';
+import 'package:suevents/Student%20Portal/screens/Events/events_detail.dart';
 import 'package:suevents/providers/const.dart';
 
-import '../../providers/theme_service.dart';
+import '../../../providers/theme_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,12 +27,8 @@ class _HomePageState extends State<HomePage>
   var token;
   var getUserDetails;
   var eventData;
-  String name = "";
-  String greet = "";
-  String searchEvents = "";
-  String searchValue = "";
-  int eventsIndexLength = 1;
-  int eventSearchLength = 0;
+  String name = "", greet = "", searchEvents = "", searchValue = "";
+  int eventsIndexLength = 1, eventSearchLength = 0;
   var time = DateTime.now().hour;
 
   @override
@@ -83,6 +79,7 @@ class _HomePageState extends State<HomePage>
             toolbarHeight: 0,
           ),
           body: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -348,6 +345,7 @@ class _HomePageState extends State<HomePage>
                                 width: _width,
                                 height: textScale == 1.0 ? 270.0 : 320,
                                 child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
                                     shrinkWrap: true,
                                     itemCount: eventsIndexLength,

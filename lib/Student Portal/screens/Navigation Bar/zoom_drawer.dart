@@ -5,9 +5,9 @@ import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:suevents/Screens/Navigation%20Bar/navigation_bar.dart';
+import 'package:suevents/Student%20Portal/screens/Navigation%20Bar/navigation_bar.dart';
 
-import '../../providers/theme_service.dart';
+import '../../../providers/theme_service.dart';
 import 'menu.dart';
 
 class MainScreen extends StatefulWidget {

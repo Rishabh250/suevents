@@ -9,7 +9,7 @@ import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
 import 'package:suevents/providers/const.dart';
 import 'package:suevents/providers/global_snackbar.dart';
 
-import '../../providers/theme_service.dart';
+import '../../../providers/theme_service.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);

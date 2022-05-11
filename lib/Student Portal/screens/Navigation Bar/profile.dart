@@ -13,8 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/providers/const.dart';
 
-import '../../DB Connectivity/api/authentication_api.dart';
-import '../../providers/theme_service.dart';
+import '../../../DB Connectivity/api/authentication_api.dart';
+import '../../../providers/theme_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);

@@ -5,16 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
-import 'package:suevents/Screens/Autentication/change_password.dart';
-import 'package:suevents/Screens/Autentication/login.dart';
-import 'package:suevents/Screens/Navigation%20Bar/zoom_drawer.dart';
 import 'package:suevents/SharedPreferences/token.dart';
 import 'package:suevents/providers/global_snackbar.dart';
+
+import '../../Student Portal/screens/Autentication/change_password.dart';
+import '../../Student Portal/screens/Autentication/login.dart';
+import '../../Student Portal/screens/Navigation Bar/zoom_drawer.dart';
 
 userLogin(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/loginUser"),
+        Uri.parse("https://suevents2022.herokuapp.com/loginUser"),
         body: jsonEncode(
             {"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
@@ -39,7 +40,7 @@ userLogin(email, pass) async {
 resetPassword(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/forgetPassword"),
+        Uri.parse("https://suevents2022.herokuapp.com/forgetPassword"),
         body: jsonEncode(
             {"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
@@ -63,7 +64,7 @@ resetPassword(email, pass) async {
 sendOTP(email) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/sendOTP"),
+        Uri.parse("https://suevents2022.herokuapp.com/sendOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString()}));
     if (response.statusCode == 200) {
@@ -81,7 +82,7 @@ sendOTP(email) async {
 verifyOTP(email, opt) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/verifyOTP"),
+        Uri.parse("https://suevents2022.herokuapp.com/verifyOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
     if (response.statusCode == 200) {
@@ -103,11 +104,12 @@ verifyOTP(email, opt) async {
 
 getUserData(token) async {
   try {
-    var response = await https
-        .get(Uri.parse("https://suevents.herokuapp.com/userInfo"), headers: {
-      "Content-Type": "application/json",
-      "x-access-token": token.toString()
-    });
+    var response = await https.get(
+        Uri.parse("https://suevents2022.herokuapp.com/userInfo"),
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token.toString()
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -124,7 +126,7 @@ uploadProfileImage(token, image) async {
   };
   try {
     var response = await https.post(
-        Uri.parse("https://suevents.herokuapp.com/uploadImage"),
+        Uri.parse("https://suevents2022.herokuapp.com/uploadImage"),
         headers: headers,
         body: jsonEncode({"profileImage": image.toString()}));
     log(response.body.toString());

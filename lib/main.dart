@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/Screens/Autentication/login.dart';
 import 'package:suevents/providers/theme_service.dart';
 
-import 'Screens/Navigation Bar/zoom_drawer.dart';
+import 'Student Portal/screens/Autentication/login.dart';
+import 'Student Portal/screens/Navigation Bar/zoom_drawer.dart';
 
 var isLog;
 Future main() async {

@@ -5,9 +5,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/Screens/Autentication/login.dart';
 import 'package:suevents/SharedPreferences/token.dart';
 import 'package:suevents/providers/const.dart';
+
+import '../Autentication/login.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -106,7 +107,7 @@ class _MenuScreenState extends State<MenuScreen> {
             EasyLoading.show();
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
-            loginStatus(false); 
+            loginStatus(false);
             Get.offAll(() => const LoginPage());
           },
           title: Row(
