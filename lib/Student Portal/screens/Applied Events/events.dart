@@ -16,9 +16,7 @@ class _EventsPageState extends State<EventsPage> {
         slivers: [
           SliverToBoxAdapter(
             child: Column(
-              children: [
-                
-              ],
+              children: const [],
             ),
           )
         ],

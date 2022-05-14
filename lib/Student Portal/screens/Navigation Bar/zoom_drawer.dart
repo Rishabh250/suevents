@@ -30,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
       resizeToAvoidBottomInset: false,
       body: ZoomDrawer(
         controller: drawerController,
+        mainScreenTapClose: true,
         menuScreen: const MenuScreen(),
         mainScreen: const NavigationBarPage(),
         style: DrawerStyle.defaultStyle,

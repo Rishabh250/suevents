@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -81,6 +82,14 @@ class _ProfilePageState extends State<ProfilePage> {
     var _height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
+      appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: GestureDetector(
+            onTap: () => Get.back(),
+            child: Icon(Icons.arrow_back_ios_rounded,
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black),
+          )),
       body: FutureBuilder(
           future: fetchUserData(),
           builder: ((context, snapshot) {
@@ -94,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 10.h,
+                          height: 2.h,
                         ),
                         user["user"]["profileImage"] == ""
                             ? Stack(
