@@ -6,11 +6,8 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/Student%20Portal/get_started.dart';
+import 'package:suevents/get_started.dart';
 import 'package:suevents/providers/theme_service.dart';
-
-import 'Student Portal/screens/Autentication/login.dart';
-import 'Student Portal/screens/Navigation Bar/zoom_drawer.dart';
 
 var isLog;
 Future main() async {
@@ -56,7 +53,7 @@ class _MyAppState extends State<MyApp> {
                 darkTheme: MyThemes.darkTheme,
                 // home: isLog == true ? const MainScreen() : const Getstarted(),
 
-                home: Getstarted(),
+                home: const Getstarted(),
                 builder: EasyLoading.init(builder: (context, builder) {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
