@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage>
                           children: [
                             GestureDetector(
                               onTap: () {
-                                ZoomDrawer.of(context)?.toggle();
+                                ZoomDrawer.of(context)?.open();
                               },
                               child: Card(
                                 elevation: 4,

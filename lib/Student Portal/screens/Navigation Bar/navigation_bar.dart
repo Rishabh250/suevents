@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/theme_service.dart';
-import 'events.dart';
-import 'homepage.dart';
-import 'profile.dart';
+import '../Applied Events/events.dart';
+import '../Home Page/homepage.dart';
+import '../Profile Page/profile.dart';
 
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
@@ -22,8 +22,6 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     super.initState();
     pageController = PageController(initialPage: _currentIndex, keepPage: true);
   }
-
-  //Rishabh
 
   int _currentIndex = 0;
   @override
@@ -53,9 +51,6 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
             ),
             CustomNavigationBarItem(
               icon: const Icon(Icons.search_rounded),
-            ),
-            CustomNavigationBarItem(
-              icon: const Icon(Icons.account_circle),
             ),
           ],
           currentIndex: _currentIndex,
