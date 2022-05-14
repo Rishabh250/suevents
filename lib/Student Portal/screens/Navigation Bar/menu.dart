@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
 import 'package:suevents/SharedPreferences/token.dart';
+import 'package:suevents/Student%20Portal/screens/Profile%20Page/profile.dart';
 import 'package:suevents/providers/const.dart';
 
 import '../Autentication/login.dart';
@@ -18,11 +22,12 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  String name = "";
-  String appName = "";
-  String packageName = "";
-  String version = "";
-  String buildNumber = "";
+  String name = "",
+      appName = "",
+      packageName = "",
+      version = "",
+      buildNumber = "",
+      userImage = "";
   var userData;
   @override
   void initState() {
@@ -48,6 +53,8 @@ class _MenuScreenState extends State<MenuScreen> {
     userData = await getUserData(token);
     setState(() {
       name = userData["user"]["name"];
+      userImage = userData["user"]["profileImage"];
+      log(userImage.toString());
     });
   }
 
@@ -58,30 +65,43 @@ class _MenuScreenState extends State<MenuScreen> {
         SizedBox(
           height: 2.h,
         ),
-        DrawerHeader(
-            child: Column(
-          children: [
-            const CircleAvatar(
-              radius: 40,
-            ),
-            const Spacer(),
-            Text(
-              name,
-              textScaleFactor: 1,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle(
-                  10.sp, FontWeight.w700, Colors.white, FontStyle.normal),
-            ),
-            SizedBox(
-              height: 1.h,
-            ),
-          ],
-        )),
+        GestureDetector(
+          onTap: () {
+            ZoomDrawer.of(context)?.close();
+
+            Get.to(const ProfilePage(), transition: Transition.fadeIn);
+          },
+          child: DrawerHeader(
+              child: Column(
+            children: [
+              userImage == " "
+                  ? const CircleAvatar(
+                      radius: 40,
+                    )
+                  : CircleAvatar(
+                      radius: 12.w,
+                      backgroundImage: NetworkImage(userImage),
+                    ),
+              const Spacer(),
+              Text(
+                name,
+                textScaleFactor: 1,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle(
+                    10.sp, FontWeight.w700, Colors.white, FontStyle.normal),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+            ],
+          )),
+        ),
         SizedBox(
           height: 5.h,
         ),
         ListTile(
+          onTap: () {},
           title: Text("About app",
               style: textStyle(
                   10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),

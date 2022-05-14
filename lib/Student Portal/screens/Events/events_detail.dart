@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/DB%20Connectivity/api/Events%20API/events_api.dart';
-import 'package:suevents/Screens/controller.dart';
+import 'package:suevents/Student%20Portal/controllers/controller.dart';
 import 'package:suevents/providers/const.dart';
 
 import '../../../providers/theme_service.dart';
