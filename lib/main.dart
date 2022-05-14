@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Student%20Portal/get_started.dart';
 import 'package:suevents/providers/theme_service.dart';
 
 import 'Student Portal/screens/Autentication/login.dart';
@@ -53,7 +54,9 @@ class _MyAppState extends State<MyApp> {
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
-                home: isLog == true ? const MainScreen() : const LoginPage(),
+                // home: isLog == true ? const MainScreen() : const Getstarted(),
+
+                home: Getstarted(),
                 builder: EasyLoading.init(builder: (context, builder) {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
