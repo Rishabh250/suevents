@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Student%20Portal/screens/Autentication/login.dart';
 import 'package:suevents/providers/const.dart';
+import 'package:suevents/providers/theme_service.dart';
 
 class Getstarted extends StatefulWidget {
   const Getstarted({Key? key}) : super(key: key);
@@ -12,6 +17,10 @@ class Getstarted extends StatefulWidget {
 class _GetstartedState extends State<Getstarted> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    var _width = MediaQuery.of(context).size.width;
+    var _height = MediaQuery.of(context).size.height;
+    final textScale = MediaQuery.of(context).textScaleFactor;
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
         overscroll.disallowIndicator();
@@ -23,48 +32,66 @@ class _GetstartedState extends State<Getstarted> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 60,
-                  ),
+                  SizedBox(height: 10.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
                         "assets/images/shardaLogo.png",
-                        height: 100.0,
+                        width: 10.h,
+                        height: 10.h,
                       ),
-                      SizedBox(width: 10.0,),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Sharda University",
-                            style: textStyle(16.sp, FontWeight.w600,
-                                Colors.black, FontStyle.normal),
+                          Center(
+                            child: Text("Sharda University",
+                                style: Theme.of(context).textTheme.headline1),
                           ),
-                          Text("A Truly Global University"),
+                          Center(
+                            child: Text("A Truly Global University",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600)),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                  SizedBox(
-                    height: 70.0,
+                  SizedBox(height: 20.h),
+                  Text(
+                    "Select your occupation",
+                    style: textStyle(
+                        17.sp,
+                        FontWeight.w700,
+                        themeProvider.isDarkMode ? Colors.white : Colors.black,
+                        FontStyle.normal),
                   ),
-                  Text("Select Your Occupation", style: textStyle(17.sp, FontWeight.w300,
-                                Colors.black, FontStyle.normal), ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   SelectionButtons(
-                    Occupation: "Teacher",
+                    occupation: "Teacher",
                   ),
-                  SizedBox(
-                    height: 10.0,
+                  const SizedBox(
+                    height: 20.0,
                   ),
-                  SelectionButtons(
-                    Occupation: "Student",
+                  Text(
+                    "or",
+                    style: textStyle(
+                        14.sp, FontWeight.w500, Colors.black, FontStyle.normal),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.to(
+                      const LoginPage(),
+                      transition: Transition.fadeIn,
+                    ),
+                    child: SelectionButtons(
+                      occupation: "Student",
+                    ),
                   ),
                 ],
               ),
@@ -76,27 +103,38 @@ class _GetstartedState extends State<Getstarted> {
   }
 }
 
-class SelectionButtons extends StatelessWidget {
-  SelectionButtons({required this.Occupation});
+class SelectionButtons extends StatefulWidget {
+  SelectionButtons({Key? key, required this.occupation}) : super(key: key);
 
-  String Occupation;
+  String occupation;
 
   @override
+  State<SelectionButtons> createState() => _SelectionButtonsState();
+}
+
+class _SelectionButtonsState extends State<SelectionButtons> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Color(0xFF6851FD),
-      ),
-      width: double.infinity,
-      height: 87,
-      margin: EdgeInsets.all(20.0),
-      padding: EdgeInsets.all(8.0),
-      child: Center(
-        child: Text(
-          Occupation ,
-          style: textStyle(20.sp, FontWeight.w400,
-                                  Colors.black, FontStyle.normal),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    var _width = MediaQuery.of(context).size.width;
+    var _height = MediaQuery.of(context).size.height;
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          color: const Color.fromARGB(255, 62, 127, 247),
+        ),
+        width: _width * 0.95,
+        padding: const EdgeInsets.all(10),
+        child: Center(
+          child: Text(
+            widget.occupation,
+            style: textStyle(
+                16.sp, FontWeight.w700, Colors.black, FontStyle.normal),
+          ),
         ),
       ),
     );
