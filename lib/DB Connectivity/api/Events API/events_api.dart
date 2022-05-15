@@ -36,6 +36,8 @@ applyEvent(token, eventID, event) async {
       showConfirm("Applied", "You have applied for $event");
     } else if (jsonDecode(response.body)["msg"] == "Already Registered") {
       showError("Already Registered", "Can't register multiple times");
+    } else if (jsonDecode(response.body)["msg"] == "Event Close") {
+      showError("Event Close", "Select another event");
     } else {
       showError("Something went wrong", "Please try again later");
     }

@@ -9,6 +9,8 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/get_started.dart';
 import 'package:suevents/providers/theme_service.dart';
 
+import 'Student Portal/screens/Navigation Bar/zoom_drawer.dart';
+
 var isLog;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,9 +53,9 @@ class _MyAppState extends State<MyApp> {
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
-                // home: isLog == true ? const MainScreen() : const Getstarted(),
+                home: isLog == true ? const MainScreen() : const Getstarted(),
 
-                home: const Getstarted(),
+                // home: const Getstarted(),
                 builder: EasyLoading.init(builder: (context, builder) {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);

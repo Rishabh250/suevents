@@ -50,7 +50,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
               icon: const Icon(Icons.home),
             ),
             CustomNavigationBarItem(
-              icon: const Icon(Icons.search_rounded),
+              icon: const Icon(Icons.event_rounded),
             ),
           ],
           currentIndex: _currentIndex,

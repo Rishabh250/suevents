@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
@@ -29,6 +27,7 @@ class _MenuScreenState extends State<MenuScreen> {
       buildNumber = "",
       userImage = "";
   var userData;
+  var token;
   @override
   void initState() {
     super.initState();
@@ -49,13 +48,19 @@ class _MenuScreenState extends State<MenuScreen> {
 
   fetchData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("accessToken");
-    userData = await getUserData(token);
-    setState(() {
-      name = userData["user"]["name"];
-      userImage = userData["user"]["profileImage"];
-      log(userImage.toString());
-    });
+    token = sharedPreferences.getString("accessToken");
+  }
+
+  Stream fetchUserData() async* {
+    while (true) {
+      await Future.delayed(const Duration(seconds: 1));
+      userData = await getUserData(token);
+      setState(() {
+        name = userData["user"]["name"];
+        userImage = userData["user"]["profileImage"];
+      });
+      yield userData;
+    }
   }
 
   @override
@@ -71,31 +76,37 @@ class _MenuScreenState extends State<MenuScreen> {
 
             Get.to(const ProfilePage(), transition: Transition.fadeIn);
           },
-          child: DrawerHeader(
-              child: Column(
-            children: [
-              userImage == " "
-                  ? const CircleAvatar(
-                      radius: 40,
-                    )
-                  : CircleAvatar(
-                      radius: 12.w,
-                      backgroundImage: NetworkImage(userImage),
+          child: StreamBuilder(
+              stream: fetchUserData(),
+              builder: (context, snapshot) {
+                return DrawerHeader(
+                    child: Column(
+                  children: [
+                    userImage == ""
+                        ? CircleAvatar(
+                            radius: 12.w,
+                            backgroundImage:
+                                const AssetImage("assets/images/bg.jpg"),
+                          )
+                        : CircleAvatar(
+                            radius: 12.w,
+                            backgroundImage: NetworkImage(userImage),
+                          ),
+                    const Spacer(),
+                    Text(
+                      name,
+                      textScaleFactor: 1,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: textStyle(10.sp, FontWeight.w700, Colors.white,
+                          FontStyle.normal),
                     ),
-              const Spacer(),
-              Text(
-                name,
-                textScaleFactor: 1,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: textStyle(
-                    10.sp, FontWeight.w700, Colors.white, FontStyle.normal),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-            ],
-          )),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                  ],
+                ));
+              }),
         ),
         SizedBox(
           height: 5.h,
