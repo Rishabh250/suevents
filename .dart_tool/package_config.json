@@ -398,6 +398,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "qr",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/qr-1.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.6"
+    },
+    {
+      "name": "qr_code_scanner",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "qr_flutter",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/qr_flutter-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.6"
+    },
+    {
       "name": "shared_preferences",
       "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.13",
       "packageUri": "lib/",
@@ -536,8 +554,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-05-11T17:23:15.706133Z",
-  "generated": "2022-05-14T06:46:39.878451Z",
+  "generated": "2022-05-15T10:56:14.862838Z",
   "generator": "pub",
   "generatorVersion": "2.16.2"
 }

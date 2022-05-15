@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -115,10 +116,16 @@ class _EventsPageState extends State<EventsPage> {
                                 width: _width * 0.9,
                                 height: 100,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
+                                    border: Border.all(
+                                        width: 0.2,
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : const Color.fromARGB(
+                                                255, 151, 194, 8)),
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: themeProvider.isDarkMode
+                                        ? HexColor("#020E26")
+                                        : Colors.white),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Center(
@@ -154,10 +161,16 @@ class _EventsPageState extends State<EventsPage> {
                                     width: _width * 0.9,
                                     height: 100,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                    ),
+                                        border: Border.all(
+                                            width: 0.2,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : const Color.fromARGB(
+                                                    255, 151, 194, 8)),
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: themeProvider.isDarkMode
+                                            ? HexColor("#020E26")
+                                            : Colors.white),
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: Column(
@@ -170,7 +183,9 @@ class _EventsPageState extends State<EventsPage> {
                                             style: textStyle(
                                                 14.sp,
                                                 FontWeight.w700,
-                                                Colors.black,
+                                                themeProvider.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black,
                                                 FontStyle.normal),
                                           ),
                                           const SizedBox(
@@ -183,7 +198,9 @@ class _EventsPageState extends State<EventsPage> {
                                             style: textStyle(
                                                 10.sp,
                                                 FontWeight.w700,
-                                                Colors.black,
+                                                themeProvider.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black,
                                                 FontStyle.normal),
                                           ),
                                           const SizedBox(
@@ -198,7 +215,9 @@ class _EventsPageState extends State<EventsPage> {
                                                 style: textStyle(
                                                     10.sp,
                                                     FontWeight.w700,
-                                                    Colors.black,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                     FontStyle.normal),
                                               ),
                                               const Spacer(),
@@ -248,7 +267,9 @@ class _EventsPageState extends State<EventsPage> {
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w700,
-                                                Colors.black,
+                                                themeProvider.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black,
                                                 FontStyle.normal),
                                           ),
                                         ),
@@ -270,9 +291,15 @@ class _EventsPageState extends State<EventsPage> {
                         width: _width * 0.9,
                         height: 100,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
+                            border: Border.all(
+                                width: 0.2,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white
+                                    : const Color.fromARGB(255, 151, 194, 8)),
+                            borderRadius: BorderRadius.circular(20),
+                            color: themeProvider.isDarkMode
+                                ? HexColor("#020E26")
+                                : Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Text(
