@@ -3,7 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
-import 'package:suevents/providers/global_snackbar.dart';
+
+import '../../Controller/providers/global_snackbar.dart';
 
 getAllEvents() async {
   try {

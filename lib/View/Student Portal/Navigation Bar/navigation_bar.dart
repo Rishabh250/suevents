@@ -1,8 +1,8 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
 
-import '../../../providers/theme_service.dart';
 import '../Applied Events/events.dart';
 import '../Home Page/homepage.dart';
 import '../Profile Page/profile.dart';

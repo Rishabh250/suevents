@@ -3,9 +3,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/Student%20Portal/screens/Autentication/login.dart';
-import 'package:suevents/providers/const.dart';
-import 'package:suevents/providers/theme_service.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
+
+import 'Autentication/login.dart';
 
 class Getstarted extends StatefulWidget {
   const Getstarted({Key? key}) : super(key: key);

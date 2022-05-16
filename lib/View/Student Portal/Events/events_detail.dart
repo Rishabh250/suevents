@@ -8,11 +8,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/api/Events%20API/events_api.dart';
-import 'package:suevents/Student%20Portal/controllers/controller.dart';
-import 'package:suevents/providers/const.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
 
-import '../../../providers/theme_service.dart';
+import '../../../../Controller/Student_Controllers/controller.dart';
+import '../../../../Models/Event Api/events_api.dart';
 
 class EventDetail extends StatefulWidget {
   const EventDetail({Key? key}) : super(key: key);

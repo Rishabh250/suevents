@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/SharedPreferences/token.dart';
-import 'package:suevents/Student%20Portal/screens/Profile%20Page/profile.dart';
-import 'package:suevents/providers/const.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
-import '../Autentication/login.dart';
+import '../../../../Controller/SharedPreferences/token.dart';
+import '../../Autentication/login.dart';
+import '../Profile Page/profile.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);

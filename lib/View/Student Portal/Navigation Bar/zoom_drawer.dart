@@ -5,10 +5,10 @@ import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:suevents/Student%20Portal/screens/Navigation%20Bar/navigation_bar.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
 
-import '../../../providers/theme_service.dart';
 import 'menu.dart';
+import 'navigation_bar.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

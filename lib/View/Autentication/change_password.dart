@@ -6,11 +6,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/providers/const.dart';
-import 'package:suevents/providers/global_snackbar.dart';
-
-import '../../../providers/theme_service.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/global_snackbar.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);

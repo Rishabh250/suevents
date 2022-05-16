@@ -9,12 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/Student%20API/student_api.dart';
-import 'package:suevents/Student%20Portal/screens/Applied%20Events/contrroller/appliedevents_controller.dart';
-import 'package:suevents/providers/const.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
-import '../../../DB Connectivity/api/authentication_api.dart';
-import '../../../providers/theme_service.dart';
+import '../../../../Models/Student API/student_api.dart';
 
 class EventRounds extends StatefulWidget {
   const EventRounds({Key? key}) : super(key: key);
@@ -34,7 +33,6 @@ class _EventRoundsState extends State<EventRounds> {
   QRViewController? controller;
   String email = "", systemID = "", name = "";
   bool isVisible = false;
-  AppliedEventsController appliedEventsController = AppliedEventsController();
   var roundID;
   var eventID;
   @override

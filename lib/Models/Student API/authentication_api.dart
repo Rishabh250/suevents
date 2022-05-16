@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
-import 'package:suevents/SharedPreferences/token.dart';
-import 'package:suevents/providers/global_snackbar.dart';
+import 'package:suevents/Controller/SharedPreferences/token.dart';
 
-import '../../Student Portal/screens/Autentication/change_password.dart';
-import '../../Student Portal/screens/Autentication/login.dart';
-import '../../Student Portal/screens/Navigation Bar/zoom_drawer.dart';
+import '../../Controller/providers/global_snackbar.dart';
+import '../../View/Autentication/change_password.dart';
+import '../../View/Autentication/login.dart';
+import '../../View/Student Portal/Navigation Bar/zoom_drawer.dart';
 
 userLogin(email, pass) async {
   try {

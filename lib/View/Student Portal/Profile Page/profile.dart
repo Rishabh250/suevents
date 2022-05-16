@@ -12,10 +12,9 @@ import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/providers/const.dart';
-
-import '../../../DB Connectivity/api/authentication_api.dart';
-import '../../../providers/theme_service.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);

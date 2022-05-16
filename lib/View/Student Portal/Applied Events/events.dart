@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/Student%20API/student_api.dart';
-import 'package:suevents/Student%20Portal/screens/Applied%20Events/event_rounds.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
 
-import '../../../providers/const.dart';
-import '../../../providers/theme_service.dart';
+import '../../../../Models/Student API/student_api.dart';
+import 'event_rounds.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);

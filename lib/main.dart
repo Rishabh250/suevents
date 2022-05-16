@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/get_started.dart';
-import 'package:suevents/providers/theme_service.dart';
 
-import 'Student Portal/screens/Navigation Bar/zoom_drawer.dart';
+import 'Controller/providers/theme_service.dart';
+import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
+import 'View/get_started.dart';
 
 var isLog;
 Future main() async {

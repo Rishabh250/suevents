@@ -8,12 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/DB%20Connectivity/api/Events%20API/events_api.dart';
-import 'package:suevents/DB%20Connectivity/api/authentication_api.dart';
-import 'package:suevents/Student%20Portal/screens/Events/events_detail.dart';
-import 'package:suevents/providers/const.dart';
+import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
-import '../../../providers/theme_service.dart';
+import '../../../../Models/Event Api/events_api.dart';
+import '../Events/events_detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
