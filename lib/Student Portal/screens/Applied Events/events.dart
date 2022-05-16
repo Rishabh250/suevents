@@ -131,8 +131,13 @@ class _EventsPageState extends State<EventsPage> {
                                   child: Center(
                                     child: Text(
                                       "You haven't applied any event yet .....",
-                                      style: textStyle(12.sp, FontWeight.w700,
-                                          Colors.black, FontStyle.normal),
+                                      style: textStyle(
+                                          12.sp,
+                                          FontWeight.w700,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal),
                                     ),
                                   ),
                                 ),
@@ -228,7 +233,8 @@ class _EventsPageState extends State<EventsPage> {
                                                       arguments: {
                                                         "event": eventData[
                                                                 "eventsApplied"]
-                                                            [index]
+                                                            [index],
+                                                        "index": index
                                                       },
                                                       transition:
                                                           Transition.fadeIn);

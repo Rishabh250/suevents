@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
@@ -14,6 +15,26 @@ getStudentEvents(token) async {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+applyForRound(token, eventID, roundID) async {
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/selectedStudents"),
+        body: jsonEncode({"eventID": "$eventID", "roundID": "$roundID"}),
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token.toString()
+        });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      log(jsonDecode(response.body).toString());
     }
   } catch (e) {
     debugPrint(e.toString());

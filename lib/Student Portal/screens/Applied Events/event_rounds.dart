@@ -2,12 +2,15 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/DB%20Connectivity/Student%20API/student_api.dart';
+import 'package:suevents/Student%20Portal/screens/Applied%20Events/contrroller/appliedevents_controller.dart';
 import 'package:suevents/providers/const.dart';
 
 import '../../../DB Connectivity/api/authentication_api.dart';
@@ -24,22 +27,23 @@ class _EventRoundsState extends State<EventRounds> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final ScrollController _scrollController = ScrollController();
   late PageController pageController;
-  var user, eventData = Get.arguments;
+  var user, eventData = Get.arguments, token, eventDetail;
   late int _currentIndex;
   late int currentPage;
   Barcode? result;
   QRViewController? controller;
-  String email = "", systemID = "", attendence = "Not Taken", name = "";
+  String email = "", systemID = "", name = "";
   bool isVisible = false;
-
+  AppliedEventsController appliedEventsController = AppliedEventsController();
+  var roundID;
+  var eventID;
   @override
   void initState() {
     super.initState();
     currentPage = eventData["event"]["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
-    fetchUserData();
-    checkAttendence();
+    fetchEvents();
   }
 
   fetchUserData() async {
@@ -49,13 +53,16 @@ class _EventRoundsState extends State<EventRounds> {
     setState(() {
       email = user["user"]["email"];
       systemID = user["user"]["systemID"];
+      name = user["user"]["name"];
     });
-    return user;
+    var event = eventDetail["eventsApplied"][eventData["index"]]["rounds"]
+        [_currentIndex]["selectedStudends"];
+    await checkAttendence(event, email);
   }
 
   getUser() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("accessToken");
+    token = sharedPreferences.getString("accessToken");
     user = await getUserData(token);
     return user;
   }
@@ -64,9 +71,9 @@ class _EventRoundsState extends State<EventRounds> {
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      controller!.pauseCamera();
+      controller?.pauseCamera();
     } else if (Platform.isIOS) {
-      controller!.resumeCamera();
+      controller?.pauseCamera();
     }
   }
 
@@ -75,6 +82,7 @@ class _EventRoundsState extends State<EventRounds> {
     super.dispose();
     pageController.dispose();
     controller?.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -121,9 +129,11 @@ class _EventRoundsState extends State<EventRounds> {
                                   duration: const Duration(milliseconds: 500));
                             });
                             log(_currentIndex.toString());
-
-                            await fetchUserData();
-                            await checkAttendence();
+                            await fetchEvents();
+                            var event = eventDetail["eventsApplied"]
+                                    [eventData["index"]]["rounds"]
+                                [_currentIndex]["selectedStudends"];
+                            await checkAttendence(event, email);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -163,6 +173,9 @@ class _EventRoundsState extends State<EventRounds> {
                         // itemCount: 5,
                         itemCount: eventData["event"]['rounds'].length,
                         itemBuilder: (context, index) {
+                          roundID = eventData["event"]['rounds'][index]["_id"];
+                          eventID = eventData["event"]["_id"];
+
                           return ListView(
                             controller: _scrollController,
                             shrinkWrap: true,
@@ -242,6 +255,9 @@ class _EventRoundsState extends State<EventRounds> {
                                           );
                                         }),
                                     child: QRView(
+                                        formatsAllowed: const [
+                                          BarcodeFormat.qrcode
+                                        ],
                                         overlay: QrScannerOverlayShape(
                                             borderWidth: 5,
                                             borderColor: Colors.white,
@@ -254,8 +270,7 @@ class _EventRoundsState extends State<EventRounds> {
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   MaterialButton(
                                     elevation: 4,
@@ -282,16 +297,16 @@ class _EventRoundsState extends State<EventRounds> {
                                                 Colors.white,
                                                 FontStyle.normal)),
                                   ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        flipCam();
-                                      },
-                                      child: const Icon(Icons.flip_camera_ios)),
-                                  GestureDetector(
-                                      onTap: () {
-                                        flashLight();
-                                      },
-                                      child: const Icon(Icons.flashlight_on))
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          flipCam();
+                                        },
+                                        child:
+                                            const Icon(Icons.flip_camera_ios)),
+                                  ),
                                 ],
                               ),
                               const SizedBox(
@@ -395,15 +410,19 @@ class _EventRoundsState extends State<EventRounds> {
                                               ? Colors.white
                                               : Colors.black,
                                           FontStyle.normal)),
-                                  Text(attendence,
-                                      style: textStyle(
-                                          12.sp,
-                                          FontWeight.bold,
-                                          attendence == "Present"
-                                              ? const Color.fromARGB(
-                                                  255, 7, 186, 10)
-                                              : Colors.red,
-                                          FontStyle.normal)),
+                                  ValueListenableBuilder(
+                                      valueListenable: attendence,
+                                      builder: (context, value, child) {
+                                        return Text("$value",
+                                            style: textStyle(
+                                                12.sp,
+                                                FontWeight.bold,
+                                                "$value" == "Present"
+                                                    ? const Color.fromARGB(
+                                                        255, 7, 186, 10)
+                                                    : Colors.red,
+                                                FontStyle.normal));
+                                      })
                                 ],
                               )
                             ],
@@ -419,50 +438,69 @@ class _EventRoundsState extends State<EventRounds> {
     );
   }
 
-  checkAttendence() {
-    if (eventData["event"]['rounds'][_currentIndex]["selectedStudends"].length >
-        0) {
-      for (int i = 0;
-          i <
-              eventData["event"]['rounds'][_currentIndex]["selectedStudends"]
-                  .length;
-          i++) {
-        if (eventData["event"]['rounds'][_currentIndex]["selectedStudends"][i]
-                ["email"]
-            .toString()
-            .contains(email)) {
-          setState(() {
-            attendence = "Present";
-          });
-        } else {
-          setState(() {
-            attendence = "Not Taken";
-          });
-        }
-      }
-    } else {
-      setState(() {
-        attendence = "Not Taken";
-      });
-    }
-  }
-
-  void _onQRViewCreated(controller) {
+  void _onQRViewCreated(controller) async {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+    await controller.scannedDataStream.listen((scanData) async {
       setState(() {
         result = scanData;
       });
-      log(result!.code.toString());
+      for (int i = 0; i < eventData["event"]["appliedStudents"].length; i++) {
+        if (result!.code
+            .toString()
+            .contains(eventData["event"]["appliedStudents"][i]["email"])) {
+          log("Found : ${eventData["event"]["appliedStudents"][i]["email"]}");
+          await takeAttendence();
+        } else {
+          log("Not Found : ${eventData["event"]["appliedStudents"][i]["email"]}");
+        }
+      }
     });
   }
 
-  void flipCam() {
-    log("asda");
-    controller?.flipCamera();
+  takeAttendence() async {
+    controller?.pauseCamera();
+    EasyLoading.show();
+    await applyForRound(token, eventID, roundID);
+    await fetchEvents();
+    await fetchUserData();
+    EasyLoading.dismiss();
   }
 
-  void flashLight() {
-    controller?.toggleFlash();
+  void flipCam() async {
+    await controller?.flipCamera();
+  }
+
+  void flashLight() async {
+    await controller?.toggleFlash();
+  }
+
+  fetchEvents() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("accessToken");
+    user = await getUserData(token);
+    eventDetail = await getStudentEvents(token);
+    fetchUserData();
+    log(eventDetail["eventsApplied"][eventData["index"]]["rounds"]
+            [_currentIndex]["selectedStudends"]
+        .toString());
+  }
+
+  ValueNotifier attendence = ValueNotifier("Not Taken");
+
+  checkAttendence(eventData, email) {
+    if (eventData.length > 0) {
+      for (int i = 0; i < eventData.length; i++) {
+        if (eventData[i]["email"].toString().contains(email)) {
+          log(eventData.toString());
+          attendence = ValueNotifier("Present");
+        }
+      }
+    }
+    if (eventData.length == 0) {
+      setState(() {
+        attendence = ValueNotifier("Not Taken");
+      });
+    }
+    log(attendence.toString());
   }
 }
