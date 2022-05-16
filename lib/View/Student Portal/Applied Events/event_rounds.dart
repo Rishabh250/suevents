@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/Student_Controllers/events_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
-import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 import '../../../../Models/Student API/student_api.dart';
 
@@ -23,6 +23,7 @@ class EventRounds extends StatefulWidget {
 }
 
 class _EventRoundsState extends State<EventRounds> {
+  EventController eventController = EventController();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final ScrollController _scrollController = ScrollController();
   late PageController pageController;
@@ -31,7 +32,7 @@ class _EventRoundsState extends State<EventRounds> {
   late int currentPage;
   Barcode? result;
   QRViewController? controller;
-  String email = "", systemID = "", name = "";
+
   bool isVisible = false;
   var roundID;
   var eventID;
@@ -41,28 +42,8 @@ class _EventRoundsState extends State<EventRounds> {
     currentPage = eventData["event"]["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
+    eventController.userData();
     fetchEvents();
-  }
-
-  fetchUserData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("accessToken");
-    user = await getUserData(token);
-    setState(() {
-      email = user["user"]["email"];
-      systemID = user["user"]["systemID"];
-      name = user["user"]["name"];
-    });
-    var event = eventDetail["eventsApplied"][eventData["index"]]["rounds"]
-        [_currentIndex]["selectedStudends"];
-    await checkAttendence(event, email);
-  }
-
-  getUser() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    token = sharedPreferences.getString("accessToken");
-    user = await getUserData(token);
-    return user;
   }
 
   @override
@@ -81,6 +62,10 @@ class _EventRoundsState extends State<EventRounds> {
     pageController.dispose();
     controller?.dispose();
     _scrollController.dispose();
+    eventController.name.dispose();
+    eventController.email.dispose();
+    eventController.systemID.dispose();
+    eventController.attendence.dispose();
   }
 
   @override
@@ -131,7 +116,8 @@ class _EventRoundsState extends State<EventRounds> {
                             var event = eventDetail["eventsApplied"]
                                     [eventData["index"]]["rounds"]
                                 [_currentIndex]["selectedStudends"];
-                            await checkAttendence(event, email);
+                            await eventController.checkAttendence(
+                                event, eventController.email.value);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -191,67 +177,64 @@ class _EventRoundsState extends State<EventRounds> {
                                       color: Colors.amber),
                                   child: Visibility(
                                     visible: isVisible,
-                                    replacement: FutureBuilder(
-                                        future: getUser(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const Center(
-                                              child: CircularProgressIndicator
-                                                  .adaptive(),
+                                    replacement: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ValueListenableBuilder(
+                                          valueListenable: eventController.name,
+                                          builder: (context, value, child) {
+                                            return Text(
+                                              "$value",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  _currentIndex == index
+                                                      ? Colors.white
+                                                      : const Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                  FontStyle.normal),
                                             );
-                                          }
-                                          if (snapshot.hasData) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  user["user"]["name"],
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.bold,
-                                                      _currentIndex == index
-                                                          ? Colors.white
-                                                          : const Color
-                                                                  .fromARGB(
-                                                              255, 0, 0, 0),
-                                                      FontStyle.normal),
-                                                ),
-                                                Text(
-                                                  user["user"]["email"],
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.bold,
-                                                      _currentIndex == index
-                                                          ? Colors.white
-                                                          : const Color
-                                                                  .fromARGB(
-                                                              255, 0, 0, 0),
-                                                      FontStyle.normal),
-                                                ),
-                                                Text(
-                                                  user["user"]["systemID"],
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.bold,
-                                                      _currentIndex == index
-                                                          ? Colors.white
-                                                          : const Color
-                                                                  .fromARGB(
-                                                              255, 0, 0, 0),
-                                                      FontStyle.normal),
-                                                )
-                                              ],
+                                          },
+                                        ),
+                                        ValueListenableBuilder(
+                                          valueListenable:
+                                              eventController.email,
+                                          builder: (context, value, child) {
+                                            return Text(
+                                              "$value",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  _currentIndex == index
+                                                      ? Colors.white
+                                                      : const Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                  FontStyle.normal),
                                             );
-                                          }
-                                          return const Center(
-                                            child: Text(
-                                                "Something went wrong....\nPlease login again"),
-                                          );
-                                        }),
+                                          },
+                                        ),
+                                        ValueListenableBuilder(
+                                          valueListenable:
+                                              eventController.systemID,
+                                          builder: (context, value, child) {
+                                            return Text(
+                                              "$value",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  _currentIndex == index
+                                                      ? Colors.white
+                                                      : const Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                  FontStyle.normal),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                     child: QRView(
                                         formatsAllowed: const [
                                           BarcodeFormat.qrcode
@@ -409,7 +392,8 @@ class _EventRoundsState extends State<EventRounds> {
                                               : Colors.black,
                                           FontStyle.normal)),
                                   ValueListenableBuilder(
-                                      valueListenable: attendence,
+                                      valueListenable:
+                                          eventController.attendence,
                                       builder: (context, value, child) {
                                         return Text("$value",
                                             style: textStyle(
@@ -446,21 +430,18 @@ class _EventRoundsState extends State<EventRounds> {
         if (result!.code
             .toString()
             .contains(eventData["event"]["appliedStudents"][i]["email"])) {
-          log("Found : ${eventData["event"]["appliedStudents"][i]["email"]}");
           await takeAttendence();
-        } else {
-          log("Not Found : ${eventData["event"]["appliedStudents"][i]["email"]}");
         }
       }
     });
   }
 
   takeAttendence() async {
-    controller?.pauseCamera();
+    controller?.stopCamera();
     EasyLoading.show();
     await applyForRound(token, eventID, roundID);
     await fetchEvents();
-    await fetchUserData();
+    await eventController.fetchUserData(getEvent);
     EasyLoading.dismiss();
   }
 
@@ -472,33 +453,13 @@ class _EventRoundsState extends State<EventRounds> {
     await controller?.toggleFlash();
   }
 
+  var getEvent;
   fetchEvents() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("accessToken");
-    user = await getUserData(token);
+    token = sharedPreferences.getString("accessToken");
     eventDetail = await getStudentEvents(token);
-    fetchUserData();
-    log(eventDetail["eventsApplied"][eventData["index"]]["rounds"]
-            [_currentIndex]["selectedStudends"]
-        .toString());
-  }
-
-  ValueNotifier attendence = ValueNotifier("Not Taken");
-
-  checkAttendence(eventData, email) {
-    if (eventData.length > 0) {
-      for (int i = 0; i < eventData.length; i++) {
-        if (eventData[i]["email"].toString().contains(email)) {
-          log(eventData.toString());
-          attendence = ValueNotifier("Present");
-        }
-      }
-    }
-    if (eventData.length == 0) {
-      setState(() {
-        attendence = ValueNotifier("Not Taken");
-      });
-    }
-    log(attendence.toString());
+    getEvent = eventDetail["eventsApplied"][eventData["index"]]["rounds"]
+        [_currentIndex]["selectedStudends"];
+    eventController.fetchUserData(getEvent);
   }
 }

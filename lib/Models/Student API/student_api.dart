@@ -22,6 +22,8 @@ getStudentEvents(token) async {
 }
 
 applyForRound(token, eventID, roundID) async {
+  log(eventID.toString());
+  log(roundID.toString());
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/selectedStudents"),
@@ -32,7 +34,7 @@ applyForRound(token, eventID, roundID) async {
         });
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      log(jsonDecode(response.body).toString());
     } else {
       log(jsonDecode(response.body).toString());
     }
