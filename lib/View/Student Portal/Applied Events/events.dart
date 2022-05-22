@@ -1,5 +1,5 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,9 +7,9 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/View/Student%20Portal/Applied%20Events/event_rounds.dart';
 
 import '../../../../Models/Student API/student_api.dart';
-import 'event_rounds.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -147,76 +147,67 @@ class _EventsPageState extends State<EventsPage> {
                         );
                       }
 
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: eventData["eventsApplied"].length,
-                            itemBuilder: (context, index) {
-                              int openEvents = 0;
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: eventData["eventsApplied"].length,
+                          itemBuilder: (context, index) {
+                            int openEvents = 0;
 
-                              if (eventData["eventsApplied"][index]["status"] ==
-                                  "open") {
-                                openEvents++;
-                                return Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Container(
-                                    width: _width * 0.9,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 0.2,
-                                            color: themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : const Color.fromARGB(
-                                                    255, 151, 194, 8)),
-                                        borderRadius: BorderRadius.circular(20),
+                            if (eventData["eventsApplied"][index]["status"] ==
+                                "open") {
+                              openEvents++;
+                              return Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: OpenContainer(
+                                    openElevation: 0,
+                                    closedElevation: 8,
+                                    closedColor: themeProvider.isDarkMode
+                                        ? HexColor("#020E26")
+                                        : Colors.white,
+                                    closedShape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    middleColor: themeProvider.isDarkMode
+                                        ? HexColor("#020E26")
+                                        : Colors.white,
+                                    openColor: themeProvider.isDarkMode
+                                        ? HexColor("#020E26")
+                                        : Colors.white,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                    transitionType:
+                                        ContainerTransitionType.fadeThrough,
+                                    closedBuilder: (context, action) {
+                                      return Container(
+                                        width: _width * 0.9,
                                         color: themeProvider.isDarkMode
                                             ? HexColor("#020E26")
-                                            : Colors.white),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            eventData["eventsApplied"][index]
-                                                ["title"],
-                                            style: textStyle(
-                                                14.sp,
-                                                FontWeight.w700,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "Starting from  " +
-                                                eventData["eventsApplied"]
-                                                    [index]["startDate"],
-                                            style: textStyle(
-                                                10.sp,
-                                                FontWeight.w700,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
+                                            : Colors.white,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Price :  " +
+                                                eventData["eventsApplied"]
+                                                    [index]["title"],
+                                                style: textStyle(
+                                                    14.sp,
+                                                    FontWeight.w700,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Starting from  " +
                                                     eventData["eventsApplied"]
-                                                        [index]["eventPrice"],
+                                                        [index]["startDate"],
                                                 style: textStyle(
                                                     10.sp,
                                                     FontWeight.w700,
@@ -225,69 +216,83 @@ class _EventsPageState extends State<EventsPage> {
                                                         : Colors.black,
                                                     FontStyle.normal),
                                               ),
-                                              const Spacer(),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Get.to(
-                                                      () => const EventRounds(),
-                                                      arguments: {
-                                                        "event": eventData[
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "Price :  " +
+                                                        eventData[
                                                                 "eventsApplied"]
-                                                            [index],
-                                                        "index": index
-                                                      },
-                                                      transition:
-                                                          Transition.fadeIn);
-                                                },
-                                                child: const Icon(Icons
-                                                    .arrow_circle_right_rounded),
-                                              )
+                                                            [
+                                                            index]["eventPrice"],
+                                                    style: textStyle(
+                                                        10.sp,
+                                                        FontWeight.w700,
+                                                        themeProvider.isDarkMode
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        FontStyle.normal),
+                                                  ),
+                                                  const Spacer(),
+                                                  GestureDetector(
+                                                    onTap: action,
+                                                    child: const Icon(Icons
+                                                        .arrow_circle_right_rounded),
+                                                  )
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      );
+                                    },
+                                    openBuilder: (context, acion) {
+                                      return EventRounds(
+                                        events: eventData["eventsApplied"]
+                                            [index],
+                                        index: index,
+                                      );
+                                    }),
+                              );
+                            }
+                            if (openEvents == 0) {
+                              return Center(
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Container(
+                                    width: _width * 0.9,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
                                     ),
-                                  ),
-                                );
-                              }
-                              if (openEvents == 0) {
-                                return Center(
-                                  child: Card(
-                                    elevation: 4,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Container(
-                                      width: _width * 0.9,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Center(
-                                          child: Text(
-                                            "Your all events has been closed ...",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.w700,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal),
-                                          ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Center(
+                                        child: Text(
+                                          "Your all events has been closed ...",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.w700,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
                                         ),
                                       ),
                                     ),
                                   ),
-                                );
-                              } else {
-                                return Container();
-                              }
-                            }),
-                      );
+                                ),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          });
                     }
                     return Card(
                       elevation: 4,

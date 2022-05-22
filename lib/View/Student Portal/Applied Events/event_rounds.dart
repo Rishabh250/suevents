@@ -1,9 +1,11 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -11,12 +13,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Student_Controllers/events_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 
 import '../../../../Models/Student API/student_api.dart';
 
 class EventRounds extends StatefulWidget {
-  const EventRounds({Key? key}) : super(key: key);
+  var events;
+  var index;
+
+  EventRounds({Key? key, required this.events, required this.index})
+      : super(key: key);
 
   @override
   State<EventRounds> createState() => _EventRoundsState();
@@ -27,11 +34,28 @@ class _EventRoundsState extends State<EventRounds> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final ScrollController _scrollController = ScrollController();
   late PageController pageController;
-  var user, eventData = Get.arguments, token, eventDetail;
+  var user, token, eventDetail, getEvent;
   late int _currentIndex;
   late int currentPage;
   Barcode? result;
   QRViewController? controller;
+  var currentDate =
+      DateTime.now().toString().replaceRange(11, 26, "").split("-");
+  String finalDate = "";
+  List months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
 
   bool isVisible = false;
   var roundID;
@@ -39,10 +63,13 @@ class _EventRoundsState extends State<EventRounds> {
   @override
   void initState() {
     super.initState();
-    currentPage = eventData["event"]["rounds"].length - 1;
+    currentPage = widget.events["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
     eventController.userData();
+    finalDate =
+        "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]},${currentDate[0]} ";
+    log(finalDate);
     fetchEvents();
   }
 
@@ -76,7 +103,7 @@ class _EventRoundsState extends State<EventRounds> {
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
-        // physics: const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: _scrollController,
         slivers: [
           SliverToBoxAdapter(
@@ -99,7 +126,7 @@ class _EventRoundsState extends State<EventRounds> {
                   child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: eventData["event"]['rounds'].length,
+                      itemCount: widget.events['rounds'].length,
                       // itemCount: 5,
                       itemBuilder: (context, index) {
                         return GestureDetector(
@@ -114,8 +141,8 @@ class _EventRoundsState extends State<EventRounds> {
                             log(_currentIndex.toString());
                             await fetchEvents();
                             var event = eventDetail["eventsApplied"]
-                                    [eventData["index"]]["rounds"]
-                                [_currentIndex]["selectedStudends"];
+                                    [widget.index]["rounds"][_currentIndex]
+                                ["selectedStudends"];
                             await eventController.checkAttendence(
                                 event, eventController.email.value);
                           },
@@ -155,13 +182,13 @@ class _EventRoundsState extends State<EventRounds> {
                         controller: pageController,
                         scrollDirection: Axis.horizontal,
                         // itemCount: 5,
-                        itemCount: eventData["event"]['rounds'].length,
+                        itemCount: widget.events['rounds'].length,
                         itemBuilder: (context, index) {
-                          roundID = eventData["event"]['rounds'][index]["_id"];
-                          eventID = eventData["event"]["_id"];
+                          roundID = widget.events['rounds'][index]["_id"];
+                          eventID = widget.events["_id"];
 
                           return ListView(
-                            controller: _scrollController,
+                            padding: const EdgeInsets.only(bottom: 50),
                             shrinkWrap: true,
                             children: [
                               Card(
@@ -174,7 +201,13 @@ class _EventRoundsState extends State<EventRounds> {
                                   height: 300,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: Colors.amber),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                            HexColor("7ec9f5").withOpacity(0.5),
+                                            HexColor("3957ed").withOpacity(0.5)
+                                          ])),
                                   child: Visibility(
                                     visible: isVisible,
                                     replacement: Column(
@@ -191,7 +224,7 @@ class _EventRoundsState extends State<EventRounds> {
                                               style: textStyle(
                                                   12.sp,
                                                   FontWeight.bold,
-                                                  _currentIndex == index
+                                                  themeProvider.isDarkMode
                                                       ? Colors.white
                                                       : const Color.fromARGB(
                                                           255, 0, 0, 0),
@@ -203,16 +236,23 @@ class _EventRoundsState extends State<EventRounds> {
                                           valueListenable:
                                               eventController.email,
                                           builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  12.sp,
-                                                  FontWeight.bold,
-                                                  _currentIndex == index
-                                                      ? Colors.white
-                                                      : const Color.fromARGB(
-                                                          255, 0, 0, 0),
-                                                  FontStyle.normal),
+                                            return SizedBox(
+                                              width: _width * 0.9,
+                                              child: Center(
+                                                child: Text(
+                                                  "$value",
+                                                  textAlign: TextAlign.center,
+                                                  style: textStyle(
+                                                      12.sp,
+                                                      FontWeight.bold,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : const Color
+                                                                  .fromARGB(
+                                                              255, 0, 0, 0),
+                                                      FontStyle.normal),
+                                                ),
+                                              ),
                                             );
                                           },
                                         ),
@@ -225,7 +265,7 @@ class _EventRoundsState extends State<EventRounds> {
                                               style: textStyle(
                                                   12.sp,
                                                   FontWeight.bold,
-                                                  _currentIndex == index
+                                                  themeProvider.isDarkMode
                                                       ? Colors.white
                                                       : const Color.fromARGB(
                                                           255, 0, 0, 0),
@@ -260,18 +300,34 @@ class _EventRoundsState extends State<EventRounds> {
                                             BorderRadius.circular(10)),
                                     color: Colors.blue,
                                     onPressed: () {
-                                      setState(() {
-                                        isVisible = !isVisible;
-                                      });
+                                      log(finalDate);
+                                      log(widget.events['rounds'][index]["date"]
+                                          .toString());
+                                      if (finalDate.contains(widget
+                                          .events['rounds'][index]["date"]
+                                          .toString())) {
+                                        setState(() {
+                                          isVisible = !isVisible;
+                                        });
+                                      }
                                     },
-                                    child: isVisible == true
-                                        ? Text("Hide Scanner",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.bold,
-                                                Colors.white,
-                                                FontStyle.normal))
-                                        : Text("Show Scanner",
+                                    child: finalDate.contains(widget
+                                            .events['rounds'][index]["date"]
+                                            .toString())
+                                        ? isVisible == true
+                                            ? Text("Hide Scanner",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    Colors.white,
+                                                    FontStyle.normal))
+                                            : Text("Show Scanner",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    Colors.white,
+                                                    FontStyle.normal))
+                                        : Text("Not Available",
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.bold,
@@ -293,18 +349,25 @@ class _EventRoundsState extends State<EventRounds> {
                               const SizedBox(
                                 height: 30,
                               ),
-                              Text(
-                                "Round " +
-                                    eventData["event"]['rounds'][index]
-                                            ["roundNumber"]
-                                        .toString(),
-                                style: textStyle(
-                                    18.sp,
-                                    FontWeight.bold,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    FontStyle.normal),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Round " +
+                                          widget.events['rounds'][index]
+                                                  ["roundNumber"]
+                                              .toString(),
+                                      style: textStyle(
+                                          18.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(
                                 height: 10,
@@ -335,8 +398,8 @@ class _EventRoundsState extends State<EventRounds> {
                                       children: [
                                         Text(
                                             "Lab : " +
-                                                eventData["event"]['rounds']
-                                                    [index]["lab"],
+                                                widget.events['rounds'][index]
+                                                    ["lab"],
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,
@@ -349,8 +412,8 @@ class _EventRoundsState extends State<EventRounds> {
                                         ),
                                         Text(
                                             "Test Type : " +
-                                                eventData["event"]['rounds']
-                                                    [index]["testType"],
+                                                widget.events['rounds'][index]
+                                                    ["testType"],
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,
@@ -363,8 +426,8 @@ class _EventRoundsState extends State<EventRounds> {
                                         ),
                                         Text(
                                             "Round Date : " +
-                                                eventData["event"]['rounds']
-                                                    [index]["date"],
+                                                widget.events['rounds'][index]
+                                                    ["date"],
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,
@@ -380,32 +443,59 @@ class _EventRoundsState extends State<EventRounds> {
                               const SizedBox(
                                 height: 30,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("Attendence : ",
-                                      style: textStyle(
-                                          12.sp,
-                                          FontWeight.w600,
-                                          themeProvider.isDarkMode
-                                              ? Colors.white
-                                              : Colors.black,
-                                          FontStyle.normal)),
-                                  ValueListenableBuilder(
-                                      valueListenable:
-                                          eventController.attendence,
-                                      builder: (context, value, child) {
-                                        return Text("$value",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.bold,
-                                                "$value" == "Present"
-                                                    ? const Color.fromARGB(
-                                                        255, 7, 186, 10)
-                                                    : Colors.red,
-                                                FontStyle.normal));
-                                      })
-                                ],
+                              Center(
+                                child: Card(
+                                  elevation: 8,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  color: Colors.transparent,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 0.2,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : const Color.fromARGB(
+                                                    255, 151, 194, 8)),
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: themeProvider.isDarkMode
+                                            ? HexColor("#020E26")
+                                            : Colors.white),
+                                    width: _width * 0.95,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text("Attendence : ",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.w600,
+                                                  themeProvider.isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  FontStyle.normal)),
+                                          ValueListenableBuilder(
+                                              valueListenable:
+                                                  eventController.attendence,
+                                              builder: (context, value, child) {
+                                                return Text("$value",
+                                                    style: textStyle(
+                                                        12.sp,
+                                                        FontWeight.bold,
+                                                        "$value" == "Present"
+                                                            ? const Color
+                                                                    .fromARGB(
+                                                                255, 7, 186, 10)
+                                                            : Colors.red,
+                                                        FontStyle.normal));
+                                              })
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               )
                             ],
                           );
@@ -426,12 +516,30 @@ class _EventRoundsState extends State<EventRounds> {
       setState(() {
         result = scanData;
       });
-      for (int i = 0; i < eventData["event"]["appliedStudents"].length; i++) {
-        if (result!.code
-            .toString()
-            .contains(eventData["event"]["appliedStudents"][i]["email"])) {
-          await takeAttendence();
+      var data = jsonDecode(result!.code.toString());
+
+      if (finalDate.toString().contains(data["Date"].toString())) {
+        if (int.parse(widget.events['rounds'][_currentIndex]["roundNumber"]
+                .toString()) ==
+            data["Round"]) {
+          for (int i = 0; i < widget.events["appliedStudents"].length; i++) {
+            if (data["list"]
+                .toString()
+                .contains(widget.events["appliedStudents"][i]["email"])) {
+              await takeAttendence();
+            }
+          }
+        } else {
+          controller?.stopCamera();
+
+          showError("Invalid QR Code", "");
+          return;
         }
+      } else {
+        controller?.stopCamera();
+
+        showError("Invalid QR Code", "");
+        return;
       }
     });
   }
@@ -453,12 +561,11 @@ class _EventRoundsState extends State<EventRounds> {
     await controller?.toggleFlash();
   }
 
-  var getEvent;
   fetchEvents() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     eventDetail = await getStudentEvents(token);
-    getEvent = eventDetail["eventsApplied"][eventData["index"]]["rounds"]
+    getEvent = eventDetail["eventsApplied"][widget.index]["rounds"]
         [_currentIndex]["selectedStudends"];
     eventController.fetchUserData(getEvent);
   }

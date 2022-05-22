@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:suevents/providers/theme_service.dart';
+import 'package:suevents/Controller/providers/theme_service.dart';
 
 class CustomButton extends StatefulWidget {
   final double width;

@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/Student API/authentication_api.dart';
 
 class EventController {
-  ValueNotifier<String> email = ValueNotifier<String>("Email"),
-      systemID = ValueNotifier<String>("System ID"),
-      name = ValueNotifier<String>("Name"),
-      attendence = ValueNotifier("Not Taken");
+  ValueNotifier<String> email = ValueNotifier<String>(""),
+      systemID = ValueNotifier<String>("Fetching Details..."),
+      name = ValueNotifier<String>(""),
+      attendence = ValueNotifier("");
 
   fetchUserData(getEvent) async {
     await userData();

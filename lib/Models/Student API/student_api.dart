@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
 
 getStudentEvents(token) async {
+  log(token.toString());
   try {
     var response = await https.get(
         Uri.parse("https://suevents2022.herokuapp.com/studentEvents"),

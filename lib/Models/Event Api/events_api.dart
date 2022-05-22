@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
@@ -31,10 +30,9 @@ applyEvent(token, eventID, event) async {
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
 
-    log(response.body.toString());
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       showConfirm("Applied", "You have applied for $event");
+      return true;
     } else if (jsonDecode(response.body)["msg"] == "Already Registered") {
       showError("Already Registered", "Can't register multiple times");
     } else if (jsonDecode(response.body)["msg"] == "Event Close") {

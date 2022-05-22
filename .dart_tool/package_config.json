@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "animations",
+      "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/animations-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "async",
       "rootUri": "file:///D:/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.8.2",
       "packageUri": "lib/",
@@ -554,7 +560,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-05-15T10:56:14.862838Z",
+  "generated": "2022-05-22T09:04:07.857604Z",
   "generator": "pub",
   "generatorVersion": "2.16.2"
 }

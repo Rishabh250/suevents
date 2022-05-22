@@ -11,10 +11,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/Models/Student%20API/student_api.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -29,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
   String imageURL = '';
   var token;
   var user;
-
   Future<void> _upload() async {
     final picker = ImagePicker();
     XFile? pickedImage;
@@ -182,6 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 30,
                         ),
                         Card(
+                          color: Colors.transparent,
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
@@ -229,53 +231,51 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Course : ",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.w400,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal),
-                                          ),
-                                          Text(user["user"]["course"],
-                                              style: textStyle(
-                                                  12.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  FontStyle.normal))
-                                        ],
+                                      Text(
+                                        "Course : ",
+                                        style: textStyle(
+                                            12.sp,
+                                            FontWeight.w400,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
                                       ),
-                                      const Spacer(),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Year : ",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.w400,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal),
-                                          ),
-                                          Text(
-                                              user["user"]["year"].toString() +
-                                                  " ( ${user["user"]["semester"].toString()} Semester )",
-                                              style: textStyle(
-                                                  12.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  FontStyle.normal))
-                                        ],
+                                      Text(user["user"]["course"],
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal)),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Year : ",
+                                        style: textStyle(
+                                            12.sp,
+                                            FontWeight.w400,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
                                       ),
+                                      Text(
+                                          user["user"]["year"].toString() +
+                                              " ( ${user["user"]["semester"].toString()} Semester )",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal))
                                     ],
                                   ),
                                   const SizedBox(
@@ -335,6 +335,32 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Applied Events",
+                                style: Theme.of(context).textTheme.headline1,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, right: 10),
+                          child: StudentEvents(
+                            token: token,
+                            width: _width,
+                            textScale: textScale,
+                            themeProvider: themeProvider,
+                          ),
                         )
                       ],
                     ),
@@ -346,5 +372,180 @@ class _ProfilePageState extends State<ProfilePage> {
             return const Center(child: Text("Something went wrong"));
           })),
     );
+  }
+}
+
+class StudentEvents extends StatelessWidget {
+  StudentEvents({
+    Key? key,
+    required this.token,
+    required double width,
+    required this.textScale,
+    required this.themeProvider,
+  })  : _width = width,
+        super(key: key);
+
+  final token;
+  final double _width;
+  final double textScale;
+  final ThemeProvider themeProvider;
+  var eventData;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: fetchAllEvents(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                  width: _width * 0.9,
+                  height: 100,
+                  child: Shimmer.fromColors(
+                    baseColor:
+                        themeProvider.isDarkMode ? Colors.black : Colors.white,
+                    highlightColor: Colors.grey,
+                    period: const Duration(seconds: 2),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[400]!,
+                      ),
+                    ),
+                  )),
+            );
+          }
+          return SizedBox(
+            width: _width,
+            height: 320,
+            child: eventData["eventsApplied"].length == 0
+                ? Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Container(
+                        width: _width * 0.9,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 0.2,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white
+                                    : const Color.fromARGB(255, 151, 194, 8)),
+                            borderRadius: BorderRadius.circular(20),
+                            color: themeProvider.isDarkMode
+                                ? HexColor("#020E26")
+                                : Colors.white),
+                        child: const Center(
+                          child: Text("You havn'e applied any event yet..."),
+                        )),
+                  )
+                : ShaderMask(
+                    shaderCallback: (Rect rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.purple,
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.purple
+                        ],
+                        stops: [
+                          0.0,
+                          0.1,
+                          0.9,
+                          1.0
+                        ], // 10% purple, 80% transparent, 10% purple
+                      ).createShader(rect);
+                    },
+                    blendMode: BlendMode.dstOut,
+                    child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: eventData["eventsApplied"].length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Container(
+                              width: _width * 0.9,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.2,
+                                      color: themeProvider.isDarkMode
+                                          ? Colors.white
+                                          : const Color.fromARGB(
+                                              255, 151, 194, 8)),
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: themeProvider.isDarkMode
+                                      ? HexColor("#020E26")
+                                      : Colors.white),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      eventData["eventsApplied"][index]
+                                          ["title"],
+                                      style: textStyle(
+                                          14.sp,
+                                          FontWeight.w700,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "Date : " +
+                                          eventData["eventsApplied"][index]
+                                              ["startDate"],
+                                      style: textStyle(
+                                          10.sp,
+                                          FontWeight.w700,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Price :  " +
+                                              eventData["eventsApplied"][index]
+                                                  ["eventPrice"],
+                                          style: textStyle(
+                                              10.sp,
+                                              FontWeight.w700,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+          );
+        });
+  }
+
+  fetchAllEvents() async {
+    eventData = await getStudentEvents(token);
+    return eventData;
   }
 }
