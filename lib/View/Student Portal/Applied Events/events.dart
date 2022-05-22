@@ -79,23 +79,31 @@ class _EventsPageState extends State<EventsPage> {
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: SizedBox(
-                                        width: _width * 0.9,
-                                        height: 100,
-                                        child: Shimmer.fromColors(
-                                          baseColor: themeProvider.isDarkMode
-                                              ? Colors.black
-                                              : Colors.white,
-                                          highlightColor: Colors.grey,
-                                          period: const Duration(seconds: 2),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: Colors.grey[400]!,
-                                            ),
+                                    child: Center(
+                                      child: Container(
+                                          width: _width * 0.9,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.transparent,
                                           ),
-                                        )),
+                                          child: Shimmer.fromColors(
+                                            baseColor: themeProvider.isDarkMode
+                                                ? Colors.black
+                                                : Colors.white,
+                                            highlightColor:
+                                                Colors.grey.withOpacity(0.5),
+                                            period: const Duration(seconds: 2),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: Colors.grey[400]!,
+                                              ),
+                                            ),
+                                          )),
+                                    ),
                                   );
                                 })
                           ],
