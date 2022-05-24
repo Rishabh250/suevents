@@ -19,8 +19,8 @@ class _GetstartedState extends State<Getstarted> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
@@ -117,8 +117,8 @@ class _SelectionButtonsState extends State<SelectionButtons> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Card(
       elevation: 8,
@@ -128,7 +128,7 @@ class _SelectionButtonsState extends State<SelectionButtons> {
           borderRadius: BorderRadius.circular(15.0),
           color: const Color.fromARGB(255, 62, 127, 247),
         ),
-        width: _width * 0.95,
+        width: width * 0.95,
         padding: const EdgeInsets.all(10),
         child: Center(
           child: Text(

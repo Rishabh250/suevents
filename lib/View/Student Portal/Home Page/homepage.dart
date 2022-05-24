@@ -63,8 +63,8 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
 
     return NotificationListener<OverscrollIndicatorNotification>(
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage>
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(greet + "..!",
+                      Text("$greet..!",
                           style: textStyle(
                               8.sp,
                               FontWeight.w400,
@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage>
                       const SizedBox(
                         height: 1,
                       ),
-                      Text("Hi, " + name,
+                      Text("Hi, $name",
                           style: Theme.of(context).textTheme.headline2),
                       const SizedBox(
                         height: 40,
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage>
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
-                              width: _width * 0.7,
+                              width: width * 0.7,
                               height: 50,
                               decoration: BoxDecoration(
                                   border: Border.all(
@@ -237,7 +237,7 @@ class _HomePageState extends State<HomePage>
                                 });
                               },
                               child: Container(
-                                width: _width * 0.14,
+                                width: width * 0.14,
                                 height: 50,
                                 decoration: BoxDecoration(
                                     color:
@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage>
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.transparent,
                                       ),
-                                      width: _width * 0.6,
+                                      width: width * 0.6,
                                       height: textScale == 1.0 ? 250.0 : 300,
                                       child: Shimmer.fromColors(
                                         baseColor: themeProvider.isDarkMode
@@ -310,7 +310,7 @@ class _HomePageState extends State<HomePage>
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.transparent,
                                       ),
-                                      width: _width * 0.6,
+                                      width: width * 0.6,
                                       height: textScale == 1.0 ? 250.0 : 300,
                                       child: Shimmer.fromColors(
                                         baseColor: themeProvider.isDarkMode
@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage>
                                 }
                               }
                               return SizedBox(
-                                width: _width,
+                                width: width,
                                 height: textScale == 1.0 ? 270.0 : 320,
                                 child: ListView.builder(
                                     physics: const BouncingScrollPhysics(),
@@ -399,7 +399,7 @@ class _HomePageState extends State<HomePage>
                                                       .fadeThrough,
                                               closedBuilder: (context, action) {
                                                 return Container(
-                                                  width: _width * 0.6,
+                                                  width: width * 0.6,
                                                   color:
                                                       themeProvider.isDarkMode
                                                           ? HexColor("#020E26")
@@ -609,7 +609,7 @@ class _HomePageState extends State<HomePage>
                                               borderRadius:
                                                   BorderRadius.circular(20)),
                                           child: Container(
-                                              width: _width * 0.9,
+                                              width: width * 0.9,
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 0.2,
@@ -653,7 +653,7 @@ class _HomePageState extends State<HomePage>
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Container(
-                                    width: _width * 0.9,
+                                    width: width * 0.9,
                                     height: 250.0,
                                     decoration: BoxDecoration(
                                         border: Border.all(

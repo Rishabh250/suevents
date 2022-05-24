@@ -60,9 +60,9 @@ class _MyAppState extends State<MyApp> {
                   final mediaQueryData = MediaQuery.of(context);
                   final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
                   return MediaQuery(
-                    child: builder!,
                     data:
                         MediaQuery.of(context).copyWith(textScaleFactor: scale),
+                    child: builder!,
                   );
                 }));
           },

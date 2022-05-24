@@ -29,8 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
         appBar: AppBar(
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextField(
                           style: GoogleFonts.poppins(
                               fontSize: 11.5.sp, fontWeight: FontWeight.w600),
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextFormField(
                           controller: password,
                           style: GoogleFonts.poppins(
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.only(left: 20.0),
                       child: SizedBox(
                         height: 40,
-                        width: _width * 0.4,
+                        width: width * 0.4,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 4,

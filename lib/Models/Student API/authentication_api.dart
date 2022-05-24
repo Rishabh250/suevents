@@ -19,6 +19,7 @@ userLogin(email, pass) async {
         body: jsonEncode(
             {"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
+    log(response.body.toString());
 
     var body = jsonDecode(response.body);
 

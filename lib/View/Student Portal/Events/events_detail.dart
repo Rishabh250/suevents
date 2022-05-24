@@ -54,8 +54,8 @@ class _EventDetailState extends State<EventDetail> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
@@ -115,7 +115,7 @@ class _EventDetailState extends State<EventDetail> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     child: Container(
-                      width: _width * 0.95,
+                      width: width * 0.95,
                       decoration: BoxDecoration(
                           border: Border.all(
                               width: 0.2,
@@ -243,7 +243,7 @@ class _EventDetailState extends State<EventDetail> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   child: Container(
-                    width: _width * 0.95,
+                    width: width * 0.95,
                     decoration: BoxDecoration(
                         border: Border.all(
                             width: 0.2,
@@ -259,7 +259,7 @@ class _EventDetailState extends State<EventDetail> {
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: SizedBox(
-                          width: _width * 0.85,
+                          width: width * 0.85,
                           child: ExpandableText(
                             widget.event["description"] == ""
                                 ? "No Description"
@@ -307,7 +307,7 @@ class _EventDetailState extends State<EventDetail> {
                   ),
                 ),
                 FacultyAssined(
-                    width: _width,
+                    width: width,
                     event: widget.event,
                     themeProvider: themeProvider),
                 const SizedBox(
@@ -330,7 +330,7 @@ class _EventDetailState extends State<EventDetail> {
                 ),
                 HostedBy(
                     themeProvider: themeProvider,
-                    width: _width,
+                    width: width,
                     event: widget.event),
                 const SizedBox(
                   height: 20,

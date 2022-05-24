@@ -33,8 +33,8 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
         appBar: AppBar(
@@ -90,7 +90,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextField(
                           readOnly: true,
                           style: GoogleFonts.poppins(
@@ -113,7 +113,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextFormField(
                           obscureText: isPassVisible,
                           controller: password,
@@ -146,7 +146,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       padding: const EdgeInsets.only(left: 20.0),
                       child: SizedBox(
                         height: 40,
-                        width: _width * 0.5,
+                        width: width * 0.5,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 4,

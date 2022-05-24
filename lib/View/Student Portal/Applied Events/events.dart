@@ -7,9 +7,9 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
-import 'package:suevents/View/Student%20Portal/Applied%20Events/event_rounds.dart';
 
 import '../../../../Models/Student API/student_api.dart';
+import 'event_rounds.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -36,8 +36,8 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
@@ -81,7 +81,7 @@ class _EventsPageState extends State<EventsPage> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: Center(
                                       child: Container(
-                                          width: _width * 0.9,
+                                          width: width * 0.9,
                                           height: 100,
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -121,7 +121,7 @@ class _EventsPageState extends State<EventsPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20)),
                               child: Container(
-                                width: _width * 0.9,
+                                width: width * 0.9,
                                 height: 100,
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -188,7 +188,7 @@ class _EventsPageState extends State<EventsPage> {
                                         ContainerTransitionType.fadeThrough,
                                     closedBuilder: (context, action) {
                                       return Container(
-                                        width: _width * 0.9,
+                                        width: width * 0.9,
                                         color: themeProvider.isDarkMode
                                             ? HexColor("#020E26")
                                             : Colors.white,
@@ -272,7 +272,7 @@ class _EventsPageState extends State<EventsPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
                                   child: Container(
-                                    width: _width * 0.9,
+                                    width: width * 0.9,
                                     height: 100,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -307,7 +307,7 @@ class _EventsPageState extends State<EventsPage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       child: Container(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         height: 100,
                         decoration: BoxDecoration(
                             border: Border.all(

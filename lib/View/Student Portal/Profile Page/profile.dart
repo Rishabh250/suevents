@@ -78,8 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       appBar: AppBar(
@@ -188,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           child: Container(
-                            width: _width * 0.9,
+                            width: width * 0.9,
                             decoration: BoxDecoration(
                                 border: Border.all(
                                     width: 0.2,
@@ -267,8 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             FontStyle.normal),
                                       ),
                                       Text(
-                                          user["user"]["year"].toString() +
-                                              " ( ${user["user"]["semester"].toString()} Semester )",
+                                          "${user["user"]["year"]} ( ${user["user"]["semester"].toString()} Semester )",
                                           style: textStyle(
                                               12.sp,
                                               FontWeight.bold,
@@ -357,7 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: StudentEvents(
                             token: token,
-                            width: _width,
+                            width: width,
                             textScale: textScale,
                             themeProvider: themeProvider,
                           ),

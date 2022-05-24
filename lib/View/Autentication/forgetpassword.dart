@@ -27,8 +27,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
         appBar: AppBar(
@@ -84,7 +84,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextField(
                           style: GoogleFonts.poppins(
                               fontSize: 11.5.sp, fontWeight: FontWeight.w600),
@@ -107,7 +107,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                     Center(
                       child: SizedBox(
-                        width: _width * 0.9,
+                        width: width * 0.9,
                         child: TextFormField(
                           controller: otp,
                           keyboardType: TextInputType.number,
@@ -192,7 +192,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       padding: const EdgeInsets.only(left: 20.0),
                       child: SizedBox(
                         height: 40,
-                        width: _width * 0.4,
+                        width: width * 0.4,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 4,

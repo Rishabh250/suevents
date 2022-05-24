@@ -11,7 +11,7 @@ class ThemeProvider extends ChangeNotifier {
 
   bool get isDarkMode {
     if (themeMode == ThemeMode.system) {
-      final brightness = SchedulerBinding.instance?.window.platformBrightness;
+      final brightness = SchedulerBinding.instance.window.platformBrightness;
       return brightness == Brightness.dark;
     } else {
       return themeMode == ThemeMode.dark;
@@ -30,6 +30,7 @@ class MyThemes {
   MyThemes(this.context);
 
   static final darkTheme = ThemeData(
+      useMaterial3: true,
       highlightColor: Colors.transparent,
       textTheme: TextTheme(
         headline1: GoogleFonts.poppins(
@@ -56,6 +57,7 @@ class MyThemes {
           secondary: Color(0xffFFFFFF)));
 
   static final lightTheme = ThemeData(
+      useMaterial3: true,
       highlightColor: Colors.transparent,
       textTheme: TextTheme(
         headline1: GoogleFonts.poppins(

@@ -2,21 +2,20 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Student_Controllers/events_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
-import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 
 import '../../../../Models/Student API/student_api.dart';
+import '../../../Controller/providers/global_snackbar.dart';
 
 class EventRounds extends StatefulWidget {
   var events;
@@ -37,8 +36,7 @@ class _EventRoundsState extends State<EventRounds> {
   var user, token, eventDetail, getEvent;
   late int _currentIndex;
   late int currentPage;
-  Barcode? result;
-  QRViewController? controller;
+  final String _scanBarcode = 'Unknown';
   var currentDate =
       DateTime.now().toString().replaceRange(11, 26, "").split("-");
   String finalDate = "";
@@ -74,20 +72,9 @@ class _EventRoundsState extends State<EventRounds> {
   }
 
   @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.pauseCamera();
-    }
-  }
-
-  @override
   void dispose() {
     super.dispose();
     pageController.dispose();
-    controller?.dispose();
     _scrollController.dispose();
     eventController.name.dispose();
     eventController.email.dispose();
@@ -98,8 +85,8 @@ class _EventRoundsState extends State<EventRounds> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var _width = MediaQuery.of(context).size.width;
-    var _height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
@@ -122,7 +109,7 @@ class _EventRoundsState extends State<EventRounds> {
                 ),
                 SizedBox(
                   height: 50,
-                  width: _width,
+                  width: width,
                   child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
@@ -174,7 +161,7 @@ class _EventRoundsState extends State<EventRounds> {
                       }),
                 ),
                 SizedBox(
-                  height: _height * 0.9,
+                  height: height * 0.9,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: PageView.builder(
@@ -192,104 +179,109 @@ class _EventRoundsState extends State<EventRounds> {
                             shrinkWrap: true,
                             children: [
                               Card(
-                                color: Colors.transparent,
-                                elevation: 8,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Container(
-                                  width: _width,
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      gradient: LinearGradient(
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
-                                          colors: [
-                                            HexColor("7ec9f5").withOpacity(0.5),
-                                            HexColor("3957ed").withOpacity(0.5)
-                                          ])),
-                                  child: Visibility(
-                                    visible: isVisible,
-                                    replacement: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        ValueListenableBuilder(
-                                          valueListenable: eventController.name,
-                                          builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  12.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : const Color.fromARGB(
-                                                          255, 0, 0, 0),
-                                                  FontStyle.normal),
-                                            );
-                                          },
-                                        ),
-                                        ValueListenableBuilder(
-                                          valueListenable:
-                                              eventController.email,
-                                          builder: (context, value, child) {
-                                            return SizedBox(
-                                              width: _width * 0.9,
-                                              child: Center(
-                                                child: Text(
-                                                  "$value",
-                                                  textAlign: TextAlign.center,
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.bold,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : const Color
-                                                                  .fromARGB(
-                                                              255, 0, 0, 0),
-                                                      FontStyle.normal),
+                                  color: Colors.transparent,
+                                  elevation: 8,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Container(
+                                    width: width,
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        gradient: LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [
+                                              HexColor("7ec9f5")
+                                                  .withOpacity(0.5),
+                                              HexColor("3957ed")
+                                                  .withOpacity(0.5)
+                                            ])),
+                                    child: Visibility(
+                                      visible: isVisible,
+                                      replacement: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ValueListenableBuilder(
+                                            valueListenable:
+                                                eventController.name,
+                                            builder: (context, value, child) {
+                                              return Text(
+                                                "$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : const Color.fromARGB(
+                                                            255, 0, 0, 0),
+                                                    FontStyle.normal),
+                                              );
+                                            },
+                                          ),
+                                          ValueListenableBuilder(
+                                            valueListenable:
+                                                eventController.email,
+                                            builder: (context, value, child) {
+                                              return SizedBox(
+                                                width: width * 0.9,
+                                                child: Center(
+                                                  child: Text(
+                                                    "$value",
+                                                    textAlign: TextAlign.center,
+                                                    style: textStyle(
+                                                        12.sp,
+                                                        FontWeight.bold,
+                                                        themeProvider.isDarkMode
+                                                            ? Colors.white
+                                                            : const Color
+                                                                    .fromARGB(
+                                                                255, 0, 0, 0),
+                                                        FontStyle.normal),
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        ValueListenableBuilder(
-                                          valueListenable:
-                                              eventController.systemID,
-                                          builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  12.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : const Color.fromARGB(
-                                                          255, 0, 0, 0),
-                                                  FontStyle.normal),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    child: QRView(
-                                        formatsAllowed: const [
-                                          BarcodeFormat.qrcode
+                                              );
+                                            },
+                                          ),
+                                          ValueListenableBuilder(
+                                            valueListenable:
+                                                eventController.systemID,
+                                            builder: (context, value, child) {
+                                              return Text(
+                                                "$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : const Color.fromARGB(
+                                                            255, 0, 0, 0),
+                                                    FontStyle.normal),
+                                              );
+                                            },
+                                          ),
                                         ],
-                                        overlay: QrScannerOverlayShape(
-                                            borderWidth: 5,
-                                            borderColor: Colors.white,
-                                            borderLength: 40,
-                                            borderRadius: 20),
-                                        overlayMargin: const EdgeInsets.all(10),
-                                        key: qrKey,
-                                        onQRViewCreated: _onQRViewCreated),
-                                  ),
-                                ),
-                              ),
+                                      ),
+                                      child: Container(),
+
+                                      // QRView(
+                                      //     formatsAllowed: const [
+                                      //       BarcodeFormat.qrcode
+                                      //     ],
+                                      //     overlay: QrScannerOverlayShape(
+                                      //         borderWidth: 5,
+                                      //         borderColor: Colors.white,
+                                      //         borderLength: 40,
+                                      //         borderRadius: 20),
+                                      //     overlayMargin:
+                                      //         const EdgeInsets.all(10),
+                                      //     key: qrKey,
+                                      //     onQRViewCreated: onQRViewCreated),
+                                    ),
+                                  )),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -299,18 +291,11 @@ class _EventRoundsState extends State<EventRounds> {
                                         borderRadius:
                                             BorderRadius.circular(10)),
                                     color: Colors.blue,
-                                    onPressed: () {
-                                      log(finalDate);
-                                      log(widget.events['rounds'][index]["date"]
-                                          .toString());
-                                      if (finalDate.contains(widget
-                                          .events['rounds'][index]["date"]
-                                          .toString())) {
-                                        setState(() {
-                                          isVisible = !isVisible;
-                                        });
-                                      }
-                                    },
+                                    onPressed: finalDate.contains(widget
+                                            .events['rounds'][index]["date"]
+                                            .toString())
+                                        ? onQRViewCreated
+                                        : null,
                                     child: finalDate.contains(widget
                                             .events['rounds'][index]["date"]
                                             .toString())
@@ -339,7 +324,7 @@ class _EventRoundsState extends State<EventRounds> {
                                     padding: const EdgeInsets.only(right: 20.0),
                                     child: GestureDetector(
                                         onTap: () {
-                                          flipCam();
+                                          // flipCam();
                                         },
                                         child:
                                             const Icon(Icons.flip_camera_ios)),
@@ -354,10 +339,7 @@ class _EventRoundsState extends State<EventRounds> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      "Round " +
-                                          widget.events['rounds'][index]
-                                                  ["roundNumber"]
-                                              .toString(),
+                                      "Round ${widget.events['rounds'][index]["roundNumber"]}",
                                       style: textStyle(
                                           18.sp,
                                           FontWeight.bold,
@@ -378,7 +360,7 @@ class _EventRoundsState extends State<EventRounds> {
                                     borderRadius: BorderRadius.circular(20)),
                                 color: Colors.transparent,
                                 child: Container(
-                                  width: _width * 0.95,
+                                  width: width * 0.95,
                                   decoration: BoxDecoration(
                                       border: Border.all(
                                           width: 0.2,
@@ -461,7 +443,7 @@ class _EventRoundsState extends State<EventRounds> {
                                         color: themeProvider.isDarkMode
                                             ? HexColor("#020E26")
                                             : Colors.white),
-                                    width: _width * 0.95,
+                                    width: width * 0.95,
                                     child: Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: Row(
@@ -510,55 +492,58 @@ class _EventRoundsState extends State<EventRounds> {
     );
   }
 
-  void _onQRViewCreated(controller) async {
-    this.controller = controller;
-    await controller.scannedDataStream.listen((scanData) async {
-      setState(() {
-        result = scanData;
-      });
-      var data = jsonDecode(result!.code.toString());
+  String? scanResult;
 
-      if (finalDate.toString().contains(data["Date"].toString())) {
-        if (int.parse(widget.events['rounds'][_currentIndex]["roundNumber"]
-                .toString()) ==
-            data["Round"]) {
-          for (int i = 0; i < widget.events["appliedStudents"].length; i++) {
-            if (data["list"]
-                .toString()
-                .contains(widget.events["appliedStudents"][i]["email"])) {
-              await takeAttendence();
-            }
+  Future onQRViewCreated() async {
+    log("Clicked");
+    try {
+      scanResult = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+    }
+    if (!mounted) return;
+
+    setState(() => scanResult = scanResult);
+    if (scanResult == null) return;
+
+    log(scanResult.toString());
+
+    // this.controller = controller;
+    // await controller.scannedDataStream.listen((scanData) async {
+    //   setState(() {
+    //     result = scanData;
+    //   });
+    var data = jsonDecode(scanResult.toString());
+
+    if (finalDate.toString().contains(data["Date"].toString())) {
+      if (int.parse(widget.events['rounds'][_currentIndex]["roundNumber"]
+              .toString()) ==
+          data["Round"]) {
+        for (int i = 0; i < widget.events["appliedStudents"].length; i++) {
+          if (data["list"]
+              .toString()
+              .contains(widget.events["appliedStudents"][i]["email"])) {
+            await takeAttendence();
           }
-        } else {
-          controller?.stopCamera();
-
-          showError("Invalid QR Code", "");
-          return;
         }
       } else {
-        controller?.stopCamera();
-
         showError("Invalid QR Code", "");
         return;
       }
-    });
+    } else {
+      showError("Invalid QR Code", "");
+      return;
+    }
   }
 
   takeAttendence() async {
-    controller?.stopCamera();
+    // controller?.stopCamera();
     EasyLoading.show();
     await applyForRound(token, eventID, roundID);
     await fetchEvents();
     await eventController.fetchUserData(getEvent);
     EasyLoading.dismiss();
-  }
-
-  void flipCam() async {
-    await controller?.flipCamera();
-  }
-
-  void flashLight() async {
-    await controller?.toggleFlash();
   }
 
   fetchEvents() async {
@@ -569,4 +554,12 @@ class _EventRoundsState extends State<EventRounds> {
         [_currentIndex]["selectedStudends"];
     eventController.fetchUserData(getEvent);
   }
+
+  // void flipCam() async {
+  //   await controller?.flipCamera();
+  // }
+
+  // void flashLight() async {
+  //   await controller?.toggleFlash();
+  // }
 }
