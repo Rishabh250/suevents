@@ -166,103 +166,108 @@ class _EventsPageState extends State<EventsPage> {
                               openEvents++;
                               return Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: OpenContainer(
-                                    openElevation: 0,
-                                    closedElevation: 8,
-                                    closedColor: themeProvider.isDarkMode
-                                        ? HexColor("#020E26")
-                                        : Colors.white,
-                                    closedShape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    middleColor: themeProvider.isDarkMode
-                                        ? HexColor("#020E26")
-                                        : Colors.white,
-                                    openColor: themeProvider.isDarkMode
-                                        ? HexColor("#020E26")
-                                        : Colors.white,
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    transitionDuration:
-                                        const Duration(milliseconds: 500),
-                                    transitionType:
-                                        ContainerTransitionType.fadeThrough,
-                                    closedBuilder: (context, action) {
-                                      return Container(
-                                        width: width * 0.9,
-                                        color: themeProvider.isDarkMode
-                                            ? HexColor("#020E26")
-                                            : Colors.white,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                eventData["eventsApplied"]
-                                                    [index]["title"],
-                                                style: textStyle(
-                                                    14.sp,
-                                                    FontWeight.w700,
-                                                    themeProvider.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "Starting from  " +
-                                                    eventData["eventsApplied"]
-                                                        [index]["startDate"],
-                                                style: textStyle(
-                                                    10.sp,
-                                                    FontWeight.w700,
-                                                    themeProvider.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "Price :  " +
-                                                        eventData[
-                                                                "eventsApplied"]
-                                                            [
-                                                            index]["eventPrice"],
-                                                    style: textStyle(
-                                                        10.sp,
-                                                        FontWeight.w700,
-                                                        themeProvider.isDarkMode
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        FontStyle.normal),
-                                                  ),
-                                                  const Spacer(),
-                                                  GestureDetector(
-                                                    onTap: action,
-                                                    child: const Icon(Icons
-                                                        .arrow_circle_right_rounded),
-                                                  )
-                                                ],
-                                              ),
-                                            ],
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  elevation: 8,
+                                  child: OpenContainer(
+                                      openElevation: 0,
+                                      closedElevation: 8,
+                                      closedColor: themeProvider.isDarkMode
+                                          ? HexColor("#020E26")
+                                          : Colors.white,
+                                      closedShape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      middleColor: themeProvider.isDarkMode
+                                          ? HexColor("#020E26")
+                                          : Colors.white,
+                                      openColor: themeProvider.isDarkMode
+                                          ? HexColor("#020E26")
+                                          : Colors.white,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      transitionDuration:
+                                          const Duration(milliseconds: 500),
+                                      transitionType:
+                                          ContainerTransitionType.fadeThrough,
+                                      closedBuilder: (context, action) {
+                                        return Container(
+                                          width: width * 0.9,
+                                          color: themeProvider.isDarkMode
+                                              ? HexColor("#020E26")
+                                              : Colors.white,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  eventData["eventsApplied"]
+                                                      [index]["title"],
+                                                  style: textStyle(
+                                                      14.sp,
+                                                      FontWeight.w700,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "Starting from  " +
+                                                      eventData["eventsApplied"]
+                                                          [index]["startDate"],
+                                                  style: textStyle(
+                                                      10.sp,
+                                                      FontWeight.w700,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "Price :  " +
+                                                          eventData["eventsApplied"]
+                                                                  [index]
+                                                              ["eventPrice"],
+                                                      style: textStyle(
+                                                          10.sp,
+                                                          FontWeight.w700,
+                                                          themeProvider
+                                                                  .isDarkMode
+                                                              ? Colors.white
+                                                              : Colors.black,
+                                                          FontStyle.normal),
+                                                    ),
+                                                    const Spacer(),
+                                                    GestureDetector(
+                                                      onTap: action,
+                                                      child: const Icon(Icons
+                                                          .arrow_circle_right_rounded),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    openBuilder: (context, acion) {
-                                      return EventRounds(
-                                        events: eventData["eventsApplied"]
-                                            [index],
-                                        index: index,
-                                      );
-                                    }),
+                                        );
+                                      },
+                                      openBuilder: (context, acion) {
+                                        return EventRounds(
+                                          events: eventData["eventsApplied"]
+                                              [index],
+                                          index: index,
+                                        );
+                                      }),
+                                ),
                               );
                             }
                             if (openEvents == 0) {

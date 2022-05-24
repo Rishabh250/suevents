@@ -21,10 +21,10 @@ class CustomButton extends StatefulWidget {
       required this.textStyle});
 
   @override
-  _CustomButtonState createState() => _CustomButtonState();
+  CustomButtonState createState() => CustomButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton> {
+class CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -89,10 +89,10 @@ class OverlayCustomButton extends StatefulWidget {
       required this.textStyle});
 
   @override
-  _OverlayCustomButtonState createState() => _OverlayCustomButtonState();
+  OverlayCustomButtonState createState() => OverlayCustomButtonState();
 }
 
-class _OverlayCustomButtonState extends State<OverlayCustomButton> {
+class OverlayCustomButtonState extends State<OverlayCustomButton> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -169,10 +169,10 @@ class CustomIconButton extends StatefulWidget {
   });
 
   @override
-  _CustomIconButtonState createState() => _CustomIconButtonState();
+  CustomIconButtonState createState() => CustomIconButtonState();
 }
 
-class _CustomIconButtonState extends State<CustomIconButton> {
+class CustomIconButtonState extends State<CustomIconButton> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -229,10 +229,10 @@ class OverlayCustomImage extends StatefulWidget {
   });
 
   @override
-  _OverlayCustomImageState createState() => _OverlayCustomImageState();
+  OverlayCustomImageState createState() => OverlayCustomImageState();
 }
 
-class _OverlayCustomImageState extends State<OverlayCustomImage> {
+class OverlayCustomImageState extends State<OverlayCustomImage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -308,10 +308,10 @@ class CustomNaviButtom extends StatefulWidget {
   });
 
   @override
-  _CustomNaviButtomState createState() => _CustomNaviButtomState();
+  CustomNaviButtomState createState() => CustomNaviButtomState();
 }
 
-class _CustomNaviButtomState extends State<CustomNaviButtom> {
+class CustomNaviButtomState extends State<CustomNaviButtom> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);

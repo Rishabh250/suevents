@@ -379,9 +379,7 @@ class _EventRoundsState extends State<EventRounds> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            "Lab : " +
-                                                widget.events['rounds'][index]
-                                                    ["lab"],
+                                            "Lab : ${widget.events['rounds'][index]["lab"]}",
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,
@@ -393,9 +391,7 @@ class _EventRoundsState extends State<EventRounds> {
                                           height: 10,
                                         ),
                                         Text(
-                                            "Test Type : " +
-                                                widget.events['rounds'][index]
-                                                    ["testType"],
+                                            "Test Type : ${widget.events['rounds'][index]["testType"]}",
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,
@@ -407,9 +403,7 @@ class _EventRoundsState extends State<EventRounds> {
                                           height: 10,
                                         ),
                                         Text(
-                                            "Round Date : " +
-                                                widget.events['rounds'][index]
-                                                    ["date"],
+                                            "Round Date : ${widget.events['rounds'][index]["date"]}",
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.w600,

@@ -315,7 +315,8 @@ class _HomePageState extends State<HomePage>
                                       child: Shimmer.fromColors(
                                         baseColor: themeProvider.isDarkMode
                                             ? Colors.black
-                                            : Colors.white,
+                                            : const Color.fromARGB(
+                                                255, 199, 121, 121),
                                         highlightColor: themeProvider.isDarkMode
                                             ? Colors.white.withOpacity(0.5)
                                             : Colors.black.withOpacity(0.3),
@@ -369,66 +370,98 @@ class _HomePageState extends State<HomePage>
                                           searchEvents.toString().isEmpty) {
                                         return Padding(
                                           padding: const EdgeInsets.all(10),
-                                          child: OpenContainer(
-                                              openElevation: 0,
-                                              closedElevation: 5,
-                                              closedColor:
-                                                  themeProvider.isDarkMode
-                                                      ? HexColor("#020E26")
-                                                      : Colors.white,
-                                              closedShape:
-                                                  RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                              middleColor:
-                                                  themeProvider.isDarkMode
-                                                      ? HexColor("#020E26")
-                                                      : Colors.white,
-                                              openColor:
-                                                  themeProvider.isDarkMode
-                                                      ? HexColor("#020E26")
-                                                      : Colors.white,
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 500),
-                                              transitionType:
-                                                  ContainerTransitionType
-                                                      .fadeThrough,
-                                              closedBuilder: (context, action) {
-                                                return Container(
-                                                  width: width * 0.6,
-                                                  color:
-                                                      themeProvider.isDarkMode
-                                                          ? HexColor("#020E26")
-                                                          : Colors.white,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Center(
-                                                            child: Text(
-                                                              eventData["events"]
-                                                                      [index]
-                                                                  ["title"],
+                                          child: Card(
+                                            color: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            elevation: 8,
+                                            child: OpenContainer(
+                                                openElevation: 0,
+                                                closedElevation: 4,
+                                                closedColor: themeProvider
+                                                        .isDarkMode
+                                                    ? HexColor("#020E26")
+                                                    : Colors.white,
+                                                closedShape:
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                middleColor:
+                                                    themeProvider.isDarkMode
+                                                        ? HexColor("#020E26")
+                                                        : Colors.white,
+                                                openColor:
+                                                    themeProvider.isDarkMode
+                                                        ? HexColor("#020E26")
+                                                        : Colors.white,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
+                                                transitionDuration:
+                                                    const Duration(
+                                                        milliseconds: 500),
+                                                transitionType:
+                                                    ContainerTransitionType
+                                                        .fadeThrough,
+                                                closedBuilder:
+                                                    (context, action) {
+                                                  return Container(
+                                                    width: width * 0.6,
+                                                    color: themeProvider
+                                                            .isDarkMode
+                                                        ? HexColor("#020E26")
+                                                        : Colors.white,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Center(
+                                                              child: Text(
+                                                                eventData["events"]
+                                                                        [index]
+                                                                    ["title"],
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 2,
+                                                                style: textStyle(
+                                                                    15.sp,
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    themeProvider.isDarkMode
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
+                                                                    FontStyle
+                                                                        .normal),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 20,
+                                                            ),
+                                                            Text(
+                                                              "Event Type : ${eventData["events"][index]["type"]}",
                                                               textAlign:
                                                                   TextAlign
-                                                                      .left,
+                                                                      .center,
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
                                                               maxLines: 2,
                                                               style: textStyle(
-                                                                  15.sp,
+                                                                  10.sp,
                                                                   FontWeight
-                                                                      .bold,
+                                                                      .w600,
                                                                   themeProvider
                                                                           .isDarkMode
                                                                       ? Colors
@@ -438,163 +471,132 @@ class _HomePageState extends State<HomePage>
                                                                   FontStyle
                                                                       .normal),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 20,
-                                                          ),
-                                                          Text(
-                                                            "Event Type : " +
-                                                                eventData["events"]
-                                                                        [index]
-                                                                    ["type"],
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 2,
-                                                            style: textStyle(
-                                                                10.sp,
-                                                                FontWeight.w600,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            "Date : " +
-                                                                eventData["events"]
-                                                                        [index][
-                                                                    "startDate"],
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 2,
-                                                            style: textStyle(
-                                                                10.sp,
-                                                                FontWeight.w600,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            "Price : " +
-                                                                eventData["events"]
-                                                                        [index][
-                                                                    "eventPrice"],
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 2,
-                                                            style: textStyle(
-                                                                10.sp,
-                                                                FontWeight.w600,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const Spacer(),
-                                                          Text(
-                                                            "Hosted By : " +
-                                                                eventData["events"]
-                                                                            [
-                                                                            index]
-                                                                        [
-                                                                        "createdBy"]
-                                                                    [0]["name"],
-                                                            textScaleFactor: 1,
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 1,
-                                                            style: textStyle(
-                                                                11.sp,
-                                                                FontWeight.w600,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                  shape: RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10)),
-                                                                  primary: themeProvider
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              "Date : ${eventData["events"][index]["startDate"]}",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 2,
+                                                              style: textStyle(
+                                                                  10.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
                                                                           .isDarkMode
-                                                                      ? const Color
-                                                                              .fromARGB(
-                                                                          255,
-                                                                          14,
-                                                                          76,
-                                                                          191)
-                                                                      : const Color
-                                                                              .fromARGB(
-                                                                          255,
-                                                                          1,
-                                                                          64,
-                                                                          181),
-                                                                  elevation: 4),
-                                                              onPressed: action,
-                                                              child: Center(
-                                                                child: Text(
-                                                                  "Participate",
-                                                                  textScaleFactor:
-                                                                      1,
-                                                                  style: textStyle(
-                                                                      12.sp,
-                                                                      FontWeight
-                                                                          .w600,
-                                                                      Colors
-                                                                          .white,
-                                                                      FontStyle
-                                                                          .normal),
-                                                                ),
-                                                              ))
-                                                        ]),
-                                                  ),
-                                                );
-                                              },
-                                              openBuilder: (context, action) {
-                                                return EventDetail(
-                                                  event: eventData["events"]
-                                                      [index],
-                                                );
-                                              }),
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              "Price : ${eventData["events"][index]["eventPrice"]}",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 2,
+                                                              style: textStyle(
+                                                                  10.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal),
+                                                            ),
+                                                            const Spacer(),
+                                                            Text(
+                                                              "Hosted By : ${eventData["events"][index]["createdBy"][0]["name"]}",
+                                                              textScaleFactor:
+                                                                  1,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 1,
+                                                              style: textStyle(
+                                                                  11.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            ElevatedButton(
+                                                                style: ElevatedButton.styleFrom(
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10)),
+                                                                    primary: themeProvider
+                                                                            .isDarkMode
+                                                                        ? const Color.fromARGB(
+                                                                            255,
+                                                                            14,
+                                                                            76,
+                                                                            191)
+                                                                        : const Color.fromARGB(
+                                                                            255,
+                                                                            1,
+                                                                            64,
+                                                                            181),
+                                                                    elevation:
+                                                                        4),
+                                                                onPressed:
+                                                                    action,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    "Participate",
+                                                                    textScaleFactor:
+                                                                        1,
+                                                                    style: textStyle(
+                                                                        12.sp,
+                                                                        FontWeight
+                                                                            .w600,
+                                                                        Colors
+                                                                            .white,
+                                                                        FontStyle
+                                                                            .normal),
+                                                                  ),
+                                                                ))
+                                                          ]),
+                                                    ),
+                                                  );
+                                                },
+                                                openBuilder: (context, action) {
+                                                  return EventDetail(
+                                                    event: eventData["events"]
+                                                        [index],
+                                                  );
+                                                }),
+                                          ),
                                         );
                                       }
                                       if (eventSearchLength == 0) {
