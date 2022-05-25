@@ -27,6 +27,7 @@ userLogin(email, pass) async {
       accessToken(jsonDecode(response.body)["token"]);
       EasyLoading.dismiss();
       loginStatus(true);
+      getUser("Student");
       Get.off(const MainScreen(), transition: Transition.fadeIn);
     } else {
       if (body['msg'] == "Password wrong") {
@@ -49,12 +50,13 @@ resetPassword(email, pass) async {
     var body = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      Get.offAll(() => const LoginPage(), transition: Transition.fadeIn);
+      Get.offAll(() => const LoginPage(),
+          transition: Transition.fadeIn, arguments: {"isType": "Student"});
       showConfirm("Password Reset", "Your password has been reset");
       EasyLoading.dismiss();
     } else {
       if (body['msg'] == "user not found") {
-        showError("Invaild Details", "user not found");
+        showError("Invaild Details", "User not found");
       }
     }
   } catch (e) {

@@ -1,13 +1,17 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -23,6 +27,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   bool isPassVisible = true;
   String buttonName = "Send OTP";
+  var userType = Get.arguments;
+
+  @override
+  void initState() {
+    log(userType["isType"]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,28 +149,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             child: GestureDetector(
                               onTap: () async {
                                 if (buttonName == "Submit") {
-                                  if (email.text.isEmpty) {
-                                    showError("Empty Field",
-                                        "Enter your Sharda Email ID");
-                                    return;
-                                  }
-                                  if (email.text
-                                          .toString()
-                                          .split(".")[0]
-                                          .length !=
-                                      10) {
-                                    showError("Invalid Sharda Mail ID",
-                                        "Please enter a valid sharda mail id");
-                                    return;
-                                  }
                                   if (!email.text.toString().contains("@")) {
                                     showError("Invalid Sharda Mail ID",
                                         "Please enter a valid sharda mail id");
                                     return;
                                   } else {
                                     EasyLoading.show();
-                                    var isSend =
-                                        await sendOTP(email.text.toString());
+                                    var isSend = userType['isType'] == "Student"
+                                        ? await sendOTP(email.text.toString())
+                                        : await facultysendOTP(
+                                            email.text.toString());
+
                                     EasyLoading.dismiss();
                                     if (isSend == true) {
                                       setState(() {
@@ -202,61 +202,40 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               )),
                           onPressed: () async {
                             if (buttonName == "Send OTP") {
-                              if (email.text.isEmpty) {
-                                showError("Empty Field",
-                                    "Enter your Sharda Email ID");
-                                return;
-                              }
-                              if (email.text.toString().split(".")[0].length !=
-                                  10) {
-                                showError("Invalid Sharda Mail ID",
-                                    "Please enter a valid sharda mail id");
-                                return;
-                              }
-                              if (!email.text.toString().contains("@")) {
-                                showError("Invalid Sharda Mail ID",
-                                    "Please enter a valid sharda mail id");
-                                return;
-                              } else {
+                              var check = await checkUser();
+                              if (check != false) {
                                 EasyLoading.show();
-                                var isSend =
-                                    await sendOTP(email.text.toString());
+                                var isSend = userType["isType"] == "Student"
+                                    ? await sendOTP(email.text.toString())
+                                    : await facultysendOTP(
+                                        email.text.toString());
                                 EasyLoading.dismiss();
                                 if (isSend == true) {
                                   setState(() {
                                     buttonName = "Submit";
                                   });
                                 }
-
-                                return;
                               }
+
+                              return;
                             }
                             if (buttonName == "Submit") {
-                              if (email.text.isEmpty) {
-                                showError("Empty Field",
-                                    "Enter your Sharda Email ID");
-                                return;
-                              }
-                              if (email.text.toString().split(".")[0].length !=
-                                  10) {
-                                showError("Invalid Sharda Mail ID",
-                                    "Please enter a valid sharda mail id");
-                                return;
-                              }
-                              if (!email.text.toString().contains("@")) {
-                                showError("Invalid Sharda Mail ID",
-                                    "Please enter a valid sharda mail id");
-                                return;
-                              }
-
-                              if (otp.text.isEmpty) {
-                                showError("Empty Field", "Enter your OTP");
-                                return;
-                              } else {
-                                EasyLoading.show();
-                                await verifyOTP(
-                                    email.text.toString(), otp.text.toString());
-                                EasyLoading.dismiss();
+                              var check = await checkUser();
+                              if (check != false) {
+                                if (otp.text.isEmpty) {
+                                  showError("Empty Field", "Enter your OTP");
+                                  return;
+                                } else {
+                                  EasyLoading.show();
+                                  userType["isType"] == "Student"
+                                      ? await verifyOTP(email.text.toString(),
+                                          otp.text.toString())
+                                      : await facultyverifyOTP(
+                                          email.text.toString(),
+                                          otp.text.toString(),
+                                          userType["isType"]);
+                                  EasyLoading.dismiss();
+                                }
                               }
                             }
                           },
@@ -276,5 +255,24 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             )
           ]),
         ));
+  }
+
+  checkUser() {
+    if (email.text.isEmpty) {
+      showError("Empty Field", "Enter your Sharda Email ID");
+      return false;
+    }
+    if (userType["isType"] == "Student") {
+      if (email.text.toString().split(".")[0].length != 10) {
+        showError(
+            "Invalid Sharda Mail ID", "Please enter a valid sharda mail id");
+        return false;
+      }
+    }
+    if (!email.text.toString().contains("@")) {
+      showError(
+          "Invalid Sharda Mail ID", "Please enter a valid sharda mail id");
+      return false;
+    }
   }
 }

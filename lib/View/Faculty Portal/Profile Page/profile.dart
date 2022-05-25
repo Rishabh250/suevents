@@ -15,17 +15,17 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
-import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/student_api.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class FacultyProfilePage extends StatefulWidget {
+  const FacultyProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<FacultyProfilePage> createState() => _FacultyProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _FacultyProfilePageState extends State<FacultyProfilePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
   File? image;
   String imageURL = '';
@@ -70,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
   fetchUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
-    user = await getUserData(token);
+    user = await getFacultyData(token);
     log(user.toString());
     return user;
   }
@@ -94,11 +94,12 @@ class _ProfilePageState extends State<ProfilePage> {
           future: fetchUserData(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              EasyLoading.show();
+              EasyLoading.show(dismissOnTap: false);
               return Container();
             }
             if (user != null) {
-              EasyLoading.dismiss();
+              EasyLoading.dismiss(animation: true);
+
               return CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
@@ -122,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onTap: () async {
                                           EasyLoading.show();
                                           await _upload();
-                                          await uploadProfileImage(
+                                          await facultyUploadImage(
                                               token, imageURL.toString());
                                         },
                                         child: const Icon(
@@ -145,9 +146,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onTap: () async {
                                           EasyLoading.show();
                                           await _upload();
-                                          await uploadProfileImage(
+                                          await facultyUploadImage(
                                               token, imageURL.toString());
-                                          EasyLoading.dismiss();
                                           setState(() {});
                                         },
                                         child: const Icon(
@@ -235,57 +235,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Row(
                                     children: [
                                       Text(
-                                        "Course : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      Text(user["user"]["course"],
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal)),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Year : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      Text(
-                                          "${user["user"]["year"]} ( ${user["user"]["semester"].toString()} Semester )",
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal))
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
                                         "Gender : ",
                                         style: textStyle(
                                             12.sp,
@@ -311,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Row(
                                     children: [
                                       Text(
-                                        "Events Applied : ",
+                                        "Events Created : ",
                                         style: textStyle(
                                             12.sp,
                                             FontWeight.w400,
@@ -321,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             FontStyle.normal),
                                       ),
                                       Text(
-                                          user["user"]["events"]
+                                          user["user"]["eventsCreated"]
                                               .length
                                               .toString(),
                                           style: textStyle(
@@ -338,32 +287,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Applied Events",
-                                style: Theme.of(context).textTheme.headline1,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10),
-                          child: StudentEvents(
-                            token: token,
-                            width: width,
-                            textScale: textScale,
-                            themeProvider: themeProvider,
-                          ),
-                        )
                       ],
                     ),
                   )

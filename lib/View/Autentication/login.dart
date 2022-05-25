@@ -1,5 +1,7 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 import 'forgetpassword.dart';
@@ -23,8 +26,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-
+  var userType = Get.arguments;
   bool isPassVisible = true;
+
+  @override
+  void initState() {
+    log(userType["isType"]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +162,8 @@ class _LoginPageState extends State<LoginPage> {
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(() => const ForgotPassword(),
-                                    transition: Transition.fadeIn);
+                                    transition: Transition.fadeIn,
+                                    arguments: {"isType": userType["isType"]});
                               },
                               child: Text(
                                 "Forgot Password ?",
@@ -187,11 +197,14 @@ class _LoginPageState extends State<LoginPage> {
                                   "Empty Field", "Enter your Sharda Email ID");
                               return;
                             }
-                            if (email.text.toString().split(".")[0].length !=
-                                10) {
-                              showError("Invalid Sharda Mail ID",
-                                  "Please enter a valid sharda mail id");
-                              return;
+
+                            if (userType["isType"] == "Student") {
+                              if (email.text.toString().split(".")[0].length !=
+                                  10) {
+                                showError("Invalid Sharda Mail ID",
+                                    "Please enter a valid sharda mail id");
+                                return;
+                              }
                             }
                             if (!email.text.toString().contains("@")) {
                               showError("Invalid Sharda Mail ID",
@@ -204,8 +217,11 @@ class _LoginPageState extends State<LoginPage> {
                               return;
                             } else {
                               EasyLoading.show();
-                              await userLogin(email.text.toString(),
-                                  password.text.toString());
+                              userType["isType"] == "Student"
+                                  ? await userLogin(email.text.toString(),
+                                      password.text.toString())
+                                  : await facultyLogin(email.text.toString(),
+                                      password.text.toString());
                               EasyLoading.dismiss();
                             }
                           },

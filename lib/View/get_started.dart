@@ -71,8 +71,13 @@ class _GetstartedState extends State<Getstarted> {
                   const SizedBox(
                     height: 50.0,
                   ),
-                  SelectionButtons(
-                    occupation: "Teacher",
+                  GestureDetector(
+                    onTap: (() => Get.to(const LoginPage(),
+                        transition: Transition.fadeIn,
+                        arguments: {"isType": "Faculty"})),
+                    child: SelectionButtons(
+                      occupation: "Faculty",
+                    ),
                   ),
                   const SizedBox(
                     height: 20.0,
@@ -86,10 +91,9 @@ class _GetstartedState extends State<Getstarted> {
                     height: 20.0,
                   ),
                   GestureDetector(
-                    onTap: () => Get.to(
-                      const LoginPage(),
-                      transition: Transition.fadeIn,
-                    ),
+                    onTap: () => Get.to(const LoginPage(),
+                        transition: Transition.fadeIn,
+                        arguments: {"isType": "Student"}),
                     child: SelectionButtons(
                       occupation: "Student",
                     ),

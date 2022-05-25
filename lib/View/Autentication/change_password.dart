@@ -1,5 +1,7 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -20,12 +23,14 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController password = TextEditingController();
-  var getEmail = Get.arguments;
-  String email = "";
+  var userType = Get.arguments;
+  String? email;
+
   @override
   void initState() {
     super.initState();
-    email = getEmail[0]["email"];
+    log(userType["isType"]);
+    email = userType["email"];
   }
 
   bool isPassVisible = true;
@@ -98,7 +103,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: true,
                           decoration: InputDecoration(
-                              hintText: getEmail[0]["email"],
+                              hintText: userType["email"],
                               hintStyle: GoogleFonts.poppins(fontSize: 11.sp),
                               prefixIcon: const Icon(Icons.mail),
                               border: OutlineInputBorder(
@@ -160,9 +165,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                               return;
                             } else {
                               EasyLoading.show();
-                              await resetPassword(
-                                  email.toString(), password.text.toString());
-                              EasyLoading.dismiss();
+                              userType["isType"] == "Faculty"
+                                  ? facultyResetPassword(email.toString(),
+                                      password.text.toString())
+                                  : await resetPassword(email.toString(),
+                                      password.text.toString());
                             }
                           },
                           child: Padding(

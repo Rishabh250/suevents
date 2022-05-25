@@ -10,20 +10,20 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
-import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
+import 'package:suevents/View/Student%20Portal/Events/events_detail.dart';
 
 import '../../../../Models/Event Api/events_api.dart';
-import '../Events/events_detail.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class FacultyHomePage extends StatefulWidget {
+  const FacultyHomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<FacultyHomePage> createState() => _FacultyHomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin<HomePage> {
+class _FacultyHomePageState extends State<FacultyHomePage>
+    with AutomaticKeepAliveClientMixin<FacultyHomePage> {
   var token;
   var getUserDetails;
   var eventData;
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage>
   getToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
-    getUserDetails = await getUserData(token);
+    getUserDetails = await getFacultyData(token);
     setState(() {
       name = getUserDetails["user"]["name"];
     });

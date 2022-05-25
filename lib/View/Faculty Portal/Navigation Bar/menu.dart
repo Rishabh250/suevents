@@ -6,20 +6,20 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
-import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/get_started.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
 import '../Profile Page/profile.dart';
 
-class MenuScreen extends StatefulWidget {
-  const MenuScreen({Key? key}) : super(key: key);
+class FacultyMenuScreen extends StatefulWidget {
+  const FacultyMenuScreen({Key? key}) : super(key: key);
 
   @override
-  State<MenuScreen> createState() => _MenuScreenState();
+  State<FacultyMenuScreen> createState() => _FacultyMenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
   String name = "",
       appName = "",
       packageName = "",
@@ -54,7 +54,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Stream fetchUserData() async* {
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      userData = await getUserData(token);
+      userData = await getFacultyData(token);
       setState(() {
         name = userData["user"]["name"];
         userImage = userData["user"]["profileImage"];
@@ -74,7 +74,7 @@ class _MenuScreenState extends State<MenuScreen> {
           onTap: () {
             ZoomDrawer.of(context)?.close();
 
-            Get.to(const ProfilePage(), transition: Transition.fadeIn);
+            Get.to(const FacultyProfilePage(), transition: Transition.fadeIn);
           },
           child: StreamBuilder(
               stream: fetchUserData(),
@@ -139,6 +139,7 @@ class _MenuScreenState extends State<MenuScreen> {
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
             loginStatus(false);
+            getUser("");
             Get.offAll(() => const Getstarted());
           },
           title: Row(

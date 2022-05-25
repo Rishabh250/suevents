@@ -6,28 +6,32 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
 
 import 'Controller/providers/theme_service.dart';
 import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
 import 'View/get_started.dart';
 
 var isLog;
+var userType;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   isLog = sharedPreferences.getBool("isLogged");
+  userType = sharedPreferences.getString("getUser");
   runApp(const MyApp());
   configLoading();
 }
 
 void configLoading() {
   EasyLoading.instance
-    ..displayDuration = const Duration(milliseconds: 2000)
-    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-    ..loadingStyle = EasyLoadingStyle.dark
-    ..indicatorSize = 35.0
-    ..radius = 20.0
+    ..displayDuration = const Duration(seconds: 10)
+    ..indicatorType = EasyLoadingIndicatorType.spinningCircle
+    ..animationStyle = EasyLoadingAnimationStyle.scale
+    ..loadingStyle = EasyLoadingStyle.light
+    ..indicatorSize = 25.0
+    ..radius = 15.0
     ..userInteractions = true
     ..dismissOnTap = true;
 }
@@ -53,7 +57,11 @@ class MyAppState extends State<MyApp> {
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
-                home: isLog == true ? const MainScreen() : const Getstarted(),
+                home: isLog == true
+                    ? userType == "Student"
+                        ? const MainScreen()
+                        : const FacultyMainScreen()
+                    : const Getstarted(),
 
                 // home: const Getstarted(),
                 builder: EasyLoading.init(builder: (context, builder) {
