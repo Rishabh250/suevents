@@ -30,6 +30,7 @@ class MyThemes {
   MyThemes(this.context);
 
   static final darkTheme = ThemeData(
+      splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
       highlightColor: Colors.transparent,
       textTheme: TextTheme(
@@ -57,6 +58,7 @@ class MyThemes {
           secondary: Color(0xffFFFFFF)));
 
   static final lightTheme = ThemeData(
+      splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
       highlightColor: Colors.transparent,
       textTheme: TextTheme(
