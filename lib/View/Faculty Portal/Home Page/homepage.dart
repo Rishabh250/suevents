@@ -1,19 +1,14 @@
-// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables, must_call_super, unused_local_variable
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
-import 'package:suevents/View/Student%20Portal/Events/events_detail.dart';
-
-import '../../../../Models/Event Api/events_api.dart';
+import 'package:suevents/View/Faculty%20Portal/Create%20Event/event_create.dart';
 
 class FacultyHomePage extends StatefulWidget {
   const FacultyHomePage({Key? key}) : super(key: key);
@@ -22,8 +17,7 @@ class FacultyHomePage extends StatefulWidget {
   State<FacultyHomePage> createState() => _FacultyHomePageState();
 }
 
-class _FacultyHomePageState extends State<FacultyHomePage>
-    with AutomaticKeepAliveClientMixin<FacultyHomePage> {
+class _FacultyHomePageState extends State<FacultyHomePage> {
   var token;
   var getUserDetails;
   var eventData;
@@ -47,7 +41,6 @@ class _FacultyHomePageState extends State<FacultyHomePage>
         greet = "Good Evening";
       });
     }
-    getAllEvents();
     getToken();
   }
 
@@ -66,643 +59,145 @@ class _FacultyHomePageState extends State<FacultyHomePage>
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-
-    return NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator();
-        return true;
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            toolbarHeight: 0,
-          ),
-          body: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                ZoomDrawer.of(context)?.open();
-                              },
-                              child: Card(
-                                elevation: 4,
-                                color: !themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: !themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(12)),
-                                  width: 40,
-                                  height: 40,
-                                  child: Center(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 4,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                            color: themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Container(
-                                        width: 15,
-                                        height: 4,
-                                        decoration: BoxDecoration(
-                                            color: themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            GestureDetector(
-                                onTap: () {},
-                                child: const Icon(Icons.settings_rounded))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text("$greet..!",
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 0,
+      ),
+      body: CustomScrollView(slivers: [
+        SliverToBoxAdapter(
+            child: Padding(
+          padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
+          child: Column(
+            children: [
+              TopBar(themeProvider: themeProvider),
+              SizedBox(
+                height: 4.h,
+              ),
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: OpenContainer(
+                    openElevation: 0,
+                    closedElevation: 4,
+                    closedColor: themeProvider.isDarkMode
+                        ? HexColor("#020E26")
+                        : Colors.white,
+                    closedShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    middleColor: themeProvider.isDarkMode
+                        ? HexColor("#020E26")
+                        : Colors.white,
+                    openColor: themeProvider.isDarkMode
+                        ? HexColor("#020E26")
+                        : Colors.white,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedBuilder: ((context, action) {
+                      return Container(
+                        width: width * 0.95,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: themeProvider.isDarkMode
+                                ? Colors.black
+                                : Colors.white),
+                        child: Center(
+                            child: Text(
+                          "Create Event",
                           style: textStyle(
-                              8.sp,
-                              FontWeight.w400,
+                              12.sp,
+                              FontWeight.w800,
                               themeProvider.isDarkMode
-                                  ? Colors.grey
+                                  ? Colors.white
                                   : Colors.black,
-                              FontStyle.normal)),
-                      const SizedBox(
-                        height: 1,
-                      ),
-                      Text("Hi, $name",
-                          style: Theme.of(context).textTheme.headline2),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: width * 0.7,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 2,
-                                      style: BorderStyle.solid,
-                                      color: themeProvider.isDarkMode
-                                          ? Colors.grey
-                                          : const Color.fromARGB(
-                                              255, 151, 194, 8)),
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 10),
-                                  child: TextField(
-                                    onChanged: (value) {
-                                      searchValue = value;
-                                      searchEvents = value;
-                                      eventSearchLength = 0;
-                                    },
-                                    enableSuggestions: true,
-                                    autocorrect: true,
-                                    autofillHints: const [
-                                      "TCS",
-                                      "Placements",
-                                      "Events"
-                                    ],
-                                    style: textStyle(
-                                        12.sp,
-                                        FontWeight.w600,
-                                        themeProvider.isDarkMode
-                                            ? Colors.grey
-                                            : Colors.black,
-                                        FontStyle.normal),
-                                    decoration: InputDecoration(
-                                        hintText:
-                                            "Search for Events & Placement",
-                                        hintTextDirection: TextDirection.ltr,
-                                        hintStyle: textStyle(
-                                            12.sp,
-                                            FontWeight.w500,
-                                            const Color.fromARGB(
-                                                255, 129, 128, 128),
-                                            FontStyle.normal),
-                                        border: InputBorder.none),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  searchEvents = searchValue;
-                                  eventSearchLength = 0;
-                                });
-                              },
-                              child: Container(
-                                width: width * 0.14,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromARGB(255, 131, 169, 7),
-                                    border: Border.all(
-                                        width: 0, color: Colors.white),
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Center(
-                                    child: Image.asset(
-                                  "assets/icons/search.png",
-                                  width: 25,
-                                  color: Colors.white,
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Text(
-                        "All Events",
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      StreamBuilder(
-                        stream: getEvents(),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return SingleChildScrollView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.transparent,
-                                      ),
-                                      width: width * 0.6,
-                                      height: textScale == 1.0 ? 250.0 : 300,
-                                      child: Shimmer.fromColors(
-                                        baseColor: themeProvider.isDarkMode
-                                            ? Colors.black
-                                            : Colors.white,
-                                        highlightColor: themeProvider.isDarkMode
-                                            ? Colors.white.withOpacity(0.5)
-                                            : Colors.black.withOpacity(0.3),
-                                        period: const Duration(seconds: 2),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: Colors.grey[400]!,
-                                          ),
-                                        ),
-                                      )),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.transparent,
-                                      ),
-                                      width: width * 0.6,
-                                      height: textScale == 1.0 ? 250.0 : 300,
-                                      child: Shimmer.fromColors(
-                                        baseColor: themeProvider.isDarkMode
-                                            ? Colors.black
-                                            : Colors.white,
-                                        highlightColor: themeProvider.isDarkMode
-                                            ? Colors.white.withOpacity(0.5)
-                                            : Colors.black.withOpacity(0.3),
-                                        period: const Duration(seconds: 2),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: Colors.grey[400]!,
-                                          ),
-                                        ),
-                                      )),
-                                ],
-                              ),
-                            );
-                          }
-                          if (snapshot.hasData) {
-                            if (eventData["events"].length > 0) {
-                              eventsIndexLength = eventData["events"].length;
-                              if (searchEvents != "") {
-                                for (int i = 0;
-                                    i < eventData["events"].length;
-                                    i++) {
-                                  if (eventData["events"][i]["title"]
-                                          .toString()
-                                          .toLowerCase()
-                                          .contains(
-                                              searchEvents.toLowerCase()) ==
-                                      true) {
-                                    eventSearchLength += 1;
-                                  }
-                                  if (eventSearchLength == 0) {
-                                    eventsIndexLength = 1;
-                                  }
-                                }
-                              }
-                              return SizedBox(
-                                width: width,
-                                height: textScale == 1.0 ? 270.0 : 320,
-                                child: ListView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: eventsIndexLength,
-                                    itemBuilder: (context, index) {
-                                      if (eventData["events"][index]["title"]
-                                              .toString()
-                                              .toLowerCase()
-                                              .contains(
-                                                  searchEvents.toLowerCase()) ||
-                                          searchEvents.toString().isEmpty) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Card(
-                                            color: Colors.transparent,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            elevation: 8,
-                                            child: OpenContainer(
-                                                openElevation: 0,
-                                                closedElevation: 4,
-                                                closedColor: themeProvider
-                                                        .isDarkMode
-                                                    ? HexColor("#020E26")
-                                                    : Colors.white,
-                                                closedShape:
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                middleColor:
-                                                    themeProvider.isDarkMode
-                                                        ? HexColor("#020E26")
-                                                        : Colors.white,
-                                                openColor:
-                                                    themeProvider.isDarkMode
-                                                        ? HexColor("#020E26")
-                                                        : Colors.white,
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                transitionDuration:
-                                                    const Duration(
-                                                        milliseconds: 500),
-                                                transitionType:
-                                                    ContainerTransitionType
-                                                        .fadeThrough,
-                                                closedBuilder:
-                                                    (context, action) {
-                                                  return Container(
-                                                    width: width * 0.6,
-                                                    color: themeProvider
-                                                            .isDarkMode
-                                                        ? HexColor("#020E26")
-                                                        : Colors.white,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              10.0),
-                                                      child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Center(
-                                                              child: Text(
-                                                                eventData["events"]
-                                                                        [index]
-                                                                    ["title"],
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                maxLines: 2,
-                                                                style: textStyle(
-                                                                    15.sp,
-                                                                    FontWeight
-                                                                        .bold,
-                                                                    themeProvider.isDarkMode
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black,
-                                                                    FontStyle
-                                                                        .normal),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            Text(
-                                                              "Event Type : ${eventData["events"][index]["type"]}",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 2,
-                                                              style: textStyle(
-                                                                  10.sp,
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Text(
-                                                              "Date : ${eventData["events"][index]["startDate"]}",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 2,
-                                                              style: textStyle(
-                                                                  10.sp,
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Text(
-                                                              "Price : ${eventData["events"][index]["eventPrice"]}",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 2,
-                                                              style: textStyle(
-                                                                  10.sp,
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal),
-                                                            ),
-                                                            const Spacer(),
-                                                            Text(
-                                                              "Hosted By : ${eventData["events"][index]["createdBy"][0]["name"]}",
-                                                              textScaleFactor:
-                                                                  1,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 1,
-                                                              style: textStyle(
-                                                                  11.sp,
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            ElevatedButton(
-                                                                style: ElevatedButton.styleFrom(
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                10)),
-                                                                    primary: themeProvider
-                                                                            .isDarkMode
-                                                                        ? const Color.fromARGB(
-                                                                            255,
-                                                                            14,
-                                                                            76,
-                                                                            191)
-                                                                        : const Color.fromARGB(
-                                                                            255,
-                                                                            1,
-                                                                            64,
-                                                                            181),
-                                                                    elevation:
-                                                                        4),
-                                                                onPressed:
-                                                                    action,
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    "Participate",
-                                                                    textScaleFactor:
-                                                                        1,
-                                                                    style: textStyle(
-                                                                        12.sp,
-                                                                        FontWeight
-                                                                            .w600,
-                                                                        Colors
-                                                                            .white,
-                                                                        FontStyle
-                                                                            .normal),
-                                                                  ),
-                                                                ))
-                                                          ]),
-                                                    ),
-                                                  );
-                                                },
-                                                openBuilder: (context, action) {
-                                                  return EventDetail(
-                                                    event: eventData["events"]
-                                                        [index],
-                                                  );
-                                                }),
-                                          ),
-                                        );
-                                      }
-                                      if (eventSearchLength == 0) {
-                                        return Card(
-                                          shadowColor: themeProvider.isDarkMode
-                                              ? const Color.fromARGB(
-                                                  255, 125, 125, 125)
-                                              : Colors.grey,
-                                          color: Colors.transparent,
-                                          elevation: 4,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: Container(
-                                              width: width * 0.9,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 0.2,
-                                                      color: themeProvider
-                                                              .isDarkMode
-                                                          ? Colors.white
-                                                          : const Color
-                                                                  .fromARGB(255,
-                                                              151, 194, 8)),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  color:
-                                                      themeProvider.isDarkMode
-                                                          ? HexColor("#020E26")
-                                                          : Colors.white),
-                                              child: Center(
-                                                child: Text(
-                                                  "No Events Available",
-                                                  style: textStyle(
-                                                      14.sp,
-                                                      FontWeight.w600,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                              )),
-                                        );
-                                      }
-
-                                      return Container();
-                                    }),
-                              );
-                            } else {
-                              return Card(
-                                shadowColor: themeProvider.isDarkMode
-                                    ? const Color.fromARGB(255, 125, 125, 125)
-                                    : Colors.grey,
-                                color: Colors.transparent,
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Container(
-                                    width: width * 0.9,
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 0.2,
-                                            color: themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : const Color.fromARGB(
-                                                    255, 151, 194, 8)),
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: themeProvider.isDarkMode
-                                            ? HexColor("#020E26")
-                                            : Colors.white),
-                                    child: Center(
-                                      child: Text(
-                                        "No Events Available",
-                                        style: textStyle(
-                                            14.sp,
-                                            FontWeight.w600,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                    )),
-                              );
-                            }
-                          }
-
-                          return Container();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              )
+                              FontStyle.normal),
+                        )),
+                      );
+                    }),
+                    openBuilder: (context, action) {
+                      return CreateEvent();
+                    }),
+              ),
             ],
-          )),
+          ),
+        ))
+      ]),
     );
   }
+}
 
-  Stream getEvents() async* {
-    while (true) {
-      await Future.delayed(const Duration(seconds: 1));
-      eventData = await getAllEvents();
-      yield eventData;
-    }
-  }
+class TopBar extends StatelessWidget {
+  const TopBar({
+    Key? key,
+    required this.themeProvider,
+  }) : super(key: key);
+
+  final ThemeProvider themeProvider;
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              ZoomDrawer.of(context)?.open();
+            },
+            child: Card(
+              elevation: 4,
+              color:
+                  !themeProvider.isDarkMode ? Colors.white : Colors.transparent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: !themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12)),
+                width: 40,
+                height: 40,
+                child: Center(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 4,
+                      width: 25,
+                      decoration: BoxDecoration(
+                          color: themeProvider.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          color: themeProvider.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                  ],
+                )),
+              ),
+            ),
+          ),
+          const Spacer(),
+          GestureDetector(
+              onTap: () {}, child: const Icon(Icons.settings_rounded))
+        ],
+      ),
+    );
+  }
 }

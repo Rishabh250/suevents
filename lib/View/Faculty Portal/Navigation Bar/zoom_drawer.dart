@@ -14,10 +14,10 @@ class FacultyMainScreen extends StatefulWidget {
   const FacultyMainScreen({Key? key}) : super(key: key);
 
   @override
-  _FacultyMainScreenState createState() => _FacultyMainScreenState();
+  FacultyMainScreenState createState() => FacultyMainScreenState();
 }
 
-class _FacultyMainScreenState extends State<FacultyMainScreen> {
+class FacultyMainScreenState extends State<FacultyMainScreen> {
   final drawerController = ZoomDrawerController();
 
   @override
