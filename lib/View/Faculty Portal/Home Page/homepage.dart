@@ -70,10 +70,27 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
             child: Padding(
           padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TopBar(themeProvider: themeProvider),
-              SizedBox(
-                height: 4.h,
+              const SizedBox(
+                height: 10,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text("$greet..!",
+                  style: textStyle(
+                      8.sp,
+                      FontWeight.w400,
+                      themeProvider.isDarkMode ? Colors.grey : Colors.black,
+                      FontStyle.normal)),
+              const SizedBox(
+                height: 1,
+              ),
+              Text("Hi, $name", style: Theme.of(context).textTheme.headline2),
+              const SizedBox(
+                height: 20,
               ),
               Card(
                 elevation: 4,
@@ -119,7 +136,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                       );
                     }),
                     openBuilder: (context, action) {
-                      return CreateEvent();
+                      return const CreateEvent();
                     }),
               ),
             ],
@@ -195,7 +212,7 @@ class TopBar extends StatelessWidget {
           ),
           const Spacer(),
           GestureDetector(
-              onTap: () {}, child: const Icon(Icons.settings_rounded))
+              onTap: () {}, child: const Icon(Icons.settings_rounded)),
         ],
       ),
     );

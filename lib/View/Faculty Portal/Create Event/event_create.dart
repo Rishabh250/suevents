@@ -1,17 +1,43 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
 
 import '../../../Controller/providers/theme_service.dart';
 
 TextEditingController eventTitle = TextEditingController();
 TextEditingController aboutEvent = TextEditingController();
-var eventType;
+TextEditingController lab = TextEditingController();
+TextEditingController roundNumber = TextEditingController();
+TextEditingController testType = TextEditingController();
+bool islastRound = false;
 String finalDate = "", endDate = "", eventPrice = "";
 bool isVisible = false;
+ValueNotifier<bool> isLastRound = ValueNotifier<bool>(false);
+ValueNotifier roundType = ValueNotifier("");
+ValueNotifier roundDate = ValueNotifier("");
+ValueNotifier eventType = ValueNotifier("");
+List months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({Key? key}) : super(key: key);
@@ -50,7 +76,7 @@ class CreateEventState extends State<CreateEvent> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Row(
-                    children: <Widget>[
+                    children: [
                       _currentStep != 2
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -71,13 +97,37 @@ class CreateEventState extends State<CreateEvent> {
                                   primary: Colors.white,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10))),
-                              onPressed: () {
+                              onPressed: () async {
+                                EasyLoading.show();
+                                SharedPreferences sharedPreferences =
+                                    await SharedPreferences.getInstance();
+                                var token =
+                                    sharedPreferences.getString("accessToken");
                                 if (isVisible == true) {
                                   setState(() {
                                     eventPrice = "Free";
                                   });
                                 }
-                                log("${eventTitle.text}\n${aboutEvent.text}\n$eventType\n$finalDate\n$endDate\n$eventPrice");
+
+                                var event = await createEvent(
+                                    token,
+                                    eventTitle.text.toString(),
+                                    eventType.value.toString(),
+                                    aboutEvent.text.toString(),
+                                    finalDate,
+                                    endDate,
+                                    eventPrice);
+
+                                var round = await createRound(
+                                    token,
+                                    lab.text.toString(),
+                                    event["event"][0]["_id"].toString(),
+                                    1,
+                                    roundType.value.toString(),
+                                    roundDate.value.toString(),
+                                    isLastRound.value);
+                                log("$round");
+                                EasyLoading.dismiss();
                               },
                               child: Text(
                                 'Finish',
@@ -120,12 +170,14 @@ class CreateEventState extends State<CreateEvent> {
                               ? Colors.white
                               : Colors.black,
                           FontStyle.normal)),
-                  content: const EventCreation(),
+                  content: EventCreation(
+                    themeProvider: themeProvider,
+                  ),
                   isActive: _currentStep >= 0,
                   state: StepState.disabled,
                 ),
                 Step(
-                  title: Text('Add Round',
+                  title: Text('Round Details',
                       style: textStyle(
                           12.sp,
                           FontWeight.bold,
@@ -133,17 +185,8 @@ class CreateEventState extends State<CreateEvent> {
                               ? Colors.white
                               : Colors.black,
                           FontStyle.normal)),
-                  content: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Home Address'),
-                      ),
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Postcode'),
-                      ),
-                    ],
+                  content: RoundDetails(
+                    themeProvider: themeProvider,
                   ),
                   isActive: _currentStep >= 0,
                   state: StepState.disabled,
@@ -190,8 +233,10 @@ class CreateEventState extends State<CreateEvent> {
 }
 
 class EventCreation extends StatefulWidget {
+  final themeProvider;
   const EventCreation({
     Key? key,
+    required this.themeProvider,
   }) : super(key: key);
 
   @override
@@ -199,30 +244,14 @@ class EventCreation extends StatefulWidget {
 }
 
 class _EventCreationState extends State<EventCreation> {
-  int? gropuValue;
-
-  DateTime selectedDate = DateTime.now();
   var picked, picked2;
-  List months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
+  ValueNotifier gropuValue = ValueNotifier(0);
+  DateTime selectedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+    setState(() {});
+
     return Column(
       children: [
         ListTile(
@@ -251,45 +280,53 @@ class _EventCreationState extends State<EventCreation> {
               style: textStyle(
                   12.sp,
                   FontWeight.bold,
-                  themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
                   FontStyle.normal),
             ),
             subtitle: Column(
               children: [
                 ListTile(
-                  leading: Radio(
-                      value: 0,
-                      groupValue: gropuValue,
-                      onChanged: (value) {
-                        setState(() {
-                          gropuValue = int.parse(value.toString());
-                          eventType = "General Event";
-                        });
-                      }),
+                  leading: ValueListenableBuilder(
+                    builder: ((context, value, child) {
+                      return Radio(
+                          value: 1,
+                          groupValue: value,
+                          onChanged: (changeValue) {
+                            gropuValue.value =
+                                int.parse(changeValue.toString());
+                            eventType.value = "General Event";
+                          });
+                    }),
+                    valueListenable: gropuValue,
+                  ),
                   title: Text("General Event",
                       style: textStyle(
                           12.sp,
                           FontWeight.bold,
-                          themeProvider.isDarkMode
+                          widget.themeProvider.isDarkMode
                               ? Colors.white
                               : Colors.black,
                           FontStyle.normal)),
                 ),
                 ListTile(
-                  leading: Radio(
-                      value: 1,
-                      groupValue: gropuValue,
-                      onChanged: (value) {
-                        setState(() {
-                          gropuValue = int.parse(value.toString());
-                          eventType = "Placement Event";
-                        });
-                      }),
+                  leading: ValueListenableBuilder(
+                    builder: ((context, value, child) {
+                      return Radio(
+                          value: 2,
+                          groupValue: value,
+                          onChanged: (changeValue) {
+                            gropuValue.value =
+                                int.parse(changeValue.toString());
+                            eventType.value = "Placement Event";
+                          });
+                    }),
+                    valueListenable: gropuValue,
+                  ),
                   title: Text("Placement Event",
                       style: textStyle(
                           12.sp,
                           FontWeight.bold,
-                          themeProvider.isDarkMode
+                          widget.themeProvider.isDarkMode
                               ? Colors.white
                               : Colors.black,
                           FontStyle.normal)),
@@ -346,7 +383,7 @@ class _EventCreationState extends State<EventCreation> {
               style: textStyle(
                   12.sp,
                   FontWeight.bold,
-                  themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
                   FontStyle.normal),
             ),
           ),
@@ -376,11 +413,11 @@ class _EventCreationState extends State<EventCreation> {
             child: Text(
               picked2 == null
                   ? "Select End Date (Optional)"
-                  : "Starting Date : $endDate",
+                  : "End Date : $endDate",
               style: textStyle(
                   12.sp,
                   FontWeight.bold,
-                  themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
                   FontStyle.normal),
             ),
           ),
@@ -423,9 +460,196 @@ class _EventCreationState extends State<EventCreation> {
               style: textStyle(
                   12.sp,
                   FontWeight.bold,
-                  themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
                   FontStyle.normal)),
         )
+      ],
+    );
+  }
+}
+
+class RoundDetails extends StatefulWidget {
+  final themeProvider;
+
+  const RoundDetails({
+    Key? key,
+    required this.themeProvider,
+  }) : super(key: key);
+
+  @override
+  State<RoundDetails> createState() => _RoundDetailsState();
+}
+
+class _RoundDetailsState extends State<RoundDetails> {
+  ValueNotifier<int> gropuValue = ValueNotifier(0);
+  DateTime selectedDate = DateTime.now();
+  DateTime? picked;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: TextField(
+            controller: lab,
+            autocorrect: true,
+            enableSuggestions: true,
+            keyboardType: TextInputType.text,
+            style: textStyle(
+                12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+            maxLines: 1,
+            decoration: InputDecoration(
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                hintText: "Lab number & Block",
+                hintStyle: textStyle(
+                    12.sp, FontWeight.bold, Colors.grey, FontStyle.normal)),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        ListTile(
+          title: Text(
+            "Round Type",
+            style: textStyle(
+                12.sp,
+                FontWeight.bold,
+                widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
+                FontStyle.normal),
+          ),
+          subtitle: Column(
+            children: [
+              ListTile(
+                leading: ValueListenableBuilder(
+                  builder: ((context, value, child) {
+                    return Radio(
+                        value: 1,
+                        groupValue: value,
+                        onChanged: (changeValue) {
+                          gropuValue.value = int.parse(changeValue.toString());
+                          roundType.value = "Aptitude Test";
+                        });
+                  }),
+                  valueListenable: gropuValue,
+                ),
+                title: Text("Aptitude Test",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal)),
+              ),
+              ListTile(
+                leading: ValueListenableBuilder(
+                  builder: ((context, value, child) {
+                    return Radio(
+                        value: 2,
+                        groupValue: value,
+                        onChanged: (changeValue) {
+                          gropuValue.value = int.parse(changeValue.toString());
+                          roundType.value = "Technical Round";
+                        });
+                  }),
+                  valueListenable: gropuValue,
+                ),
+                title: Text("Technical Round",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal)),
+              ),
+              ListTile(
+                leading: ValueListenableBuilder(
+                  builder: ((context, value, child) {
+                    return Radio(
+                        value: 3,
+                        groupValue: value,
+                        onChanged: (changeValue) {
+                          gropuValue.value = int.parse(changeValue.toString());
+                          roundType.value = "HR";
+                        });
+                  }),
+                  valueListenable: gropuValue,
+                ),
+                title: Text("HR",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal)),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          title: ValueListenableBuilder(
+              valueListenable: roundDate,
+              builder: (context, value, child) {
+                return GestureDetector(
+                  onTap: () async {
+                    picked = await showDatePicker(
+                      context: context,
+                      firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                      lastDate: DateTime(2100, 12, 31),
+                      // the latest allowable
+                      initialDate: selectedDate,
+                    );
+                    if (picked != null && picked != selectedDate) {
+                      selectedDate != picked;
+                    }
+                    if (picked != null) {
+                      var currentDate =
+                          picked.toString().replaceRange(11, 23, "").split("-");
+                      roundDate.value =
+                          "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
+                      log(roundDate.value);
+                    }
+                  },
+                  child: Text(
+                    picked == null
+                        ? "Select Starting Date"
+                        : "Starting Date : ${roundDate.value}",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal),
+                  ),
+                );
+              }),
+        ),
+        ValueListenableBuilder(
+            valueListenable: isLastRound,
+            builder: (context, value, child) {
+              return ListTile(
+                leading: Checkbox(
+                  shape: const CircleBorder(),
+                  checkColor: Colors.amber,
+                  onChanged: (value) {
+                    isLastRound.value = !isLastRound.value;
+                  },
+                  value: isLastRound.value,
+                  activeColor: Colors.amber,
+                ),
+                title: Text("Last Round",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal)),
+              );
+            })
       ],
     );
   }
