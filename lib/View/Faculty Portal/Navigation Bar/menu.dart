@@ -51,16 +51,14 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
     token = sharedPreferences.getString("accessToken");
   }
 
-  Stream fetchUserData() async* {
-    while (true) {
-      await Future.delayed(const Duration(seconds: 1));
-      userData = await getFacultyData(token);
-      setState(() {
-        name = userData["user"]["name"];
-        userImage = userData["user"]["profileImage"];
-      });
-      yield userData;
-    }
+  fetchUserData() async {
+    await Future.delayed(const Duration(seconds: 5));
+    userData = await getFacultyData(token);
+    setState(() {
+      name = userData["user"]["name"];
+      userImage = userData["user"]["profileImage"];
+    });
+    return userData;
   }
 
   @override
@@ -76,8 +74,8 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
 
             Get.to(const FacultyProfilePage(), transition: Transition.fadeIn);
           },
-          child: StreamBuilder(
-              stream: fetchUserData(),
+          child: FutureBuilder(
+              future: fetchUserData(),
               builder: (context, snapshot) {
                 return DrawerHeader(
                     child: Column(

@@ -6,10 +6,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
-import 'package:suevents/Models/Student%20API/authentication_api.dart';
 import 'package:suevents/View/get_started.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
+import '../../../Models/Student API/authentication_api.dart';
 import '../Profile Page/profile.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -20,47 +20,39 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  String name = "",
-      appName = "",
-      packageName = "",
-      version = "",
-      buildNumber = "",
-      userImage = "";
+  ValueNotifier name = ValueNotifier(""),
+      appName = ValueNotifier(""),
+      packageName = ValueNotifier(""),
+      version = ValueNotifier(""),
+      buildNumber = ValueNotifier(""),
+      userImage = ValueNotifier("");
   var userData;
   var token;
   @override
   void initState() {
     super.initState();
-    fetchData();
     getAppInfo();
   }
 
   getAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    setState(() {
-      appName = packageInfo.appName;
-      packageName = packageInfo.packageName;
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-    });
+    appName.value = packageInfo.appName;
+    packageName.value = packageInfo.packageName;
+    version.value = packageInfo.version;
+    buildNumber.value = packageInfo.buildNumber;
   }
 
-  fetchData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    token = sharedPreferences.getString("accessToken");
-  }
-
-  Stream fetchUserData() async* {
-    while (true) {
-      await Future.delayed(const Duration(seconds: 1));
-      userData = await getUserData(token);
-      setState(() {
-        name = userData["user"]["name"];
-        userImage = userData["user"]["profileImage"];
-      });
-      yield userData;
+  fetchUserData() async {
+    if (token == null) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      token = sharedPreferences.getString("accessToken");
     }
+    userData = await getUserData(token);
+    name.value = userData["user"]["name"];
+    userImage.value = userData["user"]["profileImage"];
+    return userData;
   }
 
   @override
@@ -76,31 +68,39 @@ class _MenuScreenState extends State<MenuScreen> {
 
             Get.to(const ProfilePage(), transition: Transition.fadeIn);
           },
-          child: StreamBuilder(
-              stream: fetchUserData(),
+          child: FutureBuilder(
+              future: fetchUserData(),
               builder: (context, snapshot) {
                 return DrawerHeader(
                     child: Column(
                   children: [
-                    userImage == ""
+                    userImage.value == ""
                         ? CircleAvatar(
                             radius: 12.w,
                             backgroundImage:
                                 const AssetImage("assets/images/bg.jpg"),
                           )
-                        : CircleAvatar(
-                            radius: 12.w,
-                            backgroundImage: NetworkImage(userImage),
-                          ),
+                        : ValueListenableBuilder(
+                            valueListenable: userImage,
+                            builder: (context, value, child) {
+                              return CircleAvatar(
+                                radius: 12.w,
+                                backgroundImage: NetworkImage("$value"),
+                              );
+                            }),
                     const Spacer(),
-                    Text(
-                      name,
-                      textScaleFactor: 1,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: textStyle(10.sp, FontWeight.w700, Colors.white,
-                          FontStyle.normal),
-                    ),
+                    ValueListenableBuilder(
+                        valueListenable: name,
+                        builder: (context, value, child) {
+                          return Text(
+                            "$value",
+                            textScaleFactor: 1,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: textStyle(10.sp, FontWeight.w700,
+                                Colors.white, FontStyle.normal),
+                          );
+                        }),
                     SizedBox(
                       height: 1.h,
                     ),
@@ -129,9 +129,14 @@ class _MenuScreenState extends State<MenuScreen> {
         ),
         const Spacer(),
         ListTile(
-          title: Text("Version : $version",
-              style: textStyle(
-                  10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
+          title: ValueListenableBuilder(
+            valueListenable: version,
+            builder: (context, value, child) {
+              return Text("Version : $value",
+                  style: textStyle(
+                      10.sp, FontWeight.w400, Colors.white, FontStyle.normal));
+            },
+          ),
         ),
         ListTile(
           onTap: () async {

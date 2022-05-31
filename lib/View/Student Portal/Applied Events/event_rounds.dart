@@ -56,11 +56,11 @@ class _EventRoundsState extends State<EventRounds> {
   ];
 
   bool isVisible = false;
-  var roundID;
-  var eventID;
+  var roundID, eventID, eventData, roundData;
   @override
   void initState() {
     super.initState();
+    EasyLoading.show();
     currentPage = widget.events["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
@@ -127,9 +127,10 @@ class _EventRoundsState extends State<EventRounds> {
                             });
                             log(_currentIndex.toString());
                             await fetchEvents();
-                            var event = eventDetail["eventsApplied"]
-                                    [widget.index]["rounds"][_currentIndex]
-                                ["selectedStudends"];
+                            var event = roundData["selectedStudends"];
+                            log("Rishabh : $event");
+                            // [widget.index]["rounds"][_currentIndex]
+                            //     ["selectedStudends"];
                             await eventController.checkAttendence(
                                 event, eventController.email.value);
                           },
@@ -490,6 +491,8 @@ class _EventRoundsState extends State<EventRounds> {
 
   Future onQRViewCreated() async {
     log("Clicked");
+    var getAppliedData = await getSingleEvents(eventID);
+
     try {
       scanResult = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.QR);
@@ -497,9 +500,10 @@ class _EventRoundsState extends State<EventRounds> {
       debugPrint(e.toString());
     }
     if (!mounted) return;
+    log(scanResult.toString());
 
     setState(() => scanResult = scanResult);
-    if (scanResult == null) return;
+    if (scanResult.toString() == "-1" || scanResult == null) return;
 
     log(scanResult.toString());
 
@@ -514,10 +518,17 @@ class _EventRoundsState extends State<EventRounds> {
       if (int.parse(widget.events['rounds'][_currentIndex]["roundNumber"]
               .toString()) ==
           data["Round"]) {
-        for (int i = 0; i < widget.events["appliedStudents"].length; i++) {
-          if (data["list"]
-              .toString()
-              .contains(widget.events["appliedStudents"][i]["email"])) {
+        for (int i = 0;
+            i < getAppliedData["events"]["appliedStudents"].length;
+            i++) {
+          if (data["list"].toString().contains(
+              getAppliedData["events"]["appliedStudents"][i]["email"])) {
+            log(data["list"]
+                .toString()
+                .contains(getAppliedData["events"]["appliedStudents"][i]
+                        ["email"]
+                    .toString())
+                .toString());
             await takeAttendence();
           }
         }
@@ -544,16 +555,9 @@ class _EventRoundsState extends State<EventRounds> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     eventDetail = await getStudentEvents(token);
-    getEvent = eventDetail["eventsApplied"][widget.index]["rounds"]
-        [_currentIndex]["selectedStudends"];
+    roundData = await getSingleRound(eventID, roundID);
+    getEvent = roundData["selectedStudends"];
+    log(getEvent.toString());
     eventController.fetchUserData(getEvent);
   }
-
-  // void flipCam() async {
-  //   await controller?.flipCamera();
-  // }
-
-  // void flashLight() async {
-  //   await controller?.toggleFlash();
-  // }
 }

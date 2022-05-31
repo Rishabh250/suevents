@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/Student API/authentication_api.dart';
@@ -13,7 +14,7 @@ class EventController {
 
   fetchUserData(getEvent) async {
     await userData();
-    log(email.value.toString());
+    log(getEvent.toString());
     await checkAttendence(getEvent, email.value);
   }
 
@@ -32,11 +33,13 @@ class EventController {
         if (eventData[i]["email"].toString().contains(email)) {
           log(eventData.toString());
           attendence.value = "Present";
+          EasyLoading.dismiss();
         }
       }
     }
     if (eventData.length == 0) {
       attendence.value = "Not Taken";
+      EasyLoading.dismiss();
     }
   }
 }
