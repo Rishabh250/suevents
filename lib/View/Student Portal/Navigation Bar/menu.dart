@@ -42,18 +42,6 @@ class _MenuScreenState extends State<MenuScreen> {
     buildNumber.value = packageInfo.buildNumber;
   }
 
-  // fetchUserData() async {
-  //   if (token == null) {
-  //     SharedPreferences sharedPreferences =
-  //         await SharedPreferences.getInstance();
-  //     token = sharedPreferences.getString("accessToken");
-  //   }
-  //   userData = await getUserData(token);
-  //   name.value = userData["user"]["name"];
-  //   userImage.value = userData["user"]["profileImage"];
-  //   return userData;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Column(

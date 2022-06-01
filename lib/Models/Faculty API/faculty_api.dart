@@ -31,12 +31,10 @@ createEvent(token, title, type, description, startDate, endDate, price) async {
   }
 }
 
-createRound(
-    token, lab, eventID, roundNumber, type, startDate, lastRound) async {
+createRound(token, lab, eventID, type, startDate, lastRound) async {
   log(eventID);
   log(lab);
   log(type);
-  log(roundNumber.toString());
   log(startDate);
   log(lastRound.toString());
   try {
@@ -44,7 +42,6 @@ createRound(
         Uri.parse("https://suevents2022.herokuapp.com/createRound"),
         body: jsonEncode({
           "eventID": "$eventID",
-          "roundNumber": roundNumber,
           "lab": "$lab",
           "testType": "$type",
           "date": "$startDate",
@@ -62,25 +59,19 @@ createRound(
     debugPrint(e.toString());
   }
 }
-// createRound(
-//     token, lab, eventID, roundNumber, type, startDate, lastRound) async {
-//   try {
-//     var response = await https
-//         .post(Uri.parse("https://suevents2022.herokuapp.com/createRound"),
-//             body: jsonEncode({
-//               "eventID": "$eventID",
-//               "roundNumber": roundNumber,
-//               "lab": "$lab",
-//               "testType": "$type",
-//               "date": "$startDate",
-//               "lastRound": lastRound.toString()
-//             }),
-//             headers: {"x-access-token": token.toString()});
-//     log(jsonDecode(response.body));
-//     if (response.statusCode == 200) {
-//       return jsonDecode(response.body);
-//     }
-//   } catch (e) {
-//     debugPrint(e.toString());
-//   }
-// }
+
+getAllFaculty() async {
+  try {
+    var response = await https.get(
+        Uri.parse("https://suevents2022.herokuapp.com/facultygetAllUser"),
+        headers: {
+          "Content-Type": "application/json",
+        });
+    log((response.body.toString()));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}

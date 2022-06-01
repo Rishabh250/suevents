@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
 
@@ -18,12 +19,15 @@ TextEditingController lab = TextEditingController();
 TextEditingController roundNumber = TextEditingController();
 TextEditingController testType = TextEditingController();
 bool islastRound = false;
-String finalDate = "", endDate = "", eventPrice = "";
+// String finalDate = "", endDate = "", eventPrice = "";
 bool isVisible = false;
 ValueNotifier<bool> isLastRound = ValueNotifier<bool>(false);
 ValueNotifier roundType = ValueNotifier("");
 ValueNotifier roundDate = ValueNotifier("");
 ValueNotifier eventType = ValueNotifier("");
+ValueNotifier finalDate = ValueNotifier("");
+ValueNotifier endDate = ValueNotifier("");
+ValueNotifier eventPrice = ValueNotifier("");
 List months = [
   'January',
   'February',
@@ -38,6 +42,10 @@ List months = [
   'November',
   'December'
 ];
+
+ValueNotifier facultyListData = ValueNotifier([]);
+
+ValueNotifier selectedFaculty = ValueNotifier([]);
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({Key? key}) : super(key: key);
@@ -104,9 +112,7 @@ class CreateEventState extends State<CreateEvent> {
                                 var token =
                                     sharedPreferences.getString("accessToken");
                                 if (isVisible == true) {
-                                  setState(() {
-                                    eventPrice = "Free";
-                                  });
+                                  eventPrice.value = "Free";
                                 }
 
                                 var event = await createEvent(
@@ -114,15 +120,14 @@ class CreateEventState extends State<CreateEvent> {
                                     eventTitle.text.toString(),
                                     eventType.value.toString(),
                                     aboutEvent.text.toString(),
-                                    finalDate,
-                                    endDate,
-                                    eventPrice);
+                                    finalDate.value.toString(),
+                                    endDate.value.toString(),
+                                    eventPrice.value.toString());
 
                                 var round = await createRound(
                                     token,
                                     lab.text.toString(),
                                     event["event"][0]["_id"].toString(),
-                                    1,
                                     roundType.value.toString(),
                                     roundDate.value.toString(),
                                     isLastRound.value);
@@ -200,14 +205,7 @@ class CreateEventState extends State<CreateEvent> {
                               ? Colors.white
                               : Colors.black,
                           FontStyle.normal)),
-                  content: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Mobile Number'),
-                      ),
-                    ],
-                  ),
+                  content: AssignFaculty(themeProvider: themeProvider),
                   isActive: _currentStep >= 0,
                   state: StepState.disabled,
                 ),
@@ -250,8 +248,6 @@ class _EventCreationState extends State<EventCreation> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {});
-
     return Column(
       children: [
         ListTile(
@@ -372,7 +368,7 @@ class _EventCreationState extends State<EventCreation> {
               if (picked != null) {
                 var currentDate =
                     picked.toString().replaceRange(11, 23, "").split("-");
-                finalDate =
+                finalDate.value =
                     "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
               }
             },
@@ -406,7 +402,7 @@ class _EventCreationState extends State<EventCreation> {
               if (picked2 != null) {
                 var currentDate2 =
                     picked2.toString().replaceRange(11, 23, "").split("-");
-                endDate =
+                endDate.value =
                     "${currentDate2[2]}${months[int.parse(currentDate2[1]) - 1]}, ${currentDate2[0]} ";
               }
             },
@@ -427,7 +423,7 @@ class _EventCreationState extends State<EventCreation> {
           child: ListTile(
             title: TextField(
               onChanged: ((value) {
-                eventPrice = value;
+                eventPrice.value = value;
               }),
               autocorrect: true,
               enableSuggestions: true,
@@ -585,6 +581,36 @@ class _RoundDetailsState extends State<RoundDetails> {
                             : Colors.black,
                         FontStyle.normal)),
               ),
+              ListTile(
+                leading: ValueListenableBuilder(
+                  builder: ((context, value, child) {
+                    return Radio(
+                        value: 4,
+                        groupValue: value,
+                        onChanged: (changeValue) {
+                          gropuValue.value = int.parse(changeValue.toString());
+                        });
+                  }),
+                  valueListenable: gropuValue,
+                ),
+                title: TextField(
+                  onChanged: ((roundValue) {
+                    roundType.value = roundValue;
+                  }),
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  keyboardType: TextInputType.text,
+                  style: textStyle(
+                      12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      hintText: "Other",
+                      hintStyle: textStyle(12.sp, FontWeight.bold, Colors.grey,
+                          FontStyle.normal)),
+                ),
+              ),
             ],
           ),
         ),
@@ -640,7 +666,7 @@ class _RoundDetailsState extends State<RoundDetails> {
                   value: isLastRound.value,
                   activeColor: Colors.amber,
                 ),
-                title: Text("Last Round",
+                title: Text("Final Round",
                     style: textStyle(
                         12.sp,
                         FontWeight.bold,
@@ -652,5 +678,93 @@ class _RoundDetailsState extends State<RoundDetails> {
             })
       ],
     );
+  }
+}
+
+class AssignFaculty extends StatefulWidget {
+  final themeProvider;
+  const AssignFaculty({
+    Key? key,
+    required this.themeProvider,
+  }) : super(key: key);
+
+  @override
+  State<AssignFaculty> createState() => _AssignFacultyState();
+}
+
+class _AssignFacultyState extends State<AssignFaculty> {
+  FacultyController facultyController = FacultyController();
+
+  bool isSelected = false;
+  var facultyData;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    facultyData = await facultyController.fetchAllFacultyData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return facultyData == null
+        ? Container()
+        : facultyController.facultyList["user"].length == 0
+            ? const Text("Not Found")
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: facultyController.facultyList["user"].length,
+                itemBuilder: (context, index) {
+                  return ValueListenableBuilder(
+                      valueListenable: facultyListData,
+                      builder: (context, value, _) {
+                        return ListTile(
+                            onTap: () {
+                              log(facultyController.facultyList["user"][index]
+                                  ["_id"]);
+                              if (!facultyListData.value.contains(
+                                  facultyController.facultyList["user"][index]
+                                      ["_id"])) {
+                                facultyListData.value.add(facultyController
+                                    .facultyList["user"][index]["_id"]);
+                              } else {
+                                facultyListData.value.remove(facultyController
+                                    .facultyList["user"][index]["_id"]);
+                              }
+                              setState(() {});
+                              log(facultyListData.value.toString());
+                            },
+                            title: Text(
+                              facultyController.facultyList["user"][index]
+                                      ["name"]
+                                  .toString(),
+                              style: textStyle(
+                                  12.sp,
+                                  FontWeight.bold,
+                                  widget.themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  FontStyle.normal),
+                            ),
+                            subtitle: Text(
+                              facultyController.facultyList["user"][index]
+                                      ["email"]
+                                  .toString(),
+                              style: textStyle(
+                                  10.sp,
+                                  FontWeight.bold,
+                                  const Color.fromARGB(255, 92, 89, 89),
+                                  FontStyle.normal),
+                            ),
+                            leading: facultyListData.value.contains(
+                                    facultyController.facultyList["user"][index]
+                                        ["_id"])
+                                ? const Icon(Icons.radio_button_checked)
+                                : const Icon(Icons.radio_button_unchecked));
+                      });
+                });
   }
 }

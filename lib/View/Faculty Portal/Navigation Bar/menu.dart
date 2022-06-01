@@ -3,10 +3,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
-import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/get_started.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
@@ -20,45 +19,23 @@ class FacultyMenuScreen extends StatefulWidget {
 }
 
 class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
-  String name = "",
-      appName = "",
-      packageName = "",
-      version = "",
-      buildNumber = "",
-      userImage = "";
-  var userData;
-  var token;
+  FacultyController controller = FacultyController();
+  ValueNotifier appName = ValueNotifier(""),
+      packageName = ValueNotifier(""),
+      version = ValueNotifier(""),
+      buildNumber = ValueNotifier("");
   @override
   void initState() {
     super.initState();
-    fetchData();
     getAppInfo();
   }
 
   getAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    setState(() {
-      appName = packageInfo.appName;
-      packageName = packageInfo.packageName;
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-    });
-  }
-
-  fetchData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    token = sharedPreferences.getString("accessToken");
-  }
-
-  fetchUserData() async {
-    await Future.delayed(const Duration(seconds: 5));
-    userData = await getFacultyData(token);
-    setState(() {
-      name = userData["user"]["name"];
-      userImage = userData["user"]["profileImage"];
-    });
-    return userData;
+    appName.value = packageInfo.appName;
+    packageName.value = packageInfo.packageName;
+    version.value = packageInfo.version;
+    buildNumber.value = packageInfo.buildNumber;
   }
 
   @override
@@ -71,34 +48,41 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
         GestureDetector(
           onTap: () {
             ZoomDrawer.of(context)?.close();
-
             Get.to(const FacultyProfilePage(), transition: Transition.fadeIn);
           },
           child: FutureBuilder(
-              future: fetchUserData(),
+              future: controller.fetchFacultyData(),
               builder: (context, snapshot) {
                 return DrawerHeader(
                     child: Column(
                   children: [
-                    userImage == ""
+                    controller.userImage.value == ""
                         ? CircleAvatar(
                             radius: 12.w,
                             backgroundImage:
                                 const AssetImage("assets/images/bg.jpg"),
                           )
-                        : CircleAvatar(
-                            radius: 12.w,
-                            backgroundImage: NetworkImage(userImage),
-                          ),
+                        : ValueListenableBuilder(
+                            valueListenable: controller.userImage,
+                            builder: (context, value, child) {
+                              return CircleAvatar(
+                                radius: 12.w,
+                                backgroundImage: NetworkImage("$value"),
+                              );
+                            }),
                     const Spacer(),
-                    Text(
-                      name,
-                      textScaleFactor: 1,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: textStyle(10.sp, FontWeight.w700, Colors.white,
-                          FontStyle.normal),
-                    ),
+                    ValueListenableBuilder(
+                        valueListenable: controller.name,
+                        builder: (context, value, child) {
+                          return Text(
+                            "$value",
+                            textScaleFactor: 1,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: textStyle(10.sp, FontWeight.w700,
+                                Colors.white, FontStyle.normal),
+                          );
+                        }),
                     SizedBox(
                       height: 1.h,
                     ),
@@ -127,9 +111,14 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
         ),
         const Spacer(),
         ListTile(
-          title: Text("Version : $version",
-              style: textStyle(
-                  10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
+          title: ValueListenableBuilder(
+            valueListenable: version,
+            builder: (context, value, child) {
+              return Text("Version : $value",
+                  style: textStyle(
+                      10.sp, FontWeight.w400, Colors.white, FontStyle.normal));
+            },
+          ),
         ),
         ListTile(
           onTap: () async {
@@ -137,7 +126,6 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
             loginStatus(false);
-            getUser("");
             Get.offAll(() => const Getstarted());
           },
           title: Row(
