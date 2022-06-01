@@ -66,7 +66,7 @@ class _EventRoundsState extends State<EventRounds> {
     pageController = PageController(initialPage: currentPage);
     eventController.userData();
     finalDate =
-        "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]},${currentDate[0]} ";
+        "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
     log(finalDate);
     fetchEvents();
   }
@@ -118,6 +118,7 @@ class _EventRoundsState extends State<EventRounds> {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () async {
+                            EasyLoading.show();
                             setState(() {
                               isVisible = false;
                               _currentIndex = index;
@@ -267,20 +268,6 @@ class _EventRoundsState extends State<EventRounds> {
                                         ],
                                       ),
                                       child: Container(),
-
-                                      // QRView(
-                                      //     formatsAllowed: const [
-                                      //       BarcodeFormat.qrcode
-                                      //     ],
-                                      //     overlay: QrScannerOverlayShape(
-                                      //         borderWidth: 5,
-                                      //         borderColor: Colors.white,
-                                      //         borderLength: 40,
-                                      //         borderRadius: 20),
-                                      //     overlayMargin:
-                                      //         const EdgeInsets.all(10),
-                                      //     key: qrKey,
-                                      //     onQRViewCreated: onQRViewCreated),
                                     ),
                                   )),
                               Row(
@@ -292,28 +279,21 @@ class _EventRoundsState extends State<EventRounds> {
                                         borderRadius:
                                             BorderRadius.circular(10)),
                                     color: Colors.blue,
-                                    onPressed: finalDate.contains(widget
+                                    onPressed: !finalDate.contains(widget
                                             .events['rounds'][index]["date"]
                                             .toString())
-                                        ? onQRViewCreated
-                                        : null,
-                                    child: finalDate.contains(widget
+                                        ? null
+                                        : onQRViewCreated,
+                                    child: !finalDate.contains(widget
                                             .events['rounds'][index]["date"]
                                             .toString())
-                                        ? isVisible == true
-                                            ? Text("Hide Scanner",
-                                                style: textStyle(
-                                                    12.sp,
-                                                    FontWeight.bold,
-                                                    Colors.white,
-                                                    FontStyle.normal))
-                                            : Text("Show Scanner",
-                                                style: textStyle(
-                                                    12.sp,
-                                                    FontWeight.bold,
-                                                    Colors.white,
-                                                    FontStyle.normal))
-                                        : Text("Not Available",
+                                        ? Text("",
+                                            style: textStyle(
+                                                12.sp,
+                                                FontWeight.bold,
+                                                Colors.white,
+                                                FontStyle.normal))
+                                        : Text("Show Scanner",
                                             style: textStyle(
                                                 12.sp,
                                                 FontWeight.bold,
