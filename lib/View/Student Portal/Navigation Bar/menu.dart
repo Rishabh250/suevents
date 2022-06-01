@@ -3,13 +3,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/Student_Controllers/events_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/View/get_started.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
-import '../../../Models/Student API/authentication_api.dart';
 import '../Profile Page/profile.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -20,40 +19,40 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  ValueNotifier name = ValueNotifier(""),
-      appName = ValueNotifier(""),
+  UserDetailsController userDetailsController = UserDetailsController();
+  ValueNotifier appName = ValueNotifier(""),
       packageName = ValueNotifier(""),
       version = ValueNotifier(""),
-      buildNumber = ValueNotifier(""),
-      userImage = ValueNotifier("");
+      buildNumber = ValueNotifier("");
   var userData;
   var token;
   @override
   void initState() {
+    print("object");
     super.initState();
+    userDetailsController.fetchUserData();
     getAppInfo();
   }
 
   getAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
     appName.value = packageInfo.appName;
     packageName.value = packageInfo.packageName;
     version.value = packageInfo.version;
     buildNumber.value = packageInfo.buildNumber;
   }
 
-  fetchUserData() async {
-    if (token == null) {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      token = sharedPreferences.getString("accessToken");
-    }
-    userData = await getUserData(token);
-    name.value = userData["user"]["name"];
-    userImage.value = userData["user"]["profileImage"];
-    return userData;
-  }
+  // fetchUserData() async {
+  //   if (token == null) {
+  //     SharedPreferences sharedPreferences =
+  //         await SharedPreferences.getInstance();
+  //     token = sharedPreferences.getString("accessToken");
+  //   }
+  //   userData = await getUserData(token);
+  //   name.value = userData["user"]["name"];
+  //   userImage.value = userData["user"]["profileImage"];
+  //   return userData;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,23 +64,22 @@ class _MenuScreenState extends State<MenuScreen> {
         GestureDetector(
           onTap: () {
             ZoomDrawer.of(context)?.close();
-
             Get.to(const ProfilePage(), transition: Transition.fadeIn);
           },
           child: FutureBuilder(
-              future: fetchUserData(),
+              future: userDetailsController.fetchUserData(),
               builder: (context, snapshot) {
                 return DrawerHeader(
                     child: Column(
                   children: [
-                    userImage.value == ""
+                    userDetailsController.userImage.value == ""
                         ? CircleAvatar(
                             radius: 12.w,
                             backgroundImage:
                                 const AssetImage("assets/images/bg.jpg"),
                           )
                         : ValueListenableBuilder(
-                            valueListenable: userImage,
+                            valueListenable: userDetailsController.userImage,
                             builder: (context, value, child) {
                               return CircleAvatar(
                                 radius: 12.w,
@@ -90,7 +88,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             }),
                     const Spacer(),
                     ValueListenableBuilder(
-                        valueListenable: name,
+                        valueListenable: userDetailsController.name,
                         builder: (context, value, child) {
                           return Text(
                             "$value",

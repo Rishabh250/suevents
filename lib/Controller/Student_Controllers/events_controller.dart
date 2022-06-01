@@ -43,3 +43,33 @@ class EventController {
     }
   }
 }
+
+class UserDetailsController {
+  ValueNotifier email = ValueNotifier<String>(""),
+      systemID = ValueNotifier<String>(""),
+      name = ValueNotifier<String>(""),
+      userImage = ValueNotifier<String>(""),
+      course = ValueNotifier<String>(""),
+      year = ValueNotifier<int>(0),
+      semester = ValueNotifier<int>(0),
+      gender = ValueNotifier<String>(""),
+      events = ValueNotifier([]);
+  var user, token;
+
+  fetchUserData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    token = sharedPreferences.getString("accessToken");
+    user = await getUserData(token);
+
+    name.value = user["user"]["name"];
+    systemID.value = user["user"]["systemID"];
+    email.value = user["user"]["email"];
+    userImage.value = user["user"]["profileImage"];
+    course.value = user["user"]["course"];
+    year.value = int.parse(user["user"]["year"].toString());
+    semester.value = int.parse(user["user"]["semester"].toString());
+    gender.value = user["user"]["gender"];
+    events.value = user["user"]["events"].length;
+    return user;
+  }
+}

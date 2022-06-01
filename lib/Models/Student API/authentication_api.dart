@@ -106,7 +106,6 @@ verifyOTP(email, opt) async {
 }
 
 getUserData(token) async {
-  print(token);
   try {
     var response = await https.get(
         Uri.parse("https://suevents2022.herokuapp.com/userInfo"),
@@ -114,8 +113,6 @@ getUserData(token) async {
           "Content-Type": "application/json",
           "x-access-token": token.toString()
         });
-
-    log(response.body.toString());
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,13 +9,14 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
-import 'package:suevents/Models/Student%20API/student_api.dart';
+
+import '../../../Controller/Student_Controllers/events_controller.dart';
+import '../../../Models/Student API/student_api.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -27,9 +27,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
+  UserDetailsController userDetailsController = UserDetailsController();
   File? image;
-  String imageURL = '';
-  var token;
+  ValueNotifier imageURL = ValueNotifier("");
   var user;
   Future<void> _upload() async {
     final picker = ImagePicker();
@@ -46,9 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
         var snapshot = await storage.ref(fileName).putFile(imageFile);
         var downloadURL = await snapshot.ref.getDownloadURL();
 
-        setState(() {
-          imageURL = downloadURL;
-        });
+        imageURL.value = downloadURL.toString();
       } on FirebaseException catch (error) {
         if (kDebugMode) {
           print(error);
@@ -64,15 +62,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    fetchUserData();
-  }
-
-  fetchUserData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    token = sharedPreferences.getString("accessToken");
-    user = await getUserData(token);
-    log(user.toString());
-    return user;
   }
 
   @override
@@ -82,32 +71,33 @@ class _ProfilePageState extends State<ProfilePage> {
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
-      appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          leading: GestureDetector(
-            onTap: () => Get.back(),
-            child: Icon(Icons.arrow_back_ios_rounded,
-                color: themeProvider.isDarkMode ? Colors.white : Colors.black),
-          )),
       body: FutureBuilder(
-          future: fetchUserData(),
+          future: userDetailsController.fetchUserData(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               EasyLoading.show();
               return Container();
             }
-            if (user != null) {
+            if (userDetailsController.user != null) {
               EasyLoading.dismiss();
               return CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(),
                 slivers: [
+                  SliverAppBar(
+                      elevation: 0,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      leading: GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Icon(Icons.arrow_back_ios_rounded,
+                            color: themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black),
+                      )),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: 2.h,
-                        ),
-                        user["user"]["profileImage"] == ""
+                        userDetailsController.userImage.value == ""
                             ? Stack(
                                 children: [
                                   const CircleAvatar(
@@ -123,7 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           EasyLoading.show();
                                           await _upload();
                                           await uploadProfileImage(
-                                              token, imageURL.toString());
+                                              userDetailsController.token,
+                                              imageURL.value);
+                                          await userDetailsController
+                                              .fetchUserData();
                                         },
                                         child: const Icon(
                                           Icons.camera_alt_rounded,
@@ -133,11 +126,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               )
                             : Stack(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                        user["user"]["profileImage"]),
-                                  ),
+                                  ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.userImage,
+                                      builder: (context, value, child) {
+                                        return CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage:
+                                              NetworkImage("$value"),
+                                        );
+                                      }),
                                   Positioned(
                                       bottom: 0,
                                       right: 0,
@@ -146,9 +144,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           EasyLoading.show();
                                           await _upload();
                                           await uploadProfileImage(
-                                              token, imageURL.toString());
+                                              userDetailsController.token,
+                                              imageURL.value);
+                                          await userDetailsController
+                                              .fetchUserData();
                                           EasyLoading.dismiss();
-                                          setState(() {});
                                         },
                                         child: const Icon(
                                           Icons.camera_alt_rounded,
@@ -159,29 +159,37 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          user["user"]["name"],
-                          style: textStyle(
-                              15.sp,
-                              FontWeight.bold,
-                              themeProvider.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              FontStyle.normal),
-                        ),
+                        ValueListenableBuilder(
+                            valueListenable: userDetailsController.name,
+                            builder: (context, value, child) {
+                              return Text(
+                                "$value",
+                                style: textStyle(
+                                    15.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              );
+                            }),
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          user["user"]["email"],
-                          style: textStyle(
-                              10.sp,
-                              FontWeight.w600,
-                              themeProvider.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              FontStyle.normal),
-                        ),
+                        ValueListenableBuilder(
+                            valueListenable: userDetailsController.email,
+                            builder: (context, value, child) {
+                              return Text(
+                                "$value",
+                                style: textStyle(
+                                    10.sp,
+                                    FontWeight.w600,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              );
+                            }),
                         const SizedBox(
                           height: 30,
                         ),
@@ -219,14 +227,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : Colors.black,
                                             FontStyle.normal),
                                       ),
-                                      Text(user["user"]["systemID"],
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal))
+                                      ValueListenableBuilder(
+                                          valueListenable:
+                                              userDetailsController.systemID,
+                                          builder: (context, value, child) {
+                                            return Text("$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal));
+                                          })
                                     ],
                                   ),
                                   const SizedBox(
@@ -244,14 +257,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : Colors.black,
                                             FontStyle.normal),
                                       ),
-                                      Text(user["user"]["course"],
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal)),
+                                      ValueListenableBuilder(
+                                          valueListenable:
+                                              userDetailsController.course,
+                                          builder: (context, value, child) {
+                                            return Text("$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal));
+                                          })
                                     ],
                                   ),
                                   const SizedBox(
@@ -269,15 +287,37 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : Colors.black,
                                             FontStyle.normal),
                                       ),
-                                      Text(
-                                          "${user["user"]["year"]} ( ${user["user"]["semester"].toString()} Semester )",
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal))
+                                      Row(
+                                        children: [
+                                          ValueListenableBuilder(
+                                              valueListenable:
+                                                  userDetailsController.year,
+                                              builder: (context, value, child) {
+                                                return Text("$value",
+                                                    style: textStyle(
+                                                        12.sp,
+                                                        FontWeight.bold,
+                                                        themeProvider.isDarkMode
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        FontStyle.normal));
+                                              }),
+                                          ValueListenableBuilder(
+                                              valueListenable:
+                                                  userDetailsController
+                                                      .semester,
+                                              builder: (context, value, child) {
+                                                return Text("$value",
+                                                    style: textStyle(
+                                                        12.sp,
+                                                        FontWeight.bold,
+                                                        themeProvider.isDarkMode
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        FontStyle.normal));
+                                              })
+                                        ],
+                                      )
                                     ],
                                   ),
                                   const SizedBox(
@@ -295,14 +335,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : Colors.black,
                                             FontStyle.normal),
                                       ),
-                                      Text(user["user"]["gender"],
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal))
+                                      ValueListenableBuilder(
+                                          valueListenable:
+                                              userDetailsController.gender,
+                                          builder: (context, value, child) {
+                                            return Text("$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal));
+                                          })
                                     ],
                                   ),
                                   const SizedBox(
@@ -320,17 +365,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : Colors.black,
                                             FontStyle.normal),
                                       ),
-                                      Text(
-                                          user["user"]["events"]
-                                              .length
-                                              .toString(),
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal))
+                                      ValueListenableBuilder(
+                                          valueListenable:
+                                              userDetailsController.events,
+                                          builder: (context, value, child) {
+                                            return Text("$value",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal));
+                                          })
                                     ],
                                   ),
                                 ],
@@ -358,7 +405,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: StudentEvents(
-                            token: token,
+                            token: userDetailsController.token,
                             width: width,
                             textScale: textScale,
                             themeProvider: themeProvider,
@@ -371,7 +418,9 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             }
 
-            return const Center(child: Text("Something went wrong"));
+            return const Center(
+              child: Text("Something went wrong"),
+            );
           })),
     );
   }
@@ -409,10 +458,13 @@ class StudentEvents extends StatelessWidget {
                         themeProvider.isDarkMode ? Colors.black : Colors.white,
                     highlightColor: Colors.grey,
                     period: const Duration(seconds: 2),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey[400]!,
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[400]!,
+                        ),
                       ),
                     ),
                   )),
