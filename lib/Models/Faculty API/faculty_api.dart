@@ -3,9 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
+import 'package:suevents/Controller/providers/global_snackbar.dart';
 
 createEvent(token, title, type, description, startDate, endDate, price) async {
-  log(token.toString());
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/createEvent"),
@@ -25,18 +25,39 @@ createEvent(token, title, type, description, startDate, endDate, price) async {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
+    } else {
+      return false;
     }
   } catch (e) {
+    showError("Something went wrong", "Please try again");
     debugPrint(e.toString());
+    return false;
+  }
+}
+
+assignFaculty(eventID, facultyList) async {
+  print("DDD : " + eventID);
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/facultyAssigned"),
+        body: jsonEncode({"eventID": eventID, "facultyID": facultyList}),
+        headers: {"Content-Type": "application/json"});
+    facultyList.clear();
+    log(response.body.toString());
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      showError("Something went wrong", "Please try again");
+      return false;
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+    debugPrint(e.toString());
+    return false;
   }
 }
 
 createRound(token, lab, eventID, type, startDate, lastRound) async {
-  log(eventID);
-  log(lab);
-  log(type);
-  log(startDate);
-  log(lastRound.toString());
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/createRound"),
@@ -54,9 +75,15 @@ createRound(token, lab, eventID, type, startDate, lastRound) async {
     log((response.body.toString()));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
+    } else {
+      showError("Something went wrong", "Please try again");
+
+      return false;
     }
   } catch (e) {
+    showError("Something went wrong", "Please try again");
     debugPrint(e.toString());
+    return false;
   }
 }
 
@@ -72,6 +99,8 @@ getAllFaculty() async {
       return jsonDecode(response.body);
     }
   } catch (e) {
+    showError("Something went wrong", "Please try again");
+
     debugPrint(e.toString());
   }
 }
