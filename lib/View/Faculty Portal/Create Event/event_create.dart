@@ -15,6 +15,7 @@ import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
 
 import '../../../Controller/providers/theme_service.dart';
+import 'event_created.dart';
 
 TextEditingController eventTitle = TextEditingController();
 TextEditingController aboutEvent = TextEditingController();
@@ -248,51 +249,50 @@ class CreateEventState extends State<CreateEvent> {
                                                   var list = facultyListData
                                                       .value
                                                       .clear();
+
+                                                  await createRound(
+                                                      token,
+                                                      lab.text.toString(),
+                                                      event["event"][0]["_id"]
+                                                          .toString(),
+                                                      roundType.value
+                                                          .toString(),
+                                                      roundDate.value
+                                                          .toString(),
+                                                      isLastRound.value);
+
                                                   EasyLoading.dismiss();
-                                                  Navigator.pop(context);
-                                                  // await createRound(
-                                                  //     token,
-                                                  //     lab.text.toString(),
-                                                  //     event["event"][0]["_id"]
-                                                  //         .toString(),
-                                                  //     roundType.value
-                                                  //         .toString(),
-                                                  //     roundDate.value
-                                                  //         .toString(),
-                                                  //     isLastRound.value);
 
-                                                  // EasyLoading.dismiss();
+                                                  eventTitle.clear();
+                                                  aboutEvent.clear();
+                                                  lab.clear();
+                                                  roundNumber.clear();
+                                                  testType.clear();
 
-                                                  // eventTitle.clear();
-                                                  // aboutEvent.clear();
-                                                  // lab.clear();
-                                                  // roundNumber.clear();
-                                                  // testType.clear();
+                                                  eventTitle.clear();
+                                                  aboutEvent.clear();
+                                                  lab.clear();
+                                                  roundNumber.clear();
+                                                  testType.clear();
+                                                  facultyListData.value.clear();
+                                                  setState(() {
+                                                    isVisible = false;
+                                                  });
+                                                  isLastRound.value = false;
 
-                                                  // eventTitle.clear();
-                                                  // aboutEvent.clear();
-                                                  // lab.clear();
-                                                  // roundNumber.clear();
-                                                  // testType.clear();
-                                                  // facultyListData.value.clear();
-                                                  // setState(() {
-                                                  //   isVisible = false;
-                                                  // });
-                                                  // isLastRound.value = false;
-
-                                                  // Get.offAll(
-                                                  //     () =>
-                                                  //         const CreateEventConfirm(),
-                                                  //     arguments: {
-                                                  //       "title":
-                                                  //           title.toString(),
-                                                  //       "date": finalDate.value
-                                                  //           .toString(),
-                                                  //       "type": eventType.value
-                                                  //           .toString(),
-                                                  //       "about":
-                                                  //           about.toString(),
-                                                  //     });
+                                                  Get.offAll(
+                                                      () =>
+                                                          const CreateEventConfirm(),
+                                                      arguments: {
+                                                        "title":
+                                                            title.toString(),
+                                                        "date": finalDate.value
+                                                            .toString(),
+                                                        "type": eventType.value
+                                                            .toString(),
+                                                        "about":
+                                                            about.toString(),
+                                                      });
                                                 },
                                                 child: Center(
                                                   child: Text("Create",

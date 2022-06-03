@@ -36,7 +36,6 @@ createEvent(token, title, type, description, startDate, endDate, price) async {
 }
 
 assignFaculty(eventID, facultyList) async {
-  print("DDD : " + eventID);
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/facultyAssigned"),
