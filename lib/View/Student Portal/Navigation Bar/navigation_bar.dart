@@ -5,7 +5,6 @@ import 'package:suevents/Controller/providers/theme_service.dart';
 
 import '../Applied Events/events.dart';
 import '../Home Page/homepage.dart';
-import '../Profile Page/profile.dart';
 
 class NavigationBarPage extends StatefulWidget {
   const NavigationBarPage({Key? key}) : super(key: key);
@@ -35,35 +34,42 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           controller: pageController,
           key: pageKey,
           onPageChanged: (index) {},
-          children: const [HomePage(), EventsPage(), ProfilePage()],
+          children: const [HomePage(), EventsPage()],
         ),
         extendBody: true,
-        bottomNavigationBar: CustomNavigationBar(
-          elevation: 0,
-          iconSize: 30.0,
-          selectedColor: const Color.fromARGB(255, 0, 4, 255),
-          strokeColor: const Color.fromARGB(255, 5, 135, 241),
-          unSelectedColor: Colors.black,
-          backgroundColor: Colors.transparent,
-          items: [
-            CustomNavigationBarItem(
-              icon: const Icon(Icons.home),
-            ),
-            CustomNavigationBarItem(
-              icon: const Icon(Icons.event_rounded),
-            ),
-          ],
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
+        bottomNavigationBar: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: CustomNavigationBar(
+            isFloating: true,
+            elevation: 4,
+            iconSize: 30.0,
+            scaleFactor: 0.2,
+            blurEffect: true,
+            selectedColor: const Color.fromARGB(255, 8, 0, 255),
+            strokeColor: const Color.fromARGB(255, 5, 135, 241),
+            unSelectedColor: Colors.white,
+            backgroundColor: Colors.black,
+            borderRadius: const Radius.circular(20),
+            items: [
+              CustomNavigationBarItem(
+                icon: const Icon(Icons.home),
+              ),
+              CustomNavigationBarItem(
+                icon: const Icon(Icons.event_rounded),
+              ),
+            ],
+            currentIndex: _currentIndex,
+            onTap: (index) {
               setState(() {
-                pageController.animateToPage(_currentIndex,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.linearToEaseOut);
+                _currentIndex = index;
+                setState(() {
+                  pageController.animateToPage(_currentIndex,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.linearToEaseOut);
+                });
               });
-            });
-          },
+            },
+          ),
         ));
   }
 }

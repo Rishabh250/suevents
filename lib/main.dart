@@ -54,6 +54,7 @@ class MyAppState extends State<MyApp> {
           builder: (BuildContext context, Orientation orientation,
               DeviceType deviceType) {
             return GetMaterialApp(
+                debugShowCheckedModeBanner: false,
                 themeMode: themeProvider.themeMode,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,

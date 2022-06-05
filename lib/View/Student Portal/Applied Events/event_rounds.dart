@@ -470,7 +470,6 @@ class _EventRoundsState extends State<EventRounds> {
   String? scanResult;
 
   Future onQRViewCreated() async {
-    log("Clicked");
     var getAppliedData = await getSingleEvents(eventID);
 
     try {
@@ -487,11 +486,6 @@ class _EventRoundsState extends State<EventRounds> {
 
     log(scanResult.toString());
 
-    // this.controller = controller;
-    // await controller.scannedDataStream.listen((scanData) async {
-    //   setState(() {
-    //     result = scanData;
-    //   });
     var data = jsonDecode(scanResult.toString());
 
     if (finalDate.toString().contains(data["Date"].toString())) {
