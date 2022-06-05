@@ -5,10 +5,23 @@ import 'package:http/http.dart' as https;
 
 import '../../Controller/providers/global_snackbar.dart';
 
-getAllEvents() async {
+getPlacementEvents() async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/getAllEvents"),
+        Uri.parse("https://suevents2022.herokuapp.com/getPlacementEvents"),
+        headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+getGeneralEvents() async {
+  try {
+    var response = await https.get(
+        Uri.parse("https://suevents2022.herokuapp.com/getGeneralEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
