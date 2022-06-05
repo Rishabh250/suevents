@@ -103,3 +103,23 @@ getAllFaculty() async {
     debugPrint(e.toString());
   }
 }
+
+getAssignedFaculty(eventID) async {
+  print(eventID);
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/singleEventFaculty"),
+        body: jsonEncode({"eventID": "$eventID"}),
+        headers: {
+          "Content-Type": "application/json",
+        });
+    // log((response.body.toString()));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+
+    debugPrint(e.toString());
+  }
+}

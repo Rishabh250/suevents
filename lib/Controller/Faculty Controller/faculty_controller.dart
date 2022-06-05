@@ -22,7 +22,6 @@ class FacultyController {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     user = await getFacultyData(token);
-
     name.value = user["user"]["name"];
     systemID.value = user["user"]["systemID"];
     email.value = user["user"]["email"];
