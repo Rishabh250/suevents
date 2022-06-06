@@ -105,7 +105,6 @@ getAllFaculty() async {
 }
 
 getAssignedFaculty(eventID) async {
-  print(eventID);
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/singleEventFaculty"),

@@ -83,7 +83,6 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
           createEventList = 0;
           createdEvents.clear();
         });
-        print(createdEvents);
       },
       child: Scaffold(
         appBar: AppBar(

@@ -1,12 +1,20 @@
+import 'dart:developer';
+
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Faculty%20API/faculty_event_api.dart';
+import 'package:suevents/Models/Student%20API/student_api.dart';
+import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
+import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
 
 import '../../../Models/Faculty API/faculty_api.dart';
 
@@ -19,13 +27,43 @@ class FacultyEventDetail extends StatefulWidget {
 }
 
 class _FacultyEventDetailState extends State<FacultyEventDetail> {
-  var user;
-  var eventList;
+  // ignore: prefer_typing_uninitialized_variables
+  var picked, picked2, eventList, user, eventRound;
+
   ValueNotifier<String> btnTxt = ValueNotifier("Participate");
+  ValueNotifier<int> newRound = ValueNotifier(0);
+  ValueNotifier gropuValue = ValueNotifier(0);
+  DateTime selectedDate = DateTime.now();
+  TextEditingController lab = TextEditingController();
+  TextEditingController roundNumber = TextEditingController();
+  ValueNotifier<bool> isLastRound = ValueNotifier<bool>(false);
+  ValueNotifier roundType = ValueNotifier("");
+  ValueNotifier roundDate = ValueNotifier("");
+
+  List months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
 
   @override
   void initState() {
+    getEventsRounds();
     super.initState();
+  }
+
+  getEventsRounds() async {
+    eventRound = await getSingleEvents(widget.event["_id"]);
+    newRound.value = eventRound["events"]["rounds"].length + 1;
   }
 
   @override
@@ -310,33 +348,477 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            onPressed: () async {},
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      actions: [
+                                        MaterialButton(
+                                            elevation: 4,
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            onPressed: () async {
+                                              var token =
+                                                  facultyController.token;
+                                              log(token.toString());
+                                              EasyLoading.show();
+                                              if (lab.text.isEmpty) {
+                                                showError("Empty Field",
+                                                    "Add Lab Details");
+                                                EasyLoading.dismiss();
+
+                                                return;
+                                              }
+                                              if (roundType.value.isEmpty) {
+                                                showError("Empty Field",
+                                                    "Select Round Type");
+                                                EasyLoading.dismiss();
+
+                                                return;
+                                              }
+                                              if (roundDate.value.isEmpty) {
+                                                showError("Empty Field",
+                                                    "Select Round Date");
+                                                EasyLoading.dismiss();
+
+                                                return;
+                                              }
+                                              await createRound(
+                                                  token,
+                                                  lab.text.toString(),
+                                                  widget.event["_id"]
+                                                      .toString(),
+                                                  roundType.value.toString(),
+                                                  roundDate.value.toString(),
+                                                  isLastRound.value);
+                                              gropuValue.value = 0;
+                                              roundType.value = "";
+                                              roundDate.value = "";
+                                              isLastRound.value = false;
+                                              lab.clear();
+                                              getEventsRounds();
+
+                                              await EasyLoading.dismiss();
+                                              Get.back();
+                                            },
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(1.0),
+                                                child: ValueListenableBuilder(
+                                                    valueListenable: btnTxt,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "Create Round",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            const Color
+                                                                    .fromARGB(
+                                                                255, 0, 0, 0),
+                                                            FontStyle.normal),
+                                                      );
+                                                    }))),
+                                      ],
+                                      backgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      content: SizedBox(
+                                        width: width * .9,
+                                        height: height * 0.6,
+                                        child: ListView(
+                                          padding: const EdgeInsets.all(10),
+                                          children: [
+                                            ListTile(
+                                              title: TextField(
+                                                controller: lab,
+                                                autocorrect: true,
+                                                enableSuggestions: true,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                                maxLines: 1,
+                                                decoration: InputDecoration(
+                                                    border: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                    hintText:
+                                                        "Lab number & Block",
+                                                    hintStyle: textStyle(
+                                                        12.sp,
+                                                        FontWeight.bold,
+                                                        Colors.grey,
+                                                        FontStyle.normal)),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            ListTile(
+                                              title: Text(
+                                                "Round Type",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              subtitle: Column(
+                                                children: [
+                                                  ListTile(
+                                                    leading:
+                                                        ValueListenableBuilder(
+                                                      builder: ((context, value,
+                                                          child) {
+                                                        return Radio(
+                                                            value: 1,
+                                                            groupValue: value,
+                                                            onChanged:
+                                                                (changeValue) {
+                                                              gropuValue.value =
+                                                                  int.parse(
+                                                                      changeValue
+                                                                          .toString());
+                                                              roundType.value =
+                                                                  "Aptitude Test";
+                                                            });
+                                                      }),
+                                                      valueListenable:
+                                                          gropuValue,
+                                                    ),
+                                                    title: Text("Aptitude Test",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                  ),
+                                                  ListTile(
+                                                    leading:
+                                                        ValueListenableBuilder(
+                                                      builder: ((context, value,
+                                                          child) {
+                                                        return Radio(
+                                                            value: 2,
+                                                            groupValue: value,
+                                                            onChanged:
+                                                                (changeValue) {
+                                                              gropuValue.value =
+                                                                  int.parse(
+                                                                      changeValue
+                                                                          .toString());
+                                                              roundType.value =
+                                                                  "Technical Round";
+                                                            });
+                                                      }),
+                                                      valueListenable:
+                                                          gropuValue,
+                                                    ),
+                                                    title: Text(
+                                                        "Technical Round",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                  ),
+                                                  ListTile(
+                                                    leading:
+                                                        ValueListenableBuilder(
+                                                      builder: ((context, value,
+                                                          child) {
+                                                        return Radio(
+                                                            value: 3,
+                                                            groupValue: value,
+                                                            onChanged:
+                                                                (changeValue) {
+                                                              gropuValue.value =
+                                                                  int.parse(
+                                                                      changeValue
+                                                                          .toString());
+                                                              roundType.value =
+                                                                  "HR";
+                                                            });
+                                                      }),
+                                                      valueListenable:
+                                                          gropuValue,
+                                                    ),
+                                                    title: Text("HR",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                  ),
+                                                  ListTile(
+                                                    leading:
+                                                        ValueListenableBuilder(
+                                                      builder: ((context, value,
+                                                          child) {
+                                                        return Radio(
+                                                            value: 4,
+                                                            groupValue: value,
+                                                            onChanged:
+                                                                (changeValue) {
+                                                              gropuValue.value =
+                                                                  int.parse(
+                                                                      changeValue
+                                                                          .toString());
+                                                            });
+                                                      }),
+                                                      valueListenable:
+                                                          gropuValue,
+                                                    ),
+                                                    title: TextField(
+                                                      onChanged: ((roundValue) {
+                                                        roundType.value =
+                                                            roundValue;
+                                                      }),
+                                                      autocorrect: true,
+                                                      enableSuggestions: true,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      style: textStyle(
+                                                          12.sp,
+                                                          FontWeight.bold,
+                                                          Colors.white,
+                                                          FontStyle.normal),
+                                                      maxLines: 1,
+                                                      decoration: InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                          hintText: "Other",
+                                                          hintStyle: textStyle(
+                                                              12.sp,
+                                                              FontWeight.bold,
+                                                              Colors.grey,
+                                                              FontStyle
+                                                                  .normal)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            ListTile(
+                                              title: ValueListenableBuilder(
+                                                  valueListenable: roundDate,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return GestureDetector(
+                                                      onTap: () async {
+                                                        picked =
+                                                            await showDatePicker(
+                                                          context: context,
+                                                          firstDate: DateTime(
+                                                              2022,
+                                                              1,
+                                                              1), // the earliest allowable
+                                                          lastDate: DateTime(
+                                                              2100, 12, 31),
+                                                          // the latest allowable
+                                                          initialDate:
+                                                              selectedDate,
+                                                        );
+                                                        if (picked != null &&
+                                                            picked !=
+                                                                selectedDate) {
+                                                          selectedDate !=
+                                                              picked;
+                                                        }
+                                                        if (picked != null) {
+                                                          var currentDate =
+                                                              picked
+                                                                  .toString()
+                                                                  .replaceRange(
+                                                                      11,
+                                                                      23,
+                                                                      "")
+                                                                  .split("-");
+                                                          roundDate.value =
+                                                              "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
+                                                          log(roundDate.value);
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        picked == null
+                                                            ? "Select Starting Date"
+                                                            : "Starting Date : ${roundDate.value}",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                            ValueListenableBuilder(
+                                                valueListenable: isLastRound,
+                                                builder:
+                                                    (context, value, child) {
+                                                  return ListTile(
+                                                    leading: Checkbox(
+                                                      shape:
+                                                          const CircleBorder(),
+                                                      checkColor: Colors.amber,
+                                                      onChanged: (value) {
+                                                        isLastRound.value =
+                                                            !isLastRound.value;
+                                                      },
+                                                      value: isLastRound.value,
+                                                      activeColor: Colors.amber,
+                                                    ),
+                                                    title: Text("Final Round",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                  );
+                                                })
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            },
                             child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: ValueListenableBuilder(
                                     valueListenable: btnTxt,
                                     builder: (context, value, child) {
-                                      return Text(
-                                        "Create Round ${widget.event["rounds"].length + 1}",
-                                        style: textStyle(12.sp, FontWeight.bold,
-                                            Colors.black, FontStyle.normal),
-                                      );
+                                      return ValueListenableBuilder(
+                                          valueListenable: newRound,
+                                          builder: (context, value, child) {
+                                            return Text(
+                                              "Create Round $value",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  Colors.black,
+                                                  FontStyle.normal),
+                                            );
+                                          });
                                     }))),
                         MaterialButton(
                             elevation: 4,
-                            color: const Color.fromARGB(255, 104, 4, 4),
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            onPressed: () async {},
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      title: Text(
+                                        "Close Event",
+                                        style: textStyle(
+                                            18.sp,
+                                            FontWeight.bold,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
+                                      ),
+                                      content: Text(
+                                          "Once event is closed, it will not undo....",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.w600,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal)),
+                                      elevation: 8,
+                                      actions: [
+                                        MaterialButton(
+                                            elevation: 4,
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            onPressed: () async {
+                                              EasyLoading.show();
+                                              bool isClose = await closeEvent(
+                                                  widget.event["_id"]);
+                                              if (isClose) {
+                                                showConfirm("Event Close", "");
+                                                EasyLoading.dismiss();
+                                                Get.offAll(() =>
+                                                    const FacultyMainScreen());
+                                              } else {
+                                                showError(
+                                                    "Unable to close event",
+                                                    "Please try again later");
+                                                await EasyLoading.dismiss();
+                                                Get.back();
+                                              }
+                                            },
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: ValueListenableBuilder(
+                                                    valueListenable: btnTxt,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "Close Event",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            const Color
+                                                                    .fromARGB(
+                                                                255, 0, 0, 0),
+                                                            FontStyle.normal),
+                                                      );
+                                                    }))),
+                                      ],
+                                    );
+                                  });
+                            },
                             child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: ValueListenableBuilder(
                                     valueListenable: btnTxt,
                                     builder: (context, value, child) {
                                       return Text(
-                                        "Close Event",
-                                        style: textStyle(12.sp, FontWeight.bold,
-                                            Colors.white, FontStyle.normal),
+                                        "Close",
+                                        style: textStyle(
+                                            12.sp,
+                                            FontWeight.bold,
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                            FontStyle.normal),
                                       );
                                     }))),
                       ],
