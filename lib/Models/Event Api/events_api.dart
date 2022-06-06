@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as https;
@@ -42,7 +43,7 @@ applyEvent(token, eventID, event) async {
         Uri.parse("https://suevents2022.herokuapp.com/applyEvent"),
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
-
+    log(response.statusCode.toString());
     if (response.statusCode == 200 || response.statusCode == 201) {
       showConfirm("Applied", "You have applied for $event");
       return true;

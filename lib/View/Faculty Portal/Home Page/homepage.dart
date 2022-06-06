@@ -64,6 +64,8 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    createdEvents.clear();
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
