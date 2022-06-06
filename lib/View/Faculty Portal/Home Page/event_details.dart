@@ -31,7 +31,7 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
   var picked, picked2, eventList, user, eventRound;
 
   ValueNotifier<String> btnTxt = ValueNotifier("Participate");
-  ValueNotifier<int> newRound = ValueNotifier(0);
+  ValueNotifier<int> newRound = ValueNotifier(1);
   ValueNotifier gropuValue = ValueNotifier(0);
   DateTime selectedDate = DateTime.now();
   TextEditingController lab = TextEditingController();
