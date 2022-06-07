@@ -38,7 +38,7 @@ class _EventRoundsState extends State<EventRounds> {
   late int currentPage;
   final String _scanBarcode = 'Unknown';
   var currentDate =
-      DateTime.now().toString().replaceRange(11, 26, "").split("-");
+  DateTime.now().toString().replaceRange(11, 26, "").split("-");
   String finalDate = "";
   List months = [
     'January',

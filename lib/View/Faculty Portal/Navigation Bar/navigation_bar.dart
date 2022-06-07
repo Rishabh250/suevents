@@ -2,6 +2,7 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/View/Faculty%20Portal/Assigned%20Events/assigned_events.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
 
 class FacultyNavigationBarPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _FacultyNavigationBarPageState extends State<FacultyNavigationBarPage> {
           controller: pageController,
           key: pageKey,
           onPageChanged: (index) {},
-          children: const [FacultyHomePage()],
+          children: const [FacultyHomePage(), AssignedEvents()],
         ),
         extendBody: true,
         bottomNavigationBar: Container(
@@ -41,11 +42,11 @@ class _FacultyNavigationBarPageState extends State<FacultyNavigationBarPage> {
           child: CustomNavigationBar(
             isFloating: true,
             elevation: 4,
-            iconSize: 30.0,
+            iconSize: 25.0,
             scaleFactor: 0.2,
             blurEffect: true,
             selectedColor: const Color.fromARGB(255, 8, 0, 255),
-            strokeColor: const Color.fromARGB(255, 5, 135, 241),
+            strokeColor: Colors.transparent,
             unSelectedColor: Colors.white,
             backgroundColor: Colors.black,
             borderRadius: const Radius.circular(20),

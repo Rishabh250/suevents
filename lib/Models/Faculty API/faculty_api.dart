@@ -56,7 +56,7 @@ assignFaculty(eventID, facultyList) async {
   }
 }
 
-createRound(token, lab, eventID, type, startDate, lastRound) async {
+createRound(token, lab, eventID, type, startDate, time, lastRound) async {
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/createRound"),
@@ -65,6 +65,7 @@ createRound(token, lab, eventID, type, startDate, lastRound) async {
           "lab": "$lab",
           "testType": "$type",
           "date": "$startDate",
+          "time": "$time",
           "lastRound": lastRound
         }),
         headers: {
@@ -113,6 +114,44 @@ getAssignedFaculty(eventID) async {
           "Content-Type": "application/json",
         });
     // log((response.body.toString()));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+
+    debugPrint(e.toString());
+  }
+}
+
+getAssignedEvents(token) async {
+  print(token.toString());
+  try {
+    var response = await https.get(
+        Uri.parse("https://suevents2022.herokuapp.com/getAssignedEvents"),
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": "$token"
+        });
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+
+    debugPrint(e.toString());
+  }
+}
+
+getSingleEvent(eventID) async {
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/getEventRound"),
+        body: jsonEncode({"eventID": "$eventID"}),
+        headers: {
+          "Content-Type": "application/json",
+        });
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }

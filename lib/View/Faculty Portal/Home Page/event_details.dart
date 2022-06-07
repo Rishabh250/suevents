@@ -28,17 +28,19 @@ class FacultyEventDetail extends StatefulWidget {
 
 class _FacultyEventDetailState extends State<FacultyEventDetail> {
   // ignore: prefer_typing_uninitialized_variables
-  var picked, picked2, eventList, user, eventRound;
+  var picked, picked2, eventList, user, eventRound, timePick, timePicked;
 
   ValueNotifier<String> btnTxt = ValueNotifier("Participate");
   ValueNotifier<int> newRound = ValueNotifier(1);
   ValueNotifier gropuValue = ValueNotifier(0);
   DateTime selectedDate = DateTime.now();
+  TimeOfDay selectTime = TimeOfDay.now();
   TextEditingController lab = TextEditingController();
   TextEditingController roundNumber = TextEditingController();
   ValueNotifier<bool> isLastRound = ValueNotifier<bool>(false);
   ValueNotifier roundType = ValueNotifier("");
   ValueNotifier roundDate = ValueNotifier("");
+  ValueNotifier roundTime = ValueNotifier("");
 
   List months = [
     'January',
@@ -385,6 +387,12 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                 EasyLoading.dismiss();
 
                                                 return;
+                                              }    if (roundTime.value.isEmpty) {
+                                                showError("Empty Field",
+                                                    "Select Round Time");
+                                                EasyLoading.dismiss();
+
+                                                return;
                                               }
                                               await createRound(
                                                   token,
@@ -393,6 +401,7 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                       .toString(),
                                                   roundType.value.toString(),
                                                   roundDate.value.toString(),
+                                                  roundTime.value.toString(),
                                                   isLastRound.value);
                                               gropuValue.value = 0;
                                               roundType.value = "";
@@ -658,7 +667,7 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                                       "")
                                                                   .split("-");
                                                           roundDate.value =
-                                                              "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
+                                                              "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]}";
                                                           log(roundDate.value);
                                                         }
                                                       },
@@ -666,6 +675,47 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                         picked == null
                                                             ? "Select Starting Date"
                                                             : "Starting Date : ${roundDate.value}",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                            ListTile(
+                                              title: ValueListenableBuilder(
+                                                  valueListenable: roundTime,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return GestureDetector(
+                                                      onTap: () async {
+                                                        timePick =
+                                                            await showTimePicker(
+                                                          context: context,
+                                                          initialTime:
+                                                              selectTime,
+                                                        );
+                                                        if (timePick != null &&
+                                                            picked !=
+                                                                selectedDate) {
+                                                          selectedDate !=
+                                                              picked;
+                                                        }
+                                                        if (timePick != null) {
+                                                          roundTime.value =
+                                                              timePick.format(
+                                                                  context);
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        timePick == null
+                                                            ? "Select Time"
+                                                            : "Starting Time : ${roundTime.value}",
                                                         style: textStyle(
                                                             12.sp,
                                                             FontWeight.bold,

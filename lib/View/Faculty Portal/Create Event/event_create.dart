@@ -29,8 +29,10 @@ ValueNotifier eventType = ValueNotifier("");
 ValueNotifier finalDate = ValueNotifier("");
 ValueNotifier endDate = ValueNotifier("");
 ValueNotifier eventPrice = ValueNotifier("");
+ValueNotifier roundTime = ValueNotifier("");
+
 bool isVisible = false;
-var title, about;
+var title, about, timePick, timePicked;
 
 List months = [
   'January',
@@ -157,6 +159,10 @@ class CreateEventState extends State<CreateEvent> {
                                   showError("Empty Field", "Select Round Date");
                                   return;
                                 }
+                                if (roundTime.value.isEmpty) {
+                                  showError("Empty Field", "Select Round Time");
+                                  return;
+                                }
 
                                 showDialog(
                                     context: context,
@@ -258,6 +264,8 @@ class CreateEventState extends State<CreateEvent> {
                                                       roundType.value
                                                           .toString(),
                                                       roundDate.value
+                                                          .toString(),
+                                                      roundTime.value
                                                           .toString(),
                                                       isLastRound.value);
 
@@ -657,6 +665,8 @@ class _RoundDetailsState extends State<RoundDetails> {
   ValueNotifier<int> gropuValue = ValueNotifier(0);
   DateTime selectedDate = DateTime.now();
   DateTime? picked;
+  TimeOfDay selectTime = TimeOfDay.now();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -811,7 +821,7 @@ class _RoundDetailsState extends State<RoundDetails> {
                       var currentDate =
                           picked.toString().replaceRange(11, 23, "").split("-");
                       roundDate.value =
-                          "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]} ";
+                          "${currentDate[2]}${months[int.parse(currentDate[1]) - 1]}, ${currentDate[0]}";
                       log(roundDate.value);
                     }
                   },
@@ -819,6 +829,38 @@ class _RoundDetailsState extends State<RoundDetails> {
                     picked == null
                         ? "Select Starting Date"
                         : "Starting Date : ${roundDate.value}",
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal),
+                  ),
+                );
+              }),
+        ),
+        ListTile(
+          title: ValueListenableBuilder(
+              valueListenable: roundTime,
+              builder: (context, value, child) {
+                return GestureDetector(
+                  onTap: () async {
+                    timePick = await showTimePicker(
+                      context: context,
+                      initialTime: selectTime,
+                    );
+                    if (timePick != null && picked != selectedDate) {
+                      selectedDate != picked;
+                    }
+                    if (timePick != null) {
+                      roundTime.value = timePick.format(context);
+                    }
+                  },
+                  child: Text(
+                    timePick == null
+                        ? "Select Time"
+                        : "Starting Time : ${roundTime.value}",
                     style: textStyle(
                         12.sp,
                         FontWeight.bold,

@@ -18,7 +18,7 @@ class FacultyController {
       userImage = ValueNotifier<String>(""),
       gender = ValueNotifier<String>(""),
       events = ValueNotifier([]);
-  var user, token, facultyList;
+  var user, token, facultyList, assignedEvents;
 
   fetchFacultyData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -36,6 +36,13 @@ class FacultyController {
   fetchAllFacultyData() async {
     facultyList = await getAllFaculty();
     return facultyList;
+  }
+
+  getFacultyAssignedEvents() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    token = sharedPreferences.getString("accessToken");
+    assignedEvents = await getAssignedEvents(token);
+    return assignedEvents;
   }
 }
 
