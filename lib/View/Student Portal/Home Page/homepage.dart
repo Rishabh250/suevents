@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage>
   }
 
   getToken() async {
+    if (!mounted) return;
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     getUserDetails = await getUserData(token);

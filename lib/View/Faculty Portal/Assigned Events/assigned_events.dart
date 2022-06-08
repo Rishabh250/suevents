@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -19,6 +20,7 @@ class AssignedEvents extends StatefulWidget {
 
 class _AssignedEventsState extends State<AssignedEvents> {
   FacultyController facultyController = FacultyController();
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -34,11 +36,12 @@ class _AssignedEventsState extends State<AssignedEvents> {
       triggerMode: RefreshIndicatorTriggerMode.onEdge,
       onRefresh: () async {
         setState(() {});
+        EasyLoading.dismiss();
       },
       child: Scaffold(
         body: CustomScrollView(slivers: [
           SliverAppBar(
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: false,
             pinned: true,
             forceElevated: true,
             flexibleSpace: const FlexibleSpaceBar(

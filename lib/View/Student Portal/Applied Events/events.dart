@@ -50,7 +50,7 @@ class _EventsPageState extends State<EventsPage> {
               parent: BouncingScrollPhysics()),
           slivers: [
             SliverAppBar(
-              automaticallyImplyLeading: true,
+              automaticallyImplyLeading: false,
               pinned: true,
               forceElevated: true,
               flexibleSpace: const FlexibleSpaceBar(

@@ -35,14 +35,17 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
   void initState() {
     super.initState();
     if (time >= 6 && time <= 12) {
+      if (!mounted) return;
       setState(() {
         greet = "Good Morning";
       });
     } else if (time > 12 && time <= 16) {
+      if (!mounted) return;
       setState(() {
         greet = "Good Afternoon";
       });
     } else {
+      if (!mounted) return;
       setState(() {
         greet = "Good Evening";
       });
@@ -56,6 +59,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     getUserDetails = await getFacultyData(token);
+    if (!mounted) return;
     setState(() {
       name = getUserDetails["user"]["name"];
       createdEvents.clear();
@@ -80,7 +84,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
       onRefresh: () async {
         await Future.delayed(const Duration(milliseconds: 1500));
         await facultyController.fetchFacultyData();
-
+        if (!mounted) return;
         setState(() {
           createEventList = 0;
           createdEvents.clear();

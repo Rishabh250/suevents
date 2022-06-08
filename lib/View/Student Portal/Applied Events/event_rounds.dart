@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,6 +12,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/AESEncryption/aes_encryption.dart';
 import 'package:suevents/Controller/Student_Controllers/events_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
@@ -21,7 +24,7 @@ class EventRounds extends StatefulWidget {
   var events;
   var index;
 
-  EventRounds({Key? key, required this.events, required this.index})
+  EventRounds({key, required this.events, required this.index})
       : super(key: key);
 
   @override
@@ -29,6 +32,7 @@ class EventRounds extends StatefulWidget {
 }
 
 class _EventRoundsState extends State<EventRounds> {
+  AESEncryption aesEncryption = AESEncryption();
   EventController eventController = EventController();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final ScrollController _scrollController = ScrollController();
@@ -38,7 +42,7 @@ class _EventRoundsState extends State<EventRounds> {
   late int currentPage;
   final String _scanBarcode = 'Unknown';
   var currentDate =
-  DateTime.now().toString().replaceRange(11, 26, "").split("-");
+      DateTime.now().toString().replaceRange(11, 26, "").split("-");
   String finalDate = "";
   List months = [
     'January',
@@ -54,12 +58,14 @@ class _EventRoundsState extends State<EventRounds> {
     'November',
     'December'
   ];
-
+  final key = encrypt.Key.fromUtf8('my 32 length key................');
+  final iv = IV.fromLength(16);
   bool isVisible = false;
-  var roundID, eventID, eventData, roundData;
+  var roundID, eventID, eventData, roundData, encrypter, decrypted;
   @override
   void initState() {
     super.initState();
+    encrypter = Encrypter(AES(key));
     EasyLoading.show();
     currentPage = widget.events["rounds"].length - 1;
     _currentIndex = currentPage;
@@ -467,7 +473,7 @@ class _EventRoundsState extends State<EventRounds> {
     );
   }
 
-  String? scanResult;
+  var scanResult;
 
   Future onQRViewCreated() async {
     var getAppliedData = await getSingleEvents(eventID);
@@ -479,19 +485,16 @@ class _EventRoundsState extends State<EventRounds> {
       debugPrint(e.toString());
     }
     if (!mounted) return;
-    log(scanResult.toString());
 
     setState(() => scanResult = scanResult);
     if (scanResult.toString() == "-1" || scanResult == null) return;
 
-    log(scanResult.toString());
-
-    var data = jsonDecode(scanResult.toString());
+    var getdata = aesEncryption.decryptMsg(aesEncryption.getCode(scanResult));
+    Map data = jsonDecode(getdata);
 
     if (finalDate.toString().contains(data["Date"].toString())) {
-      if (int.parse(widget.events['rounds'][_currentIndex]["roundNumber"]
-              .toString()) ==
-          data["Round"]) {
+      if (widget.events['rounds'][_currentIndex]["roundNumber"].toString() ==
+          data["Round Number"]) {
         for (int i = 0;
             i < getAppliedData["events"]["appliedStudents"].length;
             i++) {
