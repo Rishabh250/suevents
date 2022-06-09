@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/Faculty%20Portal/Create%20Event/event_create.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/event_details.dart';
+import 'package:suevents/View/Faculty%20Portal/Unselected%20List/unselected_list.dart';
 
 FacultyController facultyController = FacultyController();
 
@@ -583,7 +585,48 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                   },
                 ),
                 const SizedBox(
-                  height: 60,
+                  height: 30,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const UnselectedList());
+                  },
+                  child: Center(
+                    child: Card(
+                      shadowColor: themeProvider.isDarkMode
+                          ? const Color.fromARGB(255, 125, 125, 125)
+                          : Colors.grey,
+                      color: Colors.transparent,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(
+                          width: width * 0.9,
+                          height: 100.0,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 0.2,
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : const Color.fromARGB(255, 151, 194, 8)),
+                              borderRadius: BorderRadius.circular(20),
+                              color: themeProvider.isDarkMode
+                                  ? HexColor("#020E26")
+                                  : Colors.white),
+                          child: Center(
+                            child: Text(
+                              "Get unselected students",
+                              style: textStyle(
+                                  14.sp,
+                                  FontWeight.w600,
+                                  themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  FontStyle.normal),
+                            ),
+                          )),
+                    ),
+                  ),
                 )
               ],
             ),

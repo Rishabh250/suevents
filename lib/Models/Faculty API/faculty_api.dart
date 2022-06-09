@@ -161,3 +161,41 @@ getSingleEvent(eventID) async {
     debugPrint(e.toString());
   }
 }
+
+getSelectedEvents(roundType) async {
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/getSelectedEvents"),
+        body: jsonEncode({"roundType": "$roundType"}),
+        headers: {
+          "Content-Type": "application/json",
+        });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+
+    debugPrint(e.toString());
+  }
+}
+
+getUnselectedStudents(roundType, eventList) async {
+  try {
+    var response = await https.post(
+        Uri.parse("https://suevents2022.herokuapp.com/getUnselectedStudents"),
+        body: jsonEncode({"eventList": eventList, "roundType": "$roundType"}),
+        headers: {
+          "Content-Type": "application/json",
+        });
+    // log(response.body.toString());
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    showError("Something went wrong", "Please try again");
+
+    debugPrint(e.toString());
+  }
+}

@@ -233,7 +233,6 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                                               eyeStyle: const QrEyeStyle(
                                                   eyeShape: QrEyeShape.circle,
                                                   color: Colors.black),
-                                                  
                                               version: QrVersions.auto,
                                               size: 200.0,
                                             ),
