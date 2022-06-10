@@ -2,6 +2,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -102,7 +103,9 @@ class _HomePageState extends State<HomePage>
                           child: Row(
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  ZoomDrawer.of(context)?.open();
+                                },
                                 child: Card(
                                   elevation: 4,
                                   color: !themeProvider.isDarkMode
@@ -1105,8 +1108,6 @@ class _HomePageState extends State<HomePage>
                                     )),
                               );
                             }
-
-                            return Container();
                           },
                         ),
                         const SizedBox(
