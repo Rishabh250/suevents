@@ -94,6 +94,14 @@ class _MenuScreenState extends State<MenuScreen> {
                 ));
               }),
         ),
+        Text(
+          "Student Portal",
+          textScaleFactor: 1,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style:
+              textStyle(8.sp, FontWeight.w400, Colors.white, FontStyle.normal),
+        ),
         SizedBox(
           height: 5.h,
         ),
