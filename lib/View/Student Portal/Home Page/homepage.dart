@@ -2,7 +2,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +11,9 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/View/Student%20Portal/Search%20Page/search_page.dart';
+import 'package:suevents/View/Student%20Portal/View%20All%20Events/general_events.dart';
+import 'package:suevents/View/Student%20Portal/View%20All%20Events/placements_events.dart';
 
 import '../../../../Models/Event Api/events_api.dart';
 import '../Events/events_detail.dart';
@@ -99,9 +102,7 @@ class _HomePageState extends State<HomePage>
                           child: Row(
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  ZoomDrawer.of(context)?.open();
-                                },
+                                onTap: () {},
                                 child: Card(
                                   elevation: 4,
                                   color: !themeProvider.isDarkMode
@@ -188,86 +189,81 @@ class _HomePageState extends State<HomePage>
                           height: 40,
                         ),
                         Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: width * 0.7,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 2,
-                                        style: BorderStyle.solid,
-                                        color: themeProvider.isDarkMode
-                                            ? Colors.grey
-                                            : const Color.fromARGB(
-                                                255, 151, 194, 8)),
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, right: 10),
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        searchValue.value = value;
-                                        searchEvents.value = value;
-                                        eventSearchLength = 0;
-                                      },
-                                      enableSuggestions: true,
-                                      autocorrect: true,
-                                      autofillHints: const [
-                                        "TCS",
-                                        "Placements",
-                                        "Events"
-                                      ],
-                                      style: textStyle(
-                                          12.sp,
-                                          FontWeight.w600,
-                                          themeProvider.isDarkMode
-                                              ? Colors.grey
-                                              : Colors.black,
-                                          FontStyle.normal),
-                                      decoration: InputDecoration(
-                                          hintText:
-                                              "Search for Events & Placement",
-                                          hintTextDirection: TextDirection.ltr,
-                                          hintStyle: textStyle(
+                          child: Hero(
+                            tag: "searchBar",
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => const StudentEventsSearch(),
+                                    transition: Transition.fadeIn);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: width * 0.7,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 2,
+                                            style: BorderStyle.solid,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.grey
+                                                : const Color.fromARGB(
+                                                    255, 151, 194, 8)),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, right: 10),
+                                        child: TextField(
+                                          enabled: false,
+                                          style: textStyle(
                                               12.sp,
-                                              FontWeight.w500,
-                                              const Color.fromARGB(
-                                                  255, 129, 128, 128),
+                                              FontWeight.w600,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.grey
+                                                  : Colors.black,
                                               FontStyle.normal),
-                                          border: InputBorder.none),
+                                          decoration: InputDecoration(
+                                              hintText:
+                                                  "Search for Events & Placement",
+                                              hintTextDirection:
+                                                  TextDirection.ltr,
+                                              hintStyle: textStyle(
+                                                  12.sp,
+                                                  FontWeight.w500,
+                                                  const Color.fromARGB(
+                                                      255, 129, 128, 128),
+                                                  FontStyle.normal),
+                                              border: InputBorder.none),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    width: width * 0.14,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 131, 169, 7),
+                                        border: Border.all(
+                                            width: 0, color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Center(
+                                        child: Image.asset(
+                                      "assets/icons/search.png",
+                                      width: 25,
+                                      color: Colors.white,
+                                    )),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  searchEvents.value = searchValue.value;
-                                  eventSearchLength = 0;
-                                },
-                                child: Container(
-                                  width: width * 0.14,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 131, 169, 7),
-                                      border: Border.all(
-                                          width: 0, color: Colors.white),
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                      child: Image.asset(
-                                    "assets/icons/search.png",
-                                    width: 25,
-                                    color: Colors.white,
-                                  )),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -288,15 +284,20 @@ class _HomePageState extends State<HomePage>
                             const Spacer(),
                             Padding(
                                 padding: const EdgeInsets.only(right: 10.0),
-                                child: Text(
-                                  "View All",
-                                  style: textStyle(
-                                      9.sp,
-                                      FontWeight.w600,
-                                      themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
-                                      FontStyle.normal),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => const ViewAllPlacements());
+                                  },
+                                  child: Text(
+                                    "View All",
+                                    style: textStyle(
+                                        9.sp,
+                                        FontWeight.w600,
+                                        themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        FontStyle.normal),
+                                  ),
                                 )),
                           ],
                         ),
@@ -685,15 +686,20 @@ class _HomePageState extends State<HomePage>
                             const Spacer(),
                             Padding(
                               padding: const EdgeInsets.only(right: 10.0),
-                              child: Text(
-                                "View All",
-                                style: textStyle(
-                                    9.sp,
-                                    FontWeight.w600,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    FontStyle.normal),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(() => const ViewAllGeneral());
+                                },
+                                child: Text(
+                                  "View All",
+                                  style: textStyle(
+                                      9.sp,
+                                      FontWeight.w600,
+                                      themeProvider.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
+                                      FontStyle.normal),
+                                ),
                               ),
                             ),
                           ],
@@ -1117,13 +1123,11 @@ class _HomePageState extends State<HomePage>
   }
 
   getGeneral() async {
-    await Future.delayed(const Duration(seconds: 20));
     generalEvent = await getGeneralEvents();
     return generalEvent;
   }
 
   getPlacments() async {
-    await Future.delayed(const Duration(seconds: 20));
     eventData = await getPlacementEvents();
     return eventData;
   }

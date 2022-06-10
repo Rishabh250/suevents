@@ -134,10 +134,10 @@ class _EventRoundsState extends State<EventRounds> {
                             });
                             log(_currentIndex.toString());
                             await fetchEvents();
-                            var event = roundData["selectedStudends"];
+                            var event = roundData["present"];
                             log("Rishabh : $event");
                             // [widget.index]["rounds"][_currentIndex]
-                            //     ["selectedStudends"];
+                            //     ["present"];
                             await eventController.checkAttendence(
                                 event, eventController.email.value);
                           },
@@ -533,7 +533,7 @@ class _EventRoundsState extends State<EventRounds> {
     token = sharedPreferences.getString("accessToken");
     eventDetail = await getStudentEvents(token);
     roundData = await getSingleRound(eventID, roundID);
-    getEvent = roundData["selectedStudends"];
+    getEvent = roundData["present"];
     log(getEvent.toString());
     eventController.fetchUserData(getEvent);
   }

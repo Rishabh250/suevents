@@ -56,8 +56,6 @@ getSingleRound(eventID, roundID) async {
 }
 
 applyForRound(token, eventID, roundID) async {
-  log(eventID.toString());
-  log(roundID.toString());
   try {
     var response = await https.post(
         Uri.parse("https://suevents2022.herokuapp.com/selectedStudents"),

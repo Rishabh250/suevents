@@ -19,6 +19,23 @@ getPlacementEvents() async {
   }
 }
 
+getAllEvents(title) async {
+  log("RRRR$title");
+  try {
+    var response = await https.get(
+        Uri.parse(
+            "https://suevents2022.herokuapp.com/getAllEvents/eventTitle=$title"),
+        headers: {"Content-Type": "application/json"});
+
+    print(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
 getGeneralEvents() async {
   try {
     var response = await https.get(
