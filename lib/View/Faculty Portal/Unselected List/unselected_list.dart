@@ -170,6 +170,37 @@ class _UnselectedListState extends State<UnselectedList> {
                               : Colors.black,
                           FontStyle.normal)),
                 ),
+                ListTile(
+                  leading: ValueListenableBuilder(
+                    builder: ((context, value, child) {
+                      return Radio(
+                          value: 4,
+                          groupValue: value,
+                          onChanged: (changeValue) async {
+                            EasyLoading.show();
+
+                            gropuValue.value =
+                                int.parse(changeValue.toString());
+                            eventType.value = "Final";
+                            // setState(() {});
+                            eventsList = await getSelectedEvents(
+                                eventType.value.toString());
+                            selectedEvents.value = [];
+
+                            setState(() {});
+                          });
+                    }),
+                    valueListenable: gropuValue,
+                  ),
+                  title: Text("Final",
+                      style: textStyle(
+                          12.sp,
+                          FontWeight.bold,
+                          themeProvider.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                          FontStyle.normal)),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
