@@ -4,7 +4,6 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/View/get_started.dart';
 
@@ -19,7 +18,6 @@ class FacultyMenuScreen extends StatefulWidget {
 }
 
 class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
-  FacultyController controller = FacultyController();
   ValueNotifier appName = ValueNotifier(""),
       packageName = ValueNotifier(""),
       version = ValueNotifier(""),

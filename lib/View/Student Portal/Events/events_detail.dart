@@ -33,6 +33,9 @@ class _EventDetailState extends State<EventDetail> {
   void initState() {
     super.initState();
     log(widget.event.toString());
+    if (widget.event["registration"] == false) {
+      btnTxt.value = "Registration close";
+    }
 
     getData();
   }
@@ -380,6 +383,10 @@ class _EventDetailState extends State<EventDetail> {
                                             BorderRadius.circular(10)),
                                     onPressed: () async {
                                       if (btnTxt.value == "Participated") {
+                                        return;
+                                      }
+                                      if (widget.event["registration"] ==
+                                          false) {
                                         return;
                                       }
                                       showDialog(

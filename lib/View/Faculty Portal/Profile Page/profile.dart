@@ -22,11 +22,12 @@ class FacultyProfilePage extends StatefulWidget {
   State<FacultyProfilePage> createState() => _FacultyProfilePageState();
 }
 
+FacultyController controller = FacultyController();
+
 class _FacultyProfilePageState extends State<FacultyProfilePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
   File? image;
   ValueNotifier imageURL = ValueNotifier("");
-  FacultyController controller = FacultyController();
   Future<void> _upload() async {
     final picker = ImagePicker();
     XFile? pickedImage;

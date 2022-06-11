@@ -55,7 +55,7 @@ class MyAppState extends State<MyApp> {
               DeviceType deviceType) {
             return GetMaterialApp(
                 debugShowCheckedModeBanner: false,
-                themeMode: themeProvider.themeMode,
+                themeMode: themeMode.value,
                 theme: MyThemes.lightTheme,
                 darkTheme: MyThemes.darkTheme,
                 home: isLog == true

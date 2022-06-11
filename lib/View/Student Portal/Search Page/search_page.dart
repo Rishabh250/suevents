@@ -26,6 +26,7 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
       searchValue = ValueNotifier(""),
       title = ValueNotifier(" ");
   int eventsIndexLength = 1, eventSearchLength = 0;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
-        body: CustomScrollView(slivers: [
+        body: CustomScrollView(controller: _scrollController, slivers: [
       const SliverAppBar(
         automaticallyImplyLeading: true,
         pinned: true,
@@ -209,6 +210,7 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
               if (snapshot.hasData) {
                 if (eventData["events"].length > 0) {
                   return ListView.builder(
+                      controller: _scrollController,
                       shrinkWrap: true,
                       itemCount: eventData["events"].length,
                       itemBuilder: (context, index) {
@@ -356,7 +358,12 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
                                                   onPressed: action,
                                                   child: Center(
                                                     child: Text(
-                                                      "Participate",
+                                                      eventData["events"][index]
+                                                                  [
+                                                                  "registration"] ==
+                                                              true
+                                                          ? "Participate"
+                                                          : "Registration closed",
                                                       textScaleFactor: 1,
                                                       style: textStyle(
                                                           12.sp,

@@ -33,8 +33,7 @@ class _HomePageState extends State<HomePage>
   var eventData, generalEvent;
   ValueNotifier name = ValueNotifier(""),
       greet = ValueNotifier(""),
-      searchEvents = ValueNotifier(""),
-      searchValue = ValueNotifier("");
+      searchEvents = ValueNotifier("");
   int eventsIndexLength = 1, eventSearchLength = 0;
   var time = DateTime.now().hour;
 
@@ -158,9 +157,6 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               const Spacer(),
-                              GestureDetector(
-                                  onTap: () {},
-                                  child: const Icon(Icons.settings_rounded))
                             ],
                           ),
                         ),
@@ -601,7 +597,10 @@ class _HomePageState extends State<HomePage>
                                                                     action,
                                                                 child: Center(
                                                                   child: Text(
-                                                                    "Participate",
+                                                                    eventData["events"][index]["registration"] ==
+                                                                            true
+                                                                        ? "Participate"
+                                                                        : "Registration closed",
                                                                     textScaleFactor:
                                                                         1,
                                                                     style: textStyle(
@@ -1005,7 +1004,10 @@ class _HomePageState extends State<HomePage>
                                                                     action,
                                                                 child: Center(
                                                                   child: Text(
-                                                                    "Participate",
+                                                                    generalEvent["events"][index]["registration"] ==
+                                                                            true
+                                                                        ? "Participate"
+                                                                        : "Registration closed",
                                                                     textScaleFactor:
                                                                         1,
                                                                     style: textStyle(

@@ -18,6 +18,8 @@ import 'package:suevents/Models/Student%20API/authentication_api.dart';
 import '../../../Controller/Student_Controllers/events_controller.dart';
 import '../../../Models/Student API/student_api.dart';
 
+UserDetailsController userDetailsController = UserDetailsController();
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -27,7 +29,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
-  UserDetailsController userDetailsController = UserDetailsController();
   File? image;
   ValueNotifier imageURL = ValueNotifier("");
   var user;
@@ -117,6 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               imageURL.value);
                                           await userDetailsController
                                               .fetchUserData();
+                                          EasyLoading.dismiss();
                                         },
                                         child: const Icon(
                                           Icons.camera_alt_rounded,

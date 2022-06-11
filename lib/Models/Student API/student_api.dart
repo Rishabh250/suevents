@@ -10,6 +10,7 @@ getStudentEvents(token) async {
     var response = await https.get(
         Uri.parse("https://suevents2022.herokuapp.com/studentEvents"),
         headers: {"Content-Type": "application/json", "x-access-token": token});
+    print(response.body);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

@@ -6,20 +6,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 
-class ThemeProvider extends ChangeNotifier {
-  ThemeMode themeMode = ThemeMode.system;
+ValueNotifier themeMode = ValueNotifier(ThemeMode.system);
 
+class ThemeProvider extends ChangeNotifier {
   bool get isDarkMode {
-    if (themeMode == ThemeMode.system) {
+    if (themeMode.value == ThemeMode.system) {
       final brightness = SchedulerBinding.instance.window.platformBrightness;
       return brightness == Brightness.dark;
     } else {
-      return themeMode == ThemeMode.dark;
+      return themeMode.value == ThemeMode.dark;
     }
   }
 
   void toggleTheme(bool isOn) {
-    themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
+    themeMode.value = isOn ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
 }
