@@ -702,9 +702,6 @@ class TopBar extends StatelessWidget {
               ),
             ),
           ),
-          const Spacer(),
-          GestureDetector(
-              onTap: () {}, child: const Icon(Icons.settings_rounded)),
         ],
       ),
     );

@@ -476,12 +476,16 @@ class _EventRoundsState extends State<EventRounds> {
   var scanResult;
 
   Future onQRViewCreated() async {
+    EasyLoading.show();
     var getAppliedData = await getSingleEvents(eventID);
 
     try {
       scanResult = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.QR);
+      EasyLoading.dismiss();
     } on Exception catch (e) {
+      EasyLoading.dismiss();
+
       debugPrint(e.toString());
     }
     if (!mounted) return;
@@ -495,19 +499,12 @@ class _EventRoundsState extends State<EventRounds> {
     if (finalDate.toString().contains(data["Date"].toString())) {
       if (widget.events['rounds'][_currentIndex]["roundNumber"].toString() ==
           data["Round Number"]) {
-        for (int i = 0;
-            i < getAppliedData["events"]["appliedStudents"].length;
-            i++) {
-          if (data["list"].toString().contains(
-              getAppliedData["events"]["appliedStudents"][i]["email"])) {
-            log(data["list"]
-                .toString()
-                .contains(getAppliedData["events"]["appliedStudents"][i]
-                        ["email"]
-                    .toString())
-                .toString());
-            await takeAttendence();
-          }
+        if (data["list"]
+            .toString()
+            .contains(eventController.email.value.toString())) {
+          await takeAttendence();
+        } else {
+          showError("Details not found", "You were out of this event");
         }
       } else {
         showError("Invalid QR Code", "");

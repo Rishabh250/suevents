@@ -33,6 +33,9 @@ userLogin(email, pass) async {
       if (body['msg'] == "Password wrong") {
         showError("Invaild Details", "You have entered wrong password");
       }
+      if (body['msg'] == "user not found") {
+        showError("Invaild Details", "User not found");
+      }
     }
   } catch (e) {
     debugPrint(e.toString());

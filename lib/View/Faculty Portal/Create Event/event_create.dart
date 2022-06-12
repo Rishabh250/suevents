@@ -441,7 +441,10 @@ class _EventCreationState extends State<EventCreation> {
             enableSuggestions: true,
             keyboardType: TextInputType.text,
             style: textStyle(
-                12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                12.sp,
+                FontWeight.bold,
+                widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
+                FontStyle.normal),
             maxLines: 1,
             decoration: InputDecoration(
                 border:
@@ -525,7 +528,10 @@ class _EventCreationState extends State<EventCreation> {
             enableSuggestions: true,
             // keyboardType: TextInputType.text,
             style: textStyle(
-                10.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                10.sp,
+                FontWeight.bold,
+                widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
+                FontStyle.normal),
             maxLines: 8,
             decoration: InputDecoration(
                 hintText: "About Event",
@@ -678,7 +684,10 @@ class _RoundDetailsState extends State<RoundDetails> {
             enableSuggestions: true,
             keyboardType: TextInputType.text,
             style: textStyle(
-                12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                12.sp,
+                FontWeight.bold,
+                widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
+                FontStyle.normal),
             maxLines: 1,
             decoration: InputDecoration(
                 border:
@@ -788,7 +797,12 @@ class _RoundDetailsState extends State<RoundDetails> {
                   enableSuggestions: true,
                   keyboardType: TextInputType.text,
                   style: textStyle(
-                      12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                      12.sp,
+                      FontWeight.bold,
+                      widget.themeProvider.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                      FontStyle.normal),
                   maxLines: 1,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(

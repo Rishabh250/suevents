@@ -182,8 +182,9 @@ class _CreateEventConfirmState extends State<CreateEventConfirm> {
         },
         label: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.arrow_back,
+              color: themeProvider.isDarkMode ? Colors.white : Colors.black,
               size: 20,
             ),
             const SizedBox(

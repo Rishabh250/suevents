@@ -27,6 +27,7 @@ class _EventsPageState extends State<EventsPage> {
     super.initState();
   }
 
+  ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -46,7 +47,9 @@ class _EventsPageState extends State<EventsPage> {
       },
       child: Scaffold(
         body: CustomScrollView(
-          physics: const NeverScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics()),
+          controller: scrollController,
           slivers: [
             SliverAppBar(
               automaticallyImplyLeading: false,
@@ -165,8 +168,7 @@ class _EventsPageState extends State<EventsPage> {
                       height: height * 0.9,
                       width: width,
                       child: ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics()),
+                          controller: scrollController,
                           shrinkWrap: true,
                           itemCount: eventData["eventsApplied"].length,
                           itemBuilder: (context, index) {
