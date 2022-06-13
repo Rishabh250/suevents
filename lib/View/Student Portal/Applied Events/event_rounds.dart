@@ -8,6 +8,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +67,7 @@ class _EventRoundsState extends State<EventRounds> {
   void initState() {
     super.initState();
     encrypter = Encrypter(AES(key));
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
     currentPage = widget.events["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
@@ -96,9 +97,36 @@ class _EventRoundsState extends State<EventRounds> {
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics()),
         controller: _scrollController,
         slivers: [
+          SliverAppBar(
+            leading: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                )),
+            pinned: true,
+            forceElevated: true,
+            flexibleSpace: const FlexibleSpaceBar(
+              centerTitle: true,
+            ),
+            elevation: 8,
+            backgroundColor: const Color.fromARGB(255, 30, 0, 255),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10))),
+            title: Text(
+              widget.events['title'],
+              style: textStyle(
+                  14.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+            ),
+          ),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -117,6 +145,7 @@ class _EventRoundsState extends State<EventRounds> {
                   height: 50,
                   width: width,
                   child: ListView.builder(
+                      controller: _scrollController,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: widget.events['rounds'].length,
@@ -124,7 +153,7 @@ class _EventRoundsState extends State<EventRounds> {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () async {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
                             setState(() {
                               isVisible = false;
                               _currentIndex = index;
@@ -183,6 +212,7 @@ class _EventRoundsState extends State<EventRounds> {
                           eventID = widget.events["_id"];
 
                           return ListView(
+                            controller: _scrollController,
                             padding: const EdgeInsets.only(bottom: 50),
                             shrinkWrap: true,
                             children: [
@@ -476,7 +506,7 @@ class _EventRoundsState extends State<EventRounds> {
   var scanResult;
 
   Future onQRViewCreated() async {
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
     var getAppliedData = await getSingleEvents(eventID);
 
     try {
@@ -518,7 +548,7 @@ class _EventRoundsState extends State<EventRounds> {
 
   takeAttendence() async {
     // controller?.stopCamera();
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
     await applyForRound(token, eventID, roundID);
     await fetchEvents();
     await eventController.fetchUserData(getEvent);

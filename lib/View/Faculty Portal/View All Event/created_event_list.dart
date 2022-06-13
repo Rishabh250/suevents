@@ -9,19 +9,26 @@ import 'package:sizer/sizer.dart';
 import '../../../Controller/providers/const.dart';
 import '../../../Controller/providers/theme_service.dart';
 import '../../../Models/Event Api/events_api.dart';
-import '../Events/events_detail.dart';
+import '../Home Page/event_details.dart';
+import '../Home Page/homepage.dart';
 
-class ViewAllPlacements extends StatefulWidget {
-  const ViewAllPlacements({Key? key}) : super(key: key);
+class ViewAllCreatedEvents extends StatefulWidget {
+  const ViewAllCreatedEvents({Key? key}) : super(key: key);
 
   @override
-  State<ViewAllPlacements> createState() => _ViewAllPlacementsState();
+  State<ViewAllCreatedEvents> createState() => _ViewAllCreatedEventsState();
 }
 
-class _ViewAllPlacementsState extends State<ViewAllPlacements> {
+class _ViewAllCreatedEventsState extends State<ViewAllCreatedEvents> {
   ScrollController scrollController = ScrollController();
+  var generalEvent;
+  List createdEvents = [];
+  int createEventList = 0;
+
   @override
   Widget build(BuildContext context) {
+    createdEvents.clear();
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
@@ -36,9 +43,12 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
       triggerMode: RefreshIndicatorTriggerMode.onEdge,
       onRefresh: () async {
         await Future.delayed(const Duration(milliseconds: 1500));
-        // await getPlacements();
-        setState(() {});
+        await facultyController.fetchFacultyData();
         if (!mounted) return;
+        setState(() {
+          createEventList = 0;
+          createdEvents.clear();
+        });
       },
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(
@@ -57,7 +67,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                 )),
             elevation: 0,
             title: Text(
-              "Placements Events",
+              "Created Events",
               style: textStyle(
                   14.sp,
                   FontWeight.w800,
@@ -68,7 +78,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
           ),
           SliverToBoxAdapter(
             child: FutureBuilder(
-              future: getPlacements(),
+              future: facultyController.fetchFacultyData(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -114,48 +124,56 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                             height: 10,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Center(
-                              child: Container(
-                                  width: width * 0.9,
-                                  height: 250,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Shimmer.fromColors(
-                                    baseColor: themeProvider.isDarkMode
-                                        ? Colors.black
-                                        : Colors.white,
-                                    highlightColor:
-                                        Colors.grey.withOpacity(0.5),
-                                    period: const Duration(seconds: 2),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: Colors.grey[400]!,
+                              padding: const EdgeInsets.all(10.0),
+                              child: Center(
+                                child: Container(
+                                    width: width * 0.9,
+                                    height: 250,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.transparent,
+                                    ),
+                                    child: Shimmer.fromColors(
+                                      baseColor: themeProvider.isDarkMode
+                                          ? Colors.black
+                                          : Colors.white,
+                                      highlightColor:
+                                          Colors.grey.withOpacity(0.5),
+                                      period: const Duration(seconds: 2),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.grey[400]!,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )),
-                            ),
-                          )
+                                    )),
+                              ))
                         ],
                       ),
                     ),
                   );
                 }
-                if (snapshot.hasData) {
-                  if (eventData["events"].length > 0) {
-                    return Center(
-                      child: ListView.builder(
-                          controller: scrollController,
-                          shrinkWrap: true,
-                          itemCount: eventData["events"].length,
-                          itemBuilder: (context, index) {
+                if (facultyController.user["user"] != null) {
+                  generalEvent =
+                      facultyController.user["user"]["eventsCreated"];
+                  if (generalEvent.length > 0) {
+                    for (int i = 0; i < generalEvent.length; i++) {
+                      if (generalEvent[i]["status"] == "open") {
+                        createdEvents.add(generalEvent[i]);
+                        createEventList = createEventList + 1;
+                      }
+                    }
+                    return ListView.builder(
+                        controller: scrollController,
+                        shrinkWrap: true,
+                        itemCount:
+                            createdEvents.isEmpty ? 1 : createdEvents.length,
+                        itemBuilder: (context, index) {
+                          if (createdEvents.isNotEmpty) {
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: SizedBox(
@@ -200,7 +218,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                 children: [
                                                   Center(
                                                     child: Text(
-                                                      eventData["events"][index]
+                                                      createdEvents[index]
                                                           ["title"],
                                                       textAlign: TextAlign.left,
                                                       overflow:
@@ -220,7 +238,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                     height: 20,
                                                   ),
                                                   Text(
-                                                    "Event Type : ${eventData["events"][index]["type"]}",
+                                                    "Event Type : ${createdEvents[index]["type"]}",
                                                     textAlign: TextAlign.center,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -237,7 +255,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                     height: 5,
                                                   ),
                                                   Text(
-                                                    "Date : ${eventData["events"][index]["startDate"]}",
+                                                    "Date : ${createdEvents[index]["startDate"]}",
                                                     textAlign: TextAlign.center,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -254,7 +272,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                     height: 5,
                                                   ),
                                                   Text(
-                                                    "Price : ${eventData["events"][index]["eventPrice"]}",
+                                                    "Price : ${createdEvents[index]["eventPrice"]}",
                                                     textAlign: TextAlign.center,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -268,24 +286,6 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                         FontStyle.normal),
                                                   ),
                                                   const Spacer(),
-                                                  Text(
-                                                    "Hosted By : ${eventData["events"][index]["createdBy"][0]["name"]}",
-                                                    textScaleFactor: 1,
-                                                    textAlign: TextAlign.left,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    style: textStyle(
-                                                        11.sp,
-                                                        FontWeight.w600,
-                                                        themeProvider.isDarkMode
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        FontStyle.normal),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
                                                   ElevatedButton(
                                                       style: ElevatedButton.styleFrom(
                                                           shape: RoundedRectangleBorder(
@@ -311,7 +311,7 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                                       onPressed: action,
                                                       child: Center(
                                                         child: Text(
-                                                          "Participate",
+                                                          "Open Event",
                                                           textScaleFactor: 1,
                                                           style: textStyle(
                                                               12.sp,
@@ -325,60 +325,128 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
                                         );
                                       },
                                       openBuilder: (context, action) {
-                                        return EventDetail(
-                                          event: eventData["events"][index],
+                                        return FacultyEventDetail(
+                                          event: createdEvents[index],
                                         );
                                       }),
                                 ),
                               ),
                             );
-                          }),
-                    );
+                          }
+                          if (createdEvents.isEmpty) {
+                            return Center(
+                              child: Card(
+                                shadowColor: themeProvider.isDarkMode
+                                    ? const Color.fromARGB(255, 125, 125, 125)
+                                    : Colors.grey,
+                                color: Colors.transparent,
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Container(
+                                    width: width * 0.9,
+                                    height: 250.0,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 0.2,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : const Color.fromARGB(
+                                                    255, 151, 194, 8)),
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: themeProvider.isDarkMode
+                                            ? HexColor("#020E26")
+                                            : Colors.white),
+                                    child: Center(
+                                      child: Text(
+                                        "No Events Available",
+                                        style: textStyle(
+                                            14.sp,
+                                            FontWeight.w600,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
+                                      ),
+                                    )),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        });
                   } else {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Card(
-                          shadowColor: themeProvider.isDarkMode
-                              ? const Color.fromARGB(255, 125, 125, 125)
-                              : Colors.grey,
-                          color: Colors.transparent,
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Container(
-                              width: width * 0.9,
-                              height: 250.0,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 0.2,
-                                      color: themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : const Color.fromARGB(
-                                              255, 151, 194, 8)),
-                                  borderRadius: BorderRadius.circular(20),
+                    return Card(
+                      shadowColor: themeProvider.isDarkMode
+                          ? const Color.fromARGB(255, 125, 125, 125)
+                          : Colors.grey,
+                      color: Colors.transparent,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(
+                          width: width * 0.9,
+                          height: 250.0,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 0.2,
                                   color: themeProvider.isDarkMode
-                                      ? HexColor("#020E26")
-                                      : Colors.white),
-                              child: Center(
-                                child: Text(
-                                  "No Events Available",
-                                  style: textStyle(
-                                      14.sp,
-                                      FontWeight.w600,
-                                      themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
-                                      FontStyle.normal),
-                                ),
-                              )),
-                        ),
-                      ],
+                                      ? Colors.white
+                                      : const Color.fromARGB(255, 151, 194, 8)),
+                              borderRadius: BorderRadius.circular(20),
+                              color: themeProvider.isDarkMode
+                                  ? HexColor("#020E26")
+                                  : Colors.white),
+                          child: Center(
+                            child: Text(
+                              "No Events Available",
+                              style: textStyle(
+                                  14.sp,
+                                  FontWeight.w600,
+                                  themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  FontStyle.normal),
+                            ),
+                          )),
                     );
                   }
+                } else {
+                  return Card(
+                    shadowColor: themeProvider.isDarkMode
+                        ? const Color.fromARGB(255, 125, 125, 125)
+                        : Colors.grey,
+                    color: Colors.transparent,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Container(
+                        width: width * 0.9,
+                        height: 250.0,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 0.2,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white
+                                    : const Color.fromARGB(255, 151, 194, 8)),
+                            borderRadius: BorderRadius.circular(20),
+                            color: themeProvider.isDarkMode
+                                ? HexColor("#020E26")
+                                : Colors.white),
+                        child: Center(
+                          child: Text(
+                            "No Events Available",
+                            style: textStyle(
+                                14.sp,
+                                FontWeight.w600,
+                                themeProvider.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                                FontStyle.normal),
+                          ),
+                        )),
+                  );
                 }
-
-                return Container();
               },
             ),
           )
@@ -388,8 +456,8 @@ class _ViewAllPlacementsState extends State<ViewAllPlacements> {
   }
 
   var eventData;
-  getPlacements() async {
-    eventData = await getPlacementEvents();
+  getGeneral() async {
+    eventData = await getGeneralEvents();
     return eventData;
   }
 }

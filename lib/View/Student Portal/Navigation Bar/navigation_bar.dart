@@ -1,6 +1,8 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 
 import '../Applied Events/events.dart';
@@ -52,10 +54,26 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
             borderRadius: const Radius.circular(20),
             items: [
               CustomNavigationBarItem(
-                icon: const Icon(Icons.home),
+                title: Text(
+                  "Home",
+                  style: textStyle(
+                      8.sp, FontWeight.w500, Colors.white, FontStyle.normal),
+                ),
+                icon: const Icon(
+                  Icons.home,
+                  size: 30,
+                ),
               ),
               CustomNavigationBarItem(
-                icon: const Icon(Icons.event_rounded),
+                title: Text(
+                  "Events",
+                  style: textStyle(
+                      8.sp, FontWeight.w500, Colors.white, FontStyle.normal),
+                ),
+                icon: const Icon(
+                  Icons.event_rounded,
+                  size: 28,
+                ),
               ),
             ],
             currentIndex: _currentIndex,

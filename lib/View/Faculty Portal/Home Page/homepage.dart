@@ -14,6 +14,7 @@ import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/Faculty%20Portal/Create%20Event/event_create.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/event_details.dart';
 import 'package:suevents/View/Faculty%20Portal/Unselected%20List/unselected_list.dart';
+import 'package:suevents/View/Faculty%20Portal/View%20All%20Event/created_event_list.dart';
 
 FacultyController facultyController = FacultyController();
 
@@ -187,15 +188,20 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(right: 10.0),
-                      child: Text(
-                        "View All",
-                        style: textStyle(
-                            9.sp,
-                            FontWeight.w600,
-                            themeProvider.isDarkMode
-                                ? Colors.white
-                                : Colors.black,
-                            FontStyle.normal),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => const ViewAllCreatedEvents());
+                        },
+                        child: Text(
+                          "View All",
+                          style: textStyle(
+                              9.sp,
+                              FontWeight.w600,
+                              themeProvider.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              FontStyle.normal),
+                        ),
                       ),
                     ),
                   ],

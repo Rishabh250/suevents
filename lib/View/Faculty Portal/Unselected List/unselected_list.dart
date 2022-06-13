@@ -28,6 +28,7 @@ class _UnselectedListState extends State<UnselectedList> {
   ValueNotifier gropuValue = ValueNotifier(0);
   var eventsList;
   ValueNotifier selectedEvents = ValueNotifier([]);
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +38,19 @@ class _UnselectedListState extends State<UnselectedList> {
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics()),
+        controller: scrollController,
         slivers: [
           SliverAppBar(
             leading: GestureDetector(
                 onTap: () {
                   Get.back();
                 },
-                child: const Icon(Icons.arrow_back_ios)),
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                )),
             pinned: true,
             forceElevated: true,
             flexibleSpace: const FlexibleSpaceBar(
@@ -88,7 +94,7 @@ class _UnselectedListState extends State<UnselectedList> {
                           value: 1,
                           groupValue: value,
                           onChanged: (changeValue) async {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
                             gropuValue.value =
                                 int.parse(changeValue.toString());
                             eventType.value = "Aptitude Round";
@@ -117,7 +123,7 @@ class _UnselectedListState extends State<UnselectedList> {
                           value: 2,
                           groupValue: value,
                           onChanged: (changeValue) async {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
 
                             gropuValue.value =
                                 int.parse(changeValue.toString());
@@ -146,7 +152,7 @@ class _UnselectedListState extends State<UnselectedList> {
                           value: 3,
                           groupValue: value,
                           onChanged: (changeValue) async {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
 
                             gropuValue.value =
                                 int.parse(changeValue.toString());
@@ -177,7 +183,7 @@ class _UnselectedListState extends State<UnselectedList> {
                           value: 4,
                           groupValue: value,
                           onChanged: (changeValue) async {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
 
                             gropuValue.value =
                                 int.parse(changeValue.toString());
@@ -204,14 +210,40 @@ class _UnselectedListState extends State<UnselectedList> {
                 const SizedBox(
                   height: 10,
                 ),
-                ListTile(
-                  leading: Text(
-                    "Events",
-                    style: textStyle(
-                        16.sp,
-                        FontWeight.w800,
-                        themeProvider.isDarkMode ? Colors.white : Colors.black,
-                        FontStyle.normal),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Events",
+                        style: textStyle(
+                            16.sp,
+                            FontWeight.w800,
+                            themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
+                            FontStyle.normal),
+                      ),
+                      const Spacer(),
+                      MaterialButton(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        color: const Color.fromARGB(255, 0, 4, 86),
+                        onPressed: () async {
+                          EasyLoading.show(dismissOnTap: false);
+                          studentList = await getUnselectedStudents(
+                              eventType.value.toString(), selectedEvents.value);
+                          setState(() {});
+                          EasyLoading.dismiss();
+                        },
+                        child: Text(
+                          "Apply Filter",
+                          style: textStyle(12.sp, FontWeight.bold, Colors.white,
+                              FontStyle.normal),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 eventType.value == ""
@@ -221,16 +253,51 @@ class _UnselectedListState extends State<UnselectedList> {
                         builder: ((context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            EasyLoading.show();
+                            EasyLoading.show(dismissOnTap: false);
                           }
                           if (eventsList != null) {
                             EasyLoading.dismiss();
+                            if (eventsList["list"].length == 0) {
+                              log(selectedEvents.value.toString());
+
+                              return Card(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                color: Colors.transparent,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 0.2,
+                                          color: themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : const Color.fromARGB(
+                                                  255, 151, 194, 8)),
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: themeProvider.isDarkMode
+                                          ? HexColor("#020E26")
+                                          : Colors.white),
+                                  width: width * 0.9,
+                                  height: 200,
+                                  child: Center(
+                                      child: Text(
+                                    "No Events Found",
+                                    style: textStyle(
+                                        12.sp,
+                                        FontWeight.bold,
+                                        themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        FontStyle.normal),
+                                  )),
+                                ),
+                              );
+                            }
                             return SizedBox(
                               width: width * 0.9,
                               height: height * 0.45,
                               child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(
-                                    parent: BouncingScrollPhysics()),
+                                controller: scrollController,
                                 shrinkWrap: true,
                                 itemCount: eventsList["list"].length,
                                 itemBuilder: (context, index) {
@@ -251,8 +318,6 @@ class _UnselectedListState extends State<UnselectedList> {
                                                         ["_id"]);
                                               }
                                               setState(() {});
-                                              log(selectedEvents.value
-                                                  .toString());
                                             },
                                             title: Card(
                                               color: !themeProvider.isDarkMode
@@ -339,39 +404,19 @@ class _UnselectedListState extends State<UnselectedList> {
           ),
         ],
       ),
-      floatingActionButton: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          MaterialButton(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: const Color.fromARGB(255, 0, 4, 86),
-            onPressed: () async {
-              EasyLoading.show();
-              studentList = await getUnselectedStudents(
-                  eventType.value.toString(), selectedEvents.value);
-              EasyLoading.dismiss();
-            },
-            child: Text(
-              "Apply Filter",
-              style: textStyle(
-                  12.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+      floatingActionButton: studentList == null ||
+              studentList.toString().isEmpty
+          ? Container()
+          : MaterialButton(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: Colors.amber,
+              onPressed: createExcel,
+              child: Text("Generate Excel",
+                  style: textStyle(
+                      12.sp, FontWeight.bold, Colors.white, FontStyle.normal)),
             ),
-          ),
-          MaterialButton(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: Colors.amber,
-            onPressed: createExcel,
-            child: Text("Generate Excel",
-                style: textStyle(
-                    12.sp, FontWeight.bold, Colors.white, FontStyle.normal)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -387,7 +432,7 @@ class _UnselectedListState extends State<UnselectedList> {
       showError("Empty List", "You have not select any event");
       return;
     }
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
 
     final excel.Workbook workbook = excel.Workbook();
     final excel.Worksheet worksheet = workbook.worksheets[0];

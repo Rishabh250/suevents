@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -89,7 +90,10 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                   onTap: () {
                     Get.back();
                   },
-                  child: const Icon(Icons.arrow_back_ios)),
+                  child: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  )),
               pinned: true,
               forceElevated: true,
               flexibleSpace: const FlexibleSpaceBar(
@@ -137,11 +141,12 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
-                              EasyLoading.show();
+                              EasyLoading.show(
+                                dismissOnTap: false,
+                              );
                               setState(() {
                                 isVisible = false;
                                 _currentIndex = index;
-                                getIndex.value = index;
 
                                 pageController.animateToPage(_currentIndex,
                                     curve: Curves.easeIn,
@@ -202,7 +207,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  EasyLoading.show();
+                                  EasyLoading.show(dismissOnTap: false);
                                   return Container();
                                 }
                                 EasyLoading.dismiss();
@@ -598,13 +603,14 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
   }
 
   Future<void> generateAttendance() async {
-    var presentSTD = eventData["events"][getIndex.value]["present"];
-    var absentSTD = eventData["events"][getIndex.value]["absent"];
+    log(_currentIndex.toString());
+    var presentSTD = eventData["events"][_currentIndex]["present"];
+    var absentSTD = eventData["events"][_currentIndex]["absent"];
     if (presentSTD == null) {
       showError("Empty List", "You have not select any event");
       return;
     }
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
 
     final excel.Workbook workbook = excel.Workbook();
     final excel.Worksheet worksheet = workbook.worksheets[0];
@@ -640,10 +646,10 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
     worksheet.getRangeByName("E1").setText("Email ID");
     worksheet
         .getRangeByName("F1")
-        .setText(eventData["events"][getIndex.value]["date"].toString());
+        .setText(eventData["events"][_currentIndex]["date"].toString());
 
     worksheet.name =
-        "Attendance List ${eventData["events"][getIndex.value]["date"]}";
+        "Attendance List ${eventData["events"][_currentIndex]["date"]}";
 
     worksheet.setColumnWidthInPixels(1, 100);
     worksheet.setColumnWidthInPixels(2, 150);
@@ -651,6 +657,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
     worksheet.setColumnWidthInPixels(4, 150);
     worksheet.setColumnWidthInPixels(5, 300);
     worksheet.setColumnWidthInPixels(6, 150);
+    worksheet.setColumnWidthInPixels(7, 150);
 
     for (int i = 0; i < presentSTD.length; i++) {
       worksheet.getRangeByName("A${i + 2}").setText("${i + 1}");
@@ -669,7 +676,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
       worksheet.getRangeByName("F${i + 2}").cellStyle = presentStyle;
     }
 
-    if (eventData["events"][getIndex.value]["absent"].length != 0) {
+    if (eventData["events"][_currentIndex]["absent"].length != 0) {
       int j = 0;
       int k = presentSTD.length;
 
@@ -692,6 +699,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
             .getRangeByName("E${k + 2}")
             .setText("${absentSTD[j]['email']}");
         worksheet.getRangeByName("F${k + 2}").setText("Absent");
+        worksheet.getRangeByName("G${k + 2}").setText("Unselected");
         worksheet.getRangeByName("F${k + 2}").cellStyle = absentStyle;
         j++;
         k++;
@@ -702,7 +710,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
 
     final String path = (await getApplicationDocumentsDirectory()).path;
     final String fileName =
-        '$path/${eventData["events"][getIndex.value]["date"]} Attendance List.xlsx';
+        '$path/${eventData["events"][_currentIndex]["date"]} Attendance List.xlsx';
     final File file = File(fileName);
     await file.writeAsBytes(bytes, flush: true);
     OpenFile.open(fileName);

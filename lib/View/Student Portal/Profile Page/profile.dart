@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
           future: userDetailsController.fetchUserData(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              EasyLoading.show();
+              EasyLoading.show(dismissOnTap: false);
               return Container();
             }
             if (userDetailsController.user != null) {
@@ -90,10 +90,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           Theme.of(context).scaffoldBackgroundColor,
                       leading: GestureDetector(
                         onTap: () => Get.back(),
-                        child: Icon(Icons.arrow_back_ios_rounded,
-                            color: themeProvider.isDarkMode
-                                ? Colors.white
-                                : Colors.black),
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            color: Colors.white),
                       )),
                   SliverToBoxAdapter(
                     child: Column(
@@ -111,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          EasyLoading.show();
+                                          EasyLoading.show(dismissOnTap: false);
                                           await _upload();
                                           await uploadProfileImage(
                                               userDetailsController.token,
@@ -143,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          EasyLoading.show();
+                                          EasyLoading.show(dismissOnTap: false);
                                           await _upload();
                                           await uploadProfileImage(
                                               userDetailsController.token,

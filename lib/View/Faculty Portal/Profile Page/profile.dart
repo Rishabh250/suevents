@@ -86,10 +86,8 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                           Theme.of(context).scaffoldBackgroundColor,
                       leading: GestureDetector(
                         onTap: () => Get.back(),
-                        child: Icon(Icons.arrow_back_ios_rounded,
-                            color: themeProvider.isDarkMode
-                                ? Colors.white
-                                : Colors.black),
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            color: Colors.white),
                       )),
                   SliverToBoxAdapter(
                     child: Column(
@@ -107,7 +105,7 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          EasyLoading.show();
+                                          EasyLoading.show(dismissOnTap: false);
                                           await _upload();
                                           await facultyUploadImage(
                                               controller.token, imageURL.value);
@@ -135,7 +133,7 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          EasyLoading.show();
+                                          EasyLoading.show(dismissOnTap: false);
                                           await _upload();
                                           await facultyUploadImage(
                                               controller.token, imageURL.value);

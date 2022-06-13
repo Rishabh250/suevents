@@ -123,7 +123,10 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                     onTap: () {
                       Get.back();
                     },
-                    child: const Icon(Icons.arrow_back_ios),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    ),
                   )),
               SliverToBoxAdapter(
                 child: Column(
@@ -366,7 +369,8 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                               var token =
                                                   facultyController.token;
                                               log(token.toString());
-                                              EasyLoading.show();
+                                              EasyLoading.show(
+                                                  dismissOnTap: false);
                                               if (lab.text.isEmpty) {
                                                 showError("Empty Field",
                                                     "Add Lab Details");
@@ -387,7 +391,8 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                 EasyLoading.dismiss();
 
                                                 return;
-                                              }    if (roundTime.value.isEmpty) {
+                                              }
+                                              if (roundTime.value.isEmpty) {
                                                 showError("Empty Field",
                                                     "Select Round Time");
                                                 EasyLoading.dismiss();
@@ -819,7 +824,8 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                 borderRadius:
                                                     BorderRadius.circular(10)),
                                             onPressed: () async {
-                                              EasyLoading.show();
+                                              EasyLoading.show(
+                                                  dismissOnTap: false);
                                               bool isClose = await closeEvent(
                                                   widget.event["_id"]);
                                               if (isClose) {

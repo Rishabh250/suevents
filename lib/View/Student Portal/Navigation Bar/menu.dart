@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
+import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/View/get_started.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
 import '../Profile Page/profile.dart';
@@ -110,11 +112,29 @@ class _MenuScreenState extends State<MenuScreen> {
                   10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
         ),
         ListTile(
+          onTap: () async {
+            final mailtoLink = Mailto(
+              to: ['rishu25bansal@gmail.com'],
+              subject: 'Student Help & Support',
+              body:
+                  'Hello Sir/Mam, \n\n Myself ${userDetailsController.name.value} from ${userDetailsController.course.value} ${userDetailsController.year.value} year \n System ID: ${userDetailsController.systemID.value} \n',
+            );
+            await launchUrlString('$mailtoLink');
+          },
           title: Text("Help & Support",
               style: textStyle(
                   10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
         ),
         ListTile(
+          onTap: () async {
+            final mailtoLink = Mailto(
+              to: ['rishu25bansal@gmail.com'],
+              subject: 'Student Feedback',
+              body:
+                  'Hello Sir/Mam, \n\n Myself ${userDetailsController.name.value} from ${userDetailsController.course.value} ${userDetailsController.year.value} year \n System ID: ${userDetailsController.systemID.value} \n',
+            );
+            await launchUrlString('$mailtoLink');
+          },
           title: Text("Feedback",
               style: textStyle(
                   10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
@@ -132,7 +152,7 @@ class _MenuScreenState extends State<MenuScreen> {
         ),
         ListTile(
           onTap: () async {
-            EasyLoading.show();
+            EasyLoading.show(dismissOnTap: false);
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
             loginStatus(false);

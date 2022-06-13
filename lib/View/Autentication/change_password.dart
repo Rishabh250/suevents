@@ -164,7 +164,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                               showError("Empty Field", "Enter your password");
                               return;
                             } else {
-                              EasyLoading.show();
+                              EasyLoading.show(dismissOnTap: false);
                               userType["isType"] == "Faculty"
                                   ? facultyResetPassword(email.toString(),
                                       password.text.toString())

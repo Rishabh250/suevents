@@ -103,7 +103,10 @@ class _EventDetailState extends State<EventDetail> {
                     onTap: () {
                       Get.back();
                     },
-                    child: const Icon(Icons.arrow_back_ios),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    ),
                   )),
               SliverToBoxAdapter(
                 child: Column(
@@ -467,7 +470,9 @@ class _EventDetailState extends State<EventDetail> {
                                                             sharedPreferences
                                                                 .getString(
                                                                     "accessToken");
-                                                        EasyLoading.show();
+                                                        EasyLoading.show(
+                                                            dismissOnTap:
+                                                                false);
 
                                                         await applyEvent(
                                                             token,

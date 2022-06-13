@@ -71,15 +71,28 @@ class CreateEventState extends State<CreateEvent> {
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       appBar: AppBar(
-        elevation: 4,
-        backgroundColor: const Color.fromARGB(255, 3, 13, 78),
-        automaticallyImplyLeading: false,
+        leading: GestureDetector(
+            onTap: () {
+              Get.back();
+            },
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
+        flexibleSpace: const FlexibleSpaceBar(
+          centerTitle: true,
+        ),
+        elevation: 8,
+        backgroundColor: const Color.fromARGB(255, 30, 0, 255),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10))),
         title: Text(
           'Create Event',
           style:
               textStyle(15.sp, FontWeight.bold, Colors.white, FontStyle.normal),
         ),
-        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -225,7 +238,8 @@ class CreateEventState extends State<CreateEvent> {
                                                             10)),
                                                 elevation: 8,
                                                 onPressed: () async {
-                                                  EasyLoading.show();
+                                                  EasyLoading.show(
+                                                      dismissOnTap: false);
 
                                                   title = eventTitle.text
                                                       .toString();
@@ -613,6 +627,7 @@ class _EventCreationState extends State<EventCreation> {
           visible: !isVisible,
           child: ListTile(
             title: TextField(
+              enabled: false,
               onChanged: ((value) {
                 eventPrice.value = value;
               }),
