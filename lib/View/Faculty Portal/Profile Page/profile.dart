@@ -92,60 +92,42 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        controller.userImage.value == ""
-                            ? Stack(
-                                children: [
-                                  const CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage:
-                                        AssetImage("assets/images/bg.jpg"),
-                                  ),
-                                  Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          EasyLoading.show(dismissOnTap: false);
-                                          await _upload();
-                                          await facultyUploadImage(
-                                              controller.token, imageURL.value);
-                                          await controller.fetchFacultyData();
-                                        },
-                                        child: const Icon(
-                                          Icons.camera_alt_rounded,
-                                        ),
-                                      ))
-                                ],
-                              )
-                            : Stack(
-                                children: [
-                                  ValueListenableBuilder(
-                                      valueListenable: controller.userImage,
-                                      builder: (context, value, child) {
-                                        return CircleAvatar(
+                        Stack(
+                          children: [
+                            ValueListenableBuilder(
+                                valueListenable: controller.userImage,
+                                builder: (context, value, child) {
+                                  return "$value" == ""
+                                      ? const CircleAvatar(
                                           radius: 50,
+                                          backgroundImage: ExactAssetImage(
+                                            "assets/images/faculty.png",
+                                          ),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 12.w,
                                           backgroundImage:
                                               NetworkImage("$value"),
                                         );
-                                      }),
-                                  Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          EasyLoading.show(dismissOnTap: false);
-                                          await _upload();
-                                          await facultyUploadImage(
-                                              controller.token, imageURL.value);
-                                          await controller.fetchFacultyData();
-                                          EasyLoading.dismiss();
-                                        },
-                                        child: const Icon(
-                                          Icons.camera_alt_rounded,
-                                        ),
-                                      ))
-                                ],
-                              ),
+                                }),
+                            Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    EasyLoading.show(dismissOnTap: false);
+                                    await _upload();
+                                    await facultyUploadImage(
+                                        controller.token, imageURL.value);
+                                    await controller.fetchFacultyData();
+                                    EasyLoading.dismiss();
+                                  },
+                                  child: const Icon(
+                                    Icons.camera_alt_rounded,
+                                  ),
+                                ))
+                          ],
+                        ),
                         const SizedBox(
                           height: 10,
                         ),

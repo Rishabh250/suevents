@@ -376,7 +376,47 @@ class _ViewAllCreatedEventsState extends State<ViewAllCreatedEvents> {
                           }
                         });
                   } else {
-                    return Card(
+                    return Center(
+                      child: Card(
+                        shadowColor: themeProvider.isDarkMode
+                            ? const Color.fromARGB(255, 125, 125, 125)
+                            : Colors.grey,
+                        color: Colors.transparent,
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Container(
+                            width: width * 0.9,
+                            height: 250.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 0.2,
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : const Color.fromARGB(
+                                            255, 151, 194, 8)),
+                                borderRadius: BorderRadius.circular(20),
+                                color: themeProvider.isDarkMode
+                                    ? HexColor("#020E26")
+                                    : Colors.white),
+                            child: Center(
+                              child: Text(
+                                "No Events Available",
+                                style: textStyle(
+                                    14.sp,
+                                    FontWeight.w600,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              ),
+                            )),
+                      ),
+                    );
+                  }
+                } else {
+                  return Center(
+                    child: Card(
                       shadowColor: themeProvider.isDarkMode
                           ? const Color.fromARGB(255, 125, 125, 125)
                           : Colors.grey,
@@ -409,42 +449,7 @@ class _ViewAllCreatedEventsState extends State<ViewAllCreatedEvents> {
                                   FontStyle.normal),
                             ),
                           )),
-                    );
-                  }
-                } else {
-                  return Card(
-                    shadowColor: themeProvider.isDarkMode
-                        ? const Color.fromARGB(255, 125, 125, 125)
-                        : Colors.grey,
-                    color: Colors.transparent,
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Container(
-                        width: width * 0.9,
-                        height: 250.0,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 0.2,
-                                color: themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : const Color.fromARGB(255, 151, 194, 8)),
-                            borderRadius: BorderRadius.circular(20),
-                            color: themeProvider.isDarkMode
-                                ? HexColor("#020E26")
-                                : Colors.white),
-                        child: Center(
-                          child: Text(
-                            "No Events Available",
-                            style: textStyle(
-                                14.sp,
-                                FontWeight.w600,
-                                themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                FontStyle.normal),
-                          ),
-                        )),
+                    ),
                   );
                 }
               },

@@ -60,20 +60,23 @@ class _MenuScreenState extends State<MenuScreen> {
                 return DrawerHeader(
                     child: Column(
                   children: [
-                    userDetailsController.userImage.value == ""
-                        ? CircleAvatar(
-                            radius: 12.w,
-                            backgroundImage:
-                                const AssetImage("assets/images/bg.jpg"),
-                          )
-                        : ValueListenableBuilder(
-                            valueListenable: userDetailsController.userImage,
-                            builder: (context, value, child) {
-                              return CircleAvatar(
-                                radius: 12.w,
-                                backgroundImage: NetworkImage("$value"),
-                              );
-                            }),
+                    ValueListenableBuilder(
+                        valueListenable: userDetailsController.userImage,
+                        builder: (context, value, child) {
+                          return "$value" == ""
+                              ? CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: ExactAssetImage(
+                                    userDetailsController.gender.value == "Male"
+                                        ? "assets/images/boy.png"
+                                        : "assets/images/girl.png",
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  radius: 12.w,
+                                  backgroundImage: NetworkImage("$value"),
+                                );
+                        }),
                     const Spacer(),
                     ValueListenableBuilder(
                         valueListenable: userDetailsController.name,

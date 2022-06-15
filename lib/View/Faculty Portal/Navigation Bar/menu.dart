@@ -56,20 +56,21 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
                 return DrawerHeader(
                     child: Column(
                   children: [
-                    controller.userImage.value == ""
-                        ? CircleAvatar(
-                            radius: 12.w,
-                            backgroundImage:
-                                const AssetImage("assets/images/bg.jpg"),
-                          )
-                        : ValueListenableBuilder(
-                            valueListenable: controller.userImage,
-                            builder: (context, value, child) {
-                              return CircleAvatar(
-                                radius: 12.w,
-                                backgroundImage: NetworkImage("$value"),
-                              );
-                            }),
+                    ValueListenableBuilder(
+                        valueListenable: controller.userImage,
+                        builder: (context, value, child) {
+                          return "$value" == ""
+                              ? const CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: ExactAssetImage(
+                                    "assets/images/faculty.png",
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  radius: 12.w,
+                                  backgroundImage: NetworkImage("$value"),
+                                );
+                        }),
                     const Spacer(),
                     ValueListenableBuilder(
                         valueListenable: controller.name,
