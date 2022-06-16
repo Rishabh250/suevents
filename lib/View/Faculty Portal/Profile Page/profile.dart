@@ -14,6 +14,9 @@ import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
+import 'package:suevents/View/no_connection.dart';
+
+import '../../../Controller/Internet Connection/connection_provider.dart';
 
 class FacultyProfilePage extends StatefulWidget {
   const FacultyProfilePage({Key? key}) : super(key: key);
@@ -58,6 +61,8 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
 
   @override
   void initState() {
+    Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
+
     super.initState();
   }
 
@@ -67,230 +72,248 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    return Scaffold(
-      body: FutureBuilder(
-          future: controller.fetchFacultyData(),
-          builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              EasyLoading.show(dismissOnTap: false);
-              return Container();
-            }
-            if (controller.user != null) {
-              EasyLoading.dismiss(animation: true);
+    return Consumer<ConnectivityProvider>(
+        builder: (context, value, child) => value.isOnline
+            ? Scaffold(
+                body: FutureBuilder(
+                    future: controller.fetchFacultyData(),
+                    builder: ((context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        EasyLoading.show();
+                        return Container();
+                      }
+                      if (controller.user != null) {
+                        EasyLoading.dismiss(animation: true);
 
-              return CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                      elevation: 0,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      leading: GestureDetector(
-                        onTap: () => Get.back(),
-                        child: const Icon(Icons.arrow_back_ios_rounded,
-                            color: Colors.white),
-                      )),
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            ValueListenableBuilder(
-                                valueListenable: controller.userImage,
-                                builder: (context, value, child) {
-                                  return "$value" == ""
-                                      ? const CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage: ExactAssetImage(
-                                            "assets/images/faculty.png",
-                                          ),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 12.w,
-                                          backgroundImage:
-                                              NetworkImage("$value"),
-                                        );
-                                }),
-                            Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    EasyLoading.show(dismissOnTap: false);
-                                    await _upload();
-                                    await facultyUploadImage(
-                                        controller.token, imageURL.value);
-                                    await controller.fetchFacultyData();
-                                    EasyLoading.dismiss();
-                                  },
+                        return CustomScrollView(
+                          slivers: [
+                            SliverAppBar(
+                                elevation: 0,
+                                backgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                leading: GestureDetector(
+                                  onTap: () => Get.back(),
                                   child: const Icon(
-                                    Icons.camera_alt_rounded,
-                                  ),
-                                ))
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ValueListenableBuilder(
-                            valueListenable: controller.name,
-                            builder: (context, value, child) {
-                              return Text(
-                                "$value",
-                                style: textStyle(
-                                    15.sp,
-                                    FontWeight.bold,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    FontStyle.normal),
-                              );
-                            }),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ValueListenableBuilder(
-                            valueListenable: controller.email,
-                            builder: (context, value, child) {
-                              return Text(
-                                "$value",
-                                style: textStyle(
-                                    15.sp,
-                                    FontWeight.bold,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    FontStyle.normal),
-                              );
-                            }),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Card(
-                          color: Colors.transparent,
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Container(
-                            width: width * 0.9,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 0.2,
-                                    color: themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : const Color.fromARGB(
-                                            255, 151, 194, 8)),
-                                borderRadius: BorderRadius.circular(20),
-                                color: themeProvider.isDarkMode
-                                    ? HexColor("020E26")
-                                    : Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
+                                      Icons.arrow_back_ios_rounded,
+                                      color: Colors.white),
+                                )),
+                            SliverToBoxAdapter(
                               child: Column(
                                 children: [
-                                  Row(
+                                  Stack(
                                     children: [
-                                      Text(
-                                        "System ID : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
                                       ValueListenableBuilder(
-                                          valueListenable: controller.systemID,
+                                          valueListenable: controller.userImage,
                                           builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  15.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  FontStyle.normal),
-                                            );
+                                            return "$value" == ""
+                                                ? const CircleAvatar(
+                                                    radius: 50,
+                                                    backgroundImage:
+                                                        ExactAssetImage(
+                                                      "assets/images/faculty.png",
+                                                    ),
+                                                  )
+                                                : CircleAvatar(
+                                                    radius: 12.w,
+                                                    backgroundImage:
+                                                        NetworkImage("$value"),
+                                                  );
                                           }),
+                                      Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              EasyLoading.show();
+                                              await _upload();
+                                              await facultyUploadImage(
+                                                  controller.token,
+                                                  imageURL.value);
+                                              await controller
+                                                  .fetchFacultyData();
+                                              EasyLoading.dismiss();
+                                            },
+                                            child: const Icon(
+                                              Icons.camera_alt_rounded,
+                                            ),
+                                          ))
                                     ],
                                   ),
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Gender : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      ValueListenableBuilder(
-                                          valueListenable: controller.gender,
-                                          builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  15.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  FontStyle.normal),
-                                            );
-                                          }),
-                                    ],
-                                  ),
+                                  ValueListenableBuilder(
+                                      valueListenable: controller.name,
+                                      builder: (context, value, child) {
+                                        return Text(
+                                          "$value",
+                                          style: textStyle(
+                                              15.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        );
+                                      }),
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Events Created : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
+                                  ValueListenableBuilder(
+                                      valueListenable: controller.email,
+                                      builder: (context, value, child) {
+                                        return Text(
+                                          "$value",
+                                          style: textStyle(
+                                              15.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        );
+                                      }),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  Card(
+                                    color: Colors.transparent,
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Container(
+                                      width: width * 0.9,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 0.2,
+                                              color: themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : const Color.fromARGB(
+                                                      255, 151, 194, 8)),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: themeProvider.isDarkMode
+                                              ? HexColor("020E26")
+                                              : Colors.white),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "System ID : ",
+                                                  style: textStyle(
+                                                      12.sp,
+                                                      FontWeight.w400,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                                ValueListenableBuilder(
+                                                    valueListenable:
+                                                        controller.systemID,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "$value",
+                                                        style: textStyle(
+                                                            15.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Gender : ",
+                                                  style: textStyle(
+                                                      12.sp,
+                                                      FontWeight.w400,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                                ValueListenableBuilder(
+                                                    valueListenable:
+                                                        controller.gender,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "$value",
+                                                        style: textStyle(
+                                                            15.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Events Created : ",
+                                                  style: textStyle(
+                                                      12.sp,
+                                                      FontWeight.w400,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                                ValueListenableBuilder(
+                                                    valueListenable:
+                                                        controller.events,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "$value",
+                                                        style: textStyle(
+                                                            15.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      ValueListenableBuilder(
-                                          valueListenable: controller.events,
-                                          builder: (context, value, child) {
-                                            return Text(
-                                              "$value",
-                                              style: textStyle(
-                                                  15.sp,
-                                                  FontWeight.bold,
-                                                  themeProvider.isDarkMode
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  FontStyle.normal),
-                                            );
-                                          }),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              );
-            }
+                            )
+                          ],
+                        );
+                      }
 
-            return const Center(child: Text("Something went wrong"));
-          })),
-    );
+                      return const Center(child: Text("Something went wrong"));
+                    })),
+              )
+            : const NoInternet());
   }
 }

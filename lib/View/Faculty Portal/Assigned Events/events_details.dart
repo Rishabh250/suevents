@@ -207,7 +207,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  EasyLoading.show(dismissOnTap: false);
+                                  EasyLoading.show();
                                   return Container();
                                 }
                                 EasyLoading.dismiss();
@@ -610,7 +610,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
       showError("Empty List", "You have not select any event");
       return;
     }
-    EasyLoading.show(dismissOnTap: false);
+    EasyLoading.show();
 
     final excel.Workbook workbook = excel.Workbook();
     final excel.Worksheet worksheet = workbook.worksheets[0];

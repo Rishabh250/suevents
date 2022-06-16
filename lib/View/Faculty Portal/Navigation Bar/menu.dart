@@ -149,7 +149,7 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
         ),
         ListTile(
           onTap: () async {
-            EasyLoading.show(dismissOnTap: false);
+            EasyLoading.show();
             await Future.delayed(const Duration(seconds: 1));
             EasyLoading.dismiss();
             loginStatus(false);

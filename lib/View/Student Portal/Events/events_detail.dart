@@ -10,9 +10,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/View/no_connection.dart';
 
 import '../../../../Controller/Student_Controllers/controller.dart';
 import '../../../../Models/Event Api/events_api.dart';
+import '../../../Controller/Internet Connection/connection_provider.dart';
 
 class EventDetail extends StatefulWidget {
   var event;
@@ -32,6 +34,8 @@ class _EventDetailState extends State<EventDetail> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
+
     log(widget.event.toString());
     if (widget.event["registration"] == false) {
       btnTxt.value = "Registration close";
@@ -60,479 +64,515 @@ class _EventDetailState extends State<EventDetail> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    return NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator();
-        return true;
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics()),
-            slivers: [
-              SliverAppBar(
-                  pinned: true,
-                  expandedHeight: 200,
-                  flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      background: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
-                        child: Opacity(
-                          opacity: 0.8,
-                          child: Image.asset(
-                            "assets/images/bg.jpg",
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        widget.event["title"],
-                        style: textStyle(12.sp, FontWeight.w700, Colors.white,
-                            FontStyle.normal),
-                      )),
-                  elevation: 0,
-                  backgroundColor: const Color.fromARGB(255, 30, 0, 255),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  leading: GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
-                  )),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Card(
-                        shadowColor: themeProvider.isDarkMode
-                            ? const Color.fromARGB(255, 125, 125, 125)
-                            : Colors.grey,
-                        color: Colors.transparent,
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Container(
-                          width: width * 0.95,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 0.2,
-                                  color: themeProvider.isDarkMode
-                                      ? Colors.white
-                                      : const Color.fromARGB(255, 151, 194, 8)),
-                              borderRadius: BorderRadius.circular(20),
-                              color: themeProvider.isDarkMode
-                                  ? HexColor("#020E26")
-                                  : Colors.white),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+    return Consumer<ConnectivityProvider>(
+      builder: (context, value, child) => value.isOnline
+          ? NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overscroll) {
+                overscroll.disallowIndicator();
+                return true;
+              },
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics()),
+                    slivers: [
+                      SliverAppBar(
+                          pinned: true,
+                          expandedHeight: 200,
+                          flexibleSpace: FlexibleSpaceBar(
+                              centerTitle: true,
+                              background: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20)),
+                                child: Opacity(
+                                  opacity: 0.8,
+                                  child: Image.asset(
+                                    "assets/images/bg.jpg",
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                widget.event["title"],
+                                style: textStyle(12.sp, FontWeight.w700,
+                                    Colors.white, FontStyle.normal),
+                              )),
+                          elevation: 0,
+                          backgroundColor:
+                              const Color.fromARGB(255, 30, 0, 255),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20))),
+                          leading: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                            ),
+                          )),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Card(
+                                shadowColor: themeProvider.isDarkMode
+                                    ? const Color.fromARGB(255, 125, 125, 125)
+                                    : Colors.grey,
+                                color: Colors.transparent,
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Container(
+                                  width: width * 0.95,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 0.2,
+                                          color: themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : const Color.fromARGB(
+                                                  255, 151, 194, 8)),
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: themeProvider.isDarkMode
+                                          ? HexColor("#020E26")
+                                          : Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Event Type : ",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              Text(
+                                                widget.event["type"],
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    const Color.fromARGB(
+                                                        255, 43, 6, 210),
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Event Price : ",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              Text(
+                                                widget.event["eventPrice"],
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    const Color.fromARGB(
+                                                        255, 43, 6, 210),
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Start Date : ",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              Text(
+                                                widget.event["startDate"],
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    const Color.fromARGB(
+                                                        255, 43, 6, 210),
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 8.0, left: 15),
+                              child: Row(
                                 children: [
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Event Type : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      Text(
-                                        widget.event["type"],
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.bold,
-                                            const Color.fromARGB(
-                                                255, 43, 6, 210),
-                                            FontStyle.normal),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Event Price : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      Text(
-                                        widget.event["eventPrice"],
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.bold,
-                                            const Color.fromARGB(
-                                                255, 43, 6, 210),
-                                            FontStyle.normal),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Start Date : ",
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.w400,
-                                            themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                            FontStyle.normal),
-                                      ),
-                                      Text(
-                                        widget.event["startDate"],
-                                        style: textStyle(
-                                            12.sp,
-                                            FontWeight.bold,
-                                            const Color.fromARGB(
-                                                255, 43, 6, 210),
-                                            FontStyle.normal),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  )
+                                  Text("About Event : ",
+                                      style: textStyle(
+                                          15.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? const Color.fromARGB(
+                                                  255, 255, 255, 255)
+                                              : Colors.black,
+                                          FontStyle.normal)),
                                 ],
                               ),
                             ),
-                          ),
-                        )),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, left: 15),
-                      child: Row(
-                        children: [
-                          Text("About Event : ",
-                              style: textStyle(
-                                  15.sp,
-                                  FontWeight.bold,
-                                  themeProvider.isDarkMode
-                                      ? const Color.fromARGB(255, 255, 255, 255)
-                                      : Colors.black,
-                                  FontStyle.normal)),
-                        ],
-                      ),
-                    ),
-                    Card(
-                      shadowColor: themeProvider.isDarkMode
-                          ? const Color.fromARGB(255, 125, 125, 125)
-                          : Colors.grey,
-                      color: Colors.transparent,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(
-                        width: width * 0.95,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 0.2,
-                                color: themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : const Color.fromARGB(255, 151, 194, 8)),
-                            borderRadius: BorderRadius.circular(20),
-                            color: themeProvider.isDarkMode
-                                ? HexColor("#020E26")
-                                : Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SizedBox(
-                              width: width * 0.85,
-                              child: ExpandableText(
-                                widget.event["description"] == ""
-                                    ? "No Description"
-                                    : widget.event["description"],
-                                expandText: 'Show more',
-                                collapseText: 'Show less',
-                                maxLines: 3,
-                                animation: true,
-                                linkStyle: textStyle(
-                                    12.sp,
-                                    FontWeight.w400,
-                                    themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    FontStyle.normal),
-                                style: textStyle(
-                                    12.sp,
-                                    FontWeight.bold,
-                                    const Color.fromARGB(255, 43, 6, 210),
-                                    FontStyle.normal),
-                                expandOnTextTap: true,
-                                collapseOnTextTap: true,
+                            Card(
+                              shadowColor: themeProvider.isDarkMode
+                                  ? const Color.fromARGB(255, 125, 125, 125)
+                                  : Colors.grey,
+                              color: Colors.transparent,
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Container(
+                                width: width * 0.95,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 0.2,
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : const Color.fromARGB(
+                                                255, 151, 194, 8)),
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: themeProvider.isDarkMode
+                                        ? HexColor("#020E26")
+                                        : Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: SizedBox(
+                                      width: width * 0.85,
+                                      child: ExpandableText(
+                                        widget.event["description"] == ""
+                                            ? "No Description"
+                                            : widget.event["description"],
+                                        expandText: 'Show more',
+                                        collapseText: 'Show less',
+                                        maxLines: 3,
+                                        animation: true,
+                                        linkStyle: textStyle(
+                                            12.sp,
+                                            FontWeight.w400,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
+                                        style: textStyle(
+                                            12.sp,
+                                            FontWeight.bold,
+                                            const Color.fromARGB(
+                                                255, 43, 6, 210),
+                                            FontStyle.normal),
+                                        expandOnTextTap: true,
+                                        collapseOnTextTap: true,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, left: 15),
-                      child: Row(
-                        children: [
-                          Text("Faculty Assigned : ",
-                              style: textStyle(
-                                  15.sp,
-                                  FontWeight.bold,
-                                  themeProvider.isDarkMode
-                                      ? const Color.fromARGB(255, 255, 255, 255)
-                                      : Colors.black,
-                                  FontStyle.normal)),
-                        ],
-                      ),
-                    ),
-                    FacultyAssined(
-                        width: width,
-                        event: widget.event,
-                        themeProvider: themeProvider),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, left: 15),
-                      child: Row(
-                        children: [
-                          Text("Hosted By : ",
-                              style: textStyle(
-                                  15.sp,
-                                  FontWeight.bold,
-                                  themeProvider.isDarkMode
-                                      ? const Color.fromARGB(255, 255, 255, 255)
-                                      : Colors.black,
-                                  FontStyle.normal)),
-                        ],
-                      ),
-                    ),
-                    HostedBy(
-                        themeProvider: themeProvider,
-                        width: width,
-                        event: widget.event),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0),
-                      child: Row(
-                        children: [
-                          FutureBuilder(
-                              future: getData(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return MaterialButton(
-                                      elevation: 4,
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      onPressed: () {},
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: ValueListenableBuilder(
-                                            valueListenable: btnTxt,
-                                            builder: (context, value, child) {
-                                              return Text(
-                                                "$value",
-                                                style: textStyle(
-                                                    12.sp,
-                                                    FontWeight.bold,
-                                                    Colors.black,
-                                                    FontStyle.normal),
-                                              );
-                                            }),
-                                      ));
-                                }
-                                return MaterialButton(
-                                    elevation: 4,
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    onPressed: () async {
-                                      if (btnTxt.value == "Participated") {
-                                        return;
-                                      }
-                                      if (widget.event["registration"] ==
-                                          false) {
-                                        return;
-                                      }
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              backgroundColor:
-                                                  themeProvider.isDarkMode
-                                                      ? HexColor("#010A1C")
-                                                      : Colors.white,
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 8.0, left: 15),
+                              child: Row(
+                                children: [
+                                  Text("Faculty Assigned : ",
+                                      style: textStyle(
+                                          15.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? const Color.fromARGB(
+                                                  255, 255, 255, 255)
+                                              : Colors.black,
+                                          FontStyle.normal)),
+                                ],
+                              ),
+                            ),
+                            FacultyAssined(
+                                width: width,
+                                event: widget.event,
+                                themeProvider: themeProvider),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 8.0, left: 15),
+                              child: Row(
+                                children: [
+                                  Text("Hosted By : ",
+                                      style: textStyle(
+                                          15.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? const Color.fromARGB(
+                                                  255, 255, 255, 255)
+                                              : Colors.black,
+                                          FontStyle.normal)),
+                                ],
+                              ),
+                            ),
+                            HostedBy(
+                                themeProvider: themeProvider,
+                                width: width,
+                                event: widget.event),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15.0),
+                              child: Row(
+                                children: [
+                                  FutureBuilder(
+                                      future: getData(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return MaterialButton(
+                                              elevation: 4,
+                                              color: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          20)),
-                                              title: Text(widget.event["title"],
-                                                  style: textStyle(
-                                                      15.sp,
-                                                      FontWeight.bold,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal)),
-                                              content: Text(
-                                                  "Do want to apply for this event ?",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w600,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal)),
-                                              elevation: 8,
-                                              actions: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    MaterialButton(
+                                                          10)),
+                                              onPressed: () {},
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: ValueListenableBuilder(
+                                                    valueListenable: btnTxt,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "$value",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    }),
+                                              ));
+                                        }
+                                        return MaterialButton(
+                                            elevation: 4,
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            onPressed: () async {
+                                              if (btnTxt.value ==
+                                                  "Participated") {
+                                                return;
+                                              }
+                                              if (widget
+                                                      .event["registration"] ==
+                                                  false) {
+                                                return;
+                                              }
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      backgroundColor:
+                                                          themeProvider
+                                                                  .isDarkMode
+                                                              ? HexColor(
+                                                                  "#010A1C")
+                                                              : Colors.white,
                                                       shape:
                                                           RoundedRectangleBorder(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          10)),
+                                                                          20)),
+                                                      title: Text(
+                                                          widget.event["title"],
+                                                          style: textStyle(
+                                                              15.sp,
+                                                              FontWeight.bold,
+                                                              themeProvider
+                                                                      .isDarkMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
+                                                              FontStyle
+                                                                  .normal)),
+                                                      content: Text(
+                                                          "Do want to apply for this event ?",
+                                                          style: textStyle(
+                                                              12.sp,
+                                                              FontWeight.w600,
+                                                              themeProvider
+                                                                      .isDarkMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
+                                                              FontStyle
+                                                                  .normal)),
                                                       elevation: 8,
-                                                      onPressed: () async {
-                                                        Get.back();
-                                                      },
-                                                      child: Center(
-                                                          child: Text("Close",
-                                                              style: textStyle(
-                                                                  12.sp,
-                                                                  FontWeight
-                                                                      .bold,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal))),
-                                                    ),
-                                                    MaterialButton(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10)),
-                                                      elevation: 8,
-                                                      onPressed: () async {
-                                                        SharedPreferences
-                                                            sharedPreferences =
-                                                            await SharedPreferences
-                                                                .getInstance();
-                                                        var token =
-                                                            sharedPreferences
-                                                                .getString(
-                                                                    "accessToken");
-                                                        EasyLoading.show(
-                                                            dismissOnTap:
-                                                                false);
+                                                      actions: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            MaterialButton(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
+                                                              elevation: 8,
+                                                              onPressed:
+                                                                  () async {
+                                                                Get.back();
+                                                              },
+                                                              child: Center(
+                                                                  child: Text(
+                                                                      "Close",
+                                                                      style: textStyle(
+                                                                          12.sp,
+                                                                          FontWeight
+                                                                              .bold,
+                                                                          themeProvider.isDarkMode
+                                                                              ? Colors.white
+                                                                              : Colors.black,
+                                                                          FontStyle.normal))),
+                                                            ),
+                                                            MaterialButton(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
+                                                              elevation: 8,
+                                                              onPressed:
+                                                                  () async {
+                                                                SharedPreferences
+                                                                    sharedPreferences =
+                                                                    await SharedPreferences
+                                                                        .getInstance();
+                                                                var token =
+                                                                    sharedPreferences
+                                                                        .getString(
+                                                                            "accessToken");
+                                                                EasyLoading.show(
+                                                                    dismissOnTap:
+                                                                        false);
 
-                                                        await applyEvent(
-                                                            token,
-                                                            widget.event["_id"],
-                                                            widget
-                                                                .event["title"]
-                                                                .toString());
-                                                        await getData();
+                                                                await applyEvent(
+                                                                    token,
+                                                                    widget.event[
+                                                                        "_id"],
+                                                                    widget
+                                                                        .event[
+                                                                            "title"]
+                                                                        .toString());
+                                                                await getData();
 
-                                                        EasyLoading.dismiss();
+                                                                EasyLoading
+                                                                    .dismiss();
 
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Center(
-                                                        child: Text("Apply",
-                                                            style: textStyle(
-                                                                12.sp,
-                                                                FontWeight.bold,
-                                                                const Color
-                                                                        .fromARGB(
-                                                                    212,
-                                                                    27,
-                                                                    124,
-                                                                    2),
-                                                                FontStyle
-                                                                    .normal)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: ValueListenableBuilder(
-                                            valueListenable: btnTxt,
-                                            builder: (context, value, child) {
-                                              return Text(
-                                                "$value",
-                                                style: textStyle(
-                                                    12.sp,
-                                                    FontWeight.bold,
-                                                    Colors.black,
-                                                    FontStyle.normal),
-                                              );
-                                            })));
-                              }),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              )
-            ]),
-      ),
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: Center(
+                                                                child: Text(
+                                                                    "Apply",
+                                                                    style: textStyle(
+                                                                        12.sp,
+                                                                        FontWeight
+                                                                            .bold,
+                                                                        const Color.fromARGB(
+                                                                            212,
+                                                                            27,
+                                                                            124,
+                                                                            2),
+                                                                        FontStyle
+                                                                            .normal)),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: ValueListenableBuilder(
+                                                    valueListenable: btnTxt,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        "$value",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    })));
+                                      }),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+              ))
+          : const NoInternet(),
     );
   }
 }

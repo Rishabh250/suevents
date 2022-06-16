@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/Internet%20Connection/connection_provider.dart';
 import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
 
 import 'Controller/providers/theme_service.dart';
@@ -21,6 +22,7 @@ Future main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   isLog = sharedPreferences.getBool("isLogged");
   userType = sharedPreferences.getString("getUser");
+
   getPlacementEvents();
   getGeneralEvents();
   runApp(const MyApp());
@@ -53,31 +55,66 @@ class MyAppState extends State<MyApp> {
       builder: (context, _) {
         EasyLoading.init();
         final themeProvider = Provider.of<ThemeProvider>(context);
-        return Sizer(
-          builder: (BuildContext context, Orientation orientation,
-              DeviceType deviceType) {
-            return GetMaterialApp(
-                debugShowCheckedModeBanner: false,
-                themeMode: themeMode.value,
-                theme: MyThemes.lightTheme,
-                darkTheme: MyThemes.darkTheme,
-                home: isLog == true
-                    ? userType == "Student"
-                        ? const MainScreen()
-                        : const FacultyMainScreen()
-                    : const Getstarted(),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (context) => ConnectivityProvider(),
+              child: Sizer(
+                builder: (BuildContext context, Orientation orientation,
+                    DeviceType deviceType) {
+                  return GetMaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      themeMode: themeMode.value,
+                      theme: MyThemes.lightTheme,
+                      darkTheme: MyThemes.darkTheme,
+                      home: isLog == true
+                          ? userType == "Student"
+                              ? const MainScreen()
+                              : const FacultyMainScreen()
+                          : const Getstarted(),
 
-                // home: const Getstarted(),
-                builder: EasyLoading.init(builder: (context, builder) {
-                  final mediaQueryData = MediaQuery.of(context);
-                  final scale = mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
-                  return MediaQuery(
-                    data:
-                        MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                    child: builder!,
-                  );
-                }));
-          },
+                      // home: const Getstarted(),
+                      builder: EasyLoading.init(builder: (context, builder) {
+                        final mediaQueryData = MediaQuery.of(context);
+                        final scale =
+                            mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(textScaleFactor: scale),
+                          child: builder!,
+                        );
+                      }));
+                },
+              ),
+            )
+          ],
+          child: Sizer(
+            builder: (BuildContext context, Orientation orientation,
+                DeviceType deviceType) {
+              return GetMaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  themeMode: themeMode.value,
+                  theme: MyThemes.lightTheme,
+                  darkTheme: MyThemes.darkTheme,
+                  home: isLog == true
+                      ? userType == "Student"
+                          ? const MainScreen()
+                          : const FacultyMainScreen()
+                      : const Getstarted(),
+
+                  // home: const Getstarted(),
+                  builder: EasyLoading.init(builder: (context, builder) {
+                    final mediaQueryData = MediaQuery.of(context);
+                    final scale =
+                        mediaQueryData.textScaleFactor.clamp(1.0, 1.3);
+                    return MediaQuery(
+                      data: MediaQuery.of(context)
+                          .copyWith(textScaleFactor: scale),
+                      child: builder!,
+                    );
+                  }));
+            },
+          ),
         );
       });
 }

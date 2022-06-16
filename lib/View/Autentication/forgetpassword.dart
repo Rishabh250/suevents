@@ -154,7 +154,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                         "Please enter a valid sharda mail id");
                                     return;
                                   } else {
-                                    EasyLoading.show(dismissOnTap: false);
+                                    EasyLoading.show();
                                     var isSend = userType['isType'] == "Student"
                                         ? await sendOTP(email.text.toString())
                                         : await facultysendOTP(
@@ -204,7 +204,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             if (buttonName == "Send OTP") {
                               var check = await checkUser();
                               if (check != false) {
-                                EasyLoading.show(dismissOnTap: false);
+                                EasyLoading.show();
                                 var isSend = userType["isType"] == "Student"
                                     ? await sendOTP(email.text.toString())
                                     : await facultysendOTP(
@@ -226,7 +226,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   showError("Empty Field", "Enter your OTP");
                                   return;
                                 } else {
-                                  EasyLoading.show(dismissOnTap: false);
+                                  EasyLoading.show();
                                   userType["isType"] == "Student"
                                       ? await verifyOTP(email.text.toString(),
                                           otp.text.toString())

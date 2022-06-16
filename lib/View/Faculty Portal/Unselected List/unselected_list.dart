@@ -11,8 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
+import 'package:suevents/View/no_connection.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 
+import '../../../Controller/Internet Connection/connection_provider.dart';
 import '../../../Controller/providers/const.dart';
 import '../../../Controller/providers/theme_service.dart';
 
@@ -31,393 +33,437 @@ class _UnselectedListState extends State<UnselectedList> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void initState() {
+    Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    return Scaffold(
-      body: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics()),
-        controller: scrollController,
-        slivers: [
-          SliverAppBar(
-            leading: GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                )),
-            pinned: true,
-            forceElevated: true,
-            flexibleSpace: const FlexibleSpaceBar(
-              centerTitle: true,
-            ),
-            elevation: 8,
-            backgroundColor: const Color.fromARGB(255, 30, 0, 255),
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10))),
-            title: Text(
-              "Filter Students",
-              style: textStyle(
-                  14.sp, FontWeight.bold, Colors.white, FontStyle.normal),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: Text(
-                    "Select Round",
-                    style: textStyle(
-                        16.sp,
-                        FontWeight.w800,
-                        themeProvider.isDarkMode ? Colors.white : Colors.black,
-                        FontStyle.normal),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: ValueListenableBuilder(
-                    builder: ((context, value, child) {
-                      return Radio(
-                          value: 1,
-                          groupValue: value,
-                          onChanged: (changeValue) async {
-                            EasyLoading.show(dismissOnTap: false);
-                            gropuValue.value =
-                                int.parse(changeValue.toString());
-                            eventType.value = "Aptitude Round";
-                            eventsList = await getSelectedEvents(
-                                eventType.value.toString());
-                            selectedEvents.value = [];
-
-                            setState(() {});
-                          });
-                    }),
-                    valueListenable: gropuValue,
-                  ),
-                  title: Text("Aptitude Round",
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                ),
-                ListTile(
-                  leading: ValueListenableBuilder(
-                    builder: ((context, value, child) {
-                      return Radio(
-                          value: 2,
-                          groupValue: value,
-                          onChanged: (changeValue) async {
-                            EasyLoading.show(dismissOnTap: false);
-
-                            gropuValue.value =
-                                int.parse(changeValue.toString());
-                            eventType.value = "Technical Round";
-                            eventsList = await getSelectedEvents(
-                                eventType.value.toString());
-                            selectedEvents.value = [];
-                            setState(() {});
-                          });
-                    }),
-                    valueListenable: gropuValue,
-                  ),
-                  title: Text("Technical Round",
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                ),
-                ListTile(
-                  leading: ValueListenableBuilder(
-                    builder: ((context, value, child) {
-                      return Radio(
-                          value: 3,
-                          groupValue: value,
-                          onChanged: (changeValue) async {
-                            EasyLoading.show(dismissOnTap: false);
-
-                            gropuValue.value =
-                                int.parse(changeValue.toString());
-                            eventType.value = "HR";
-                            // setState(() {});
-                            eventsList = await getSelectedEvents(
-                                eventType.value.toString());
-                            selectedEvents.value = [];
-
-                            setState(() {});
-                          });
-                    }),
-                    valueListenable: gropuValue,
-                  ),
-                  title: Text("HR",
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                ),
-                ListTile(
-                  leading: ValueListenableBuilder(
-                    builder: ((context, value, child) {
-                      return Radio(
-                          value: 4,
-                          groupValue: value,
-                          onChanged: (changeValue) async {
-                            EasyLoading.show(dismissOnTap: false);
-
-                            gropuValue.value =
-                                int.parse(changeValue.toString());
-                            eventType.value = "Final";
-                            // setState(() {});
-                            eventsList = await getSelectedEvents(
-                                eventType.value.toString());
-                            selectedEvents.value = [];
-
-                            setState(() {});
-                          });
-                    }),
-                    valueListenable: gropuValue,
-                  ),
-                  title: Text("Final",
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Events",
-                        style: textStyle(
-                            16.sp,
-                            FontWeight.w800,
-                            themeProvider.isDarkMode
-                                ? Colors.white
-                                : Colors.black,
+    return Consumer<ConnectivityProvider>(
+        builder: (context, value, child) => value.isOnline
+            ? Scaffold(
+                body: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics()),
+                  controller: scrollController,
+                  slivers: [
+                    SliverAppBar(
+                      leading: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          )),
+                      pinned: true,
+                      forceElevated: true,
+                      flexibleSpace: const FlexibleSpaceBar(
+                        centerTitle: true,
+                      ),
+                      elevation: 8,
+                      backgroundColor: const Color.fromARGB(255, 30, 0, 255),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10))),
+                      title: Text(
+                        "Filter Students",
+                        style: textStyle(14.sp, FontWeight.bold, Colors.white,
                             FontStyle.normal),
                       ),
-                      const Spacer(),
-                      MaterialButton(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        color: const Color.fromARGB(255, 0, 4, 86),
-                        onPressed: () async {
-                          EasyLoading.show(dismissOnTap: false);
-                          studentList = await getUnselectedStudents(
-                              eventType.value.toString(), selectedEvents.value);
-                          setState(() {});
-                          EasyLoading.dismiss();
-                        },
-                        child: Text(
-                          "Apply Filter",
-                          style: textStyle(12.sp, FontWeight.bold, Colors.white,
-                              FontStyle.normal),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                eventType.value == ""
-                    ? const Text("")
-                    : FutureBuilder(
-                        future: fetchRoundsEvents(),
-                        builder: ((context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            EasyLoading.show(dismissOnTap: false);
-                          }
-                          if (eventsList != null) {
-                            EasyLoading.dismiss();
-                            if (eventsList["list"].length == 0) {
-                              log(selectedEvents.value.toString());
+                    ),
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ListTile(
+                            leading: Text(
+                              "Select Round",
+                              style: textStyle(
+                                  16.sp,
+                                  FontWeight.w800,
+                                  themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  FontStyle.normal),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ListTile(
+                            leading: ValueListenableBuilder(
+                              builder: ((context, value, child) {
+                                return Radio(
+                                    value: 1,
+                                    groupValue: value,
+                                    onChanged: (changeValue) async {
+                                      EasyLoading.show();
+                                      gropuValue.value =
+                                          int.parse(changeValue.toString());
+                                      eventType.value = "Aptitude Round";
+                                      eventsList = await getSelectedEvents(
+                                          eventType.value.toString());
+                                      selectedEvents.value = [];
 
-                              return Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                color: Colors.transparent,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 0.2,
-                                          color: themeProvider.isDarkMode
-                                              ? Colors.white
-                                              : const Color.fromARGB(
-                                                  255, 151, 194, 8)),
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: themeProvider.isDarkMode
-                                          ? HexColor("#020E26")
-                                          : Colors.white),
-                                  width: width * 0.9,
-                                  height: 200,
-                                  child: Center(
-                                      child: Text(
-                                    "No Events Found",
-                                    style: textStyle(
-                                        12.sp,
-                                        FontWeight.bold,
-                                        themeProvider.isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        FontStyle.normal),
-                                  )),
+                                      setState(() {});
+                                    });
+                              }),
+                              valueListenable: gropuValue,
+                            ),
+                            title: Text("Aptitude Round",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                          ),
+                          ListTile(
+                            leading: ValueListenableBuilder(
+                              builder: ((context, value, child) {
+                                return Radio(
+                                    value: 2,
+                                    groupValue: value,
+                                    onChanged: (changeValue) async {
+                                      EasyLoading.show();
+
+                                      gropuValue.value =
+                                          int.parse(changeValue.toString());
+                                      eventType.value = "Technical Round";
+                                      eventsList = await getSelectedEvents(
+                                          eventType.value.toString());
+                                      selectedEvents.value = [];
+                                      setState(() {});
+                                    });
+                              }),
+                              valueListenable: gropuValue,
+                            ),
+                            title: Text("Technical Round",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                          ),
+                          ListTile(
+                            leading: ValueListenableBuilder(
+                              builder: ((context, value, child) {
+                                return Radio(
+                                    value: 3,
+                                    groupValue: value,
+                                    onChanged: (changeValue) async {
+                                      EasyLoading.show();
+
+                                      gropuValue.value =
+                                          int.parse(changeValue.toString());
+                                      eventType.value = "HR";
+                                      // setState(() {});
+                                      eventsList = await getSelectedEvents(
+                                          eventType.value.toString());
+                                      selectedEvents.value = [];
+
+                                      setState(() {});
+                                    });
+                              }),
+                              valueListenable: gropuValue,
+                            ),
+                            title: Text("HR",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                          ),
+                          ListTile(
+                            leading: ValueListenableBuilder(
+                              builder: ((context, value, child) {
+                                return Radio(
+                                    value: 4,
+                                    groupValue: value,
+                                    onChanged: (changeValue) async {
+                                      EasyLoading.show();
+
+                                      gropuValue.value =
+                                          int.parse(changeValue.toString());
+                                      eventType.value = "Final";
+                                      // setState(() {});
+                                      eventsList = await getSelectedEvents(
+                                          eventType.value.toString());
+                                      selectedEvents.value = [];
+
+                                      setState(() {});
+                                    });
+                              }),
+                              valueListenable: gropuValue,
+                            ),
+                            title: Text("Final",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Events",
+                                  style: textStyle(
+                                      16.sp,
+                                      FontWeight.w800,
+                                      themeProvider.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
+                                      FontStyle.normal),
                                 ),
-                              );
-                            }
-                            return SizedBox(
-                              width: width * 0.9,
-                              height: height * 0.45,
-                              child: ListView.builder(
-                                controller: scrollController,
-                                shrinkWrap: true,
-                                itemCount: eventsList["list"].length,
-                                itemBuilder: (context, index) {
-                                  return ValueListenableBuilder(
-                                      valueListenable: selectedEvents,
-                                      builder: (context, value, child) {
-                                        return ListTile(
-                                            onTap: () {
-                                              if (!selectedEvents.value
-                                                  .contains(eventsList["list"]
-                                                      [index]["_id"])) {
-                                                selectedEvents.value.add(
-                                                    eventsList["list"][index]
-                                                        ["_id"]);
-                                              } else {
-                                                selectedEvents.value.remove(
-                                                    eventsList["list"][index]
-                                                        ["_id"]);
-                                              }
-                                              setState(() {});
-                                            },
-                                            title: Card(
-                                              color: !themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : HexColor("#010A1C"),
-                                              elevation: 8,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: SizedBox(
-                                                width: width,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        eventsList["list"]
-                                                            [index]["title"],
-                                                        style: textStyle(
-                                                            14.sp,
-                                                            FontWeight.w500,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal),
+                                const Spacer(),
+                                MaterialButton(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: const Color.fromARGB(255, 0, 4, 86),
+                                  onPressed: () async {
+                                    EasyLoading.show();
+                                    studentList = await getUnselectedStudents(
+                                        eventType.value.toString(),
+                                        selectedEvents.value);
+                                    setState(() {});
+                                    EasyLoading.dismiss();
+                                  },
+                                  child: Text(
+                                    "Apply Filter",
+                                    style: textStyle(12.sp, FontWeight.bold,
+                                        Colors.white, FontStyle.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          eventType.value == ""
+                              ? const Text("")
+                              : FutureBuilder(
+                                  future: fetchRoundsEvents(),
+                                  builder: ((context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      EasyLoading.show();
+                                    }
+                                    if (eventsList != null) {
+                                      EasyLoading.dismiss();
+                                      if (eventsList["list"].length == 0) {
+                                        log(selectedEvents.value.toString());
+
+                                        return Card(
+                                          elevation: 4,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 0.2,
+                                                    color: themeProvider
+                                                            .isDarkMode
+                                                        ? Colors.white
+                                                        : const Color.fromARGB(
+                                                            255, 151, 194, 8)),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: themeProvider.isDarkMode
+                                                    ? HexColor("#020E26")
+                                                    : Colors.white),
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: Center(
+                                                child: Text(
+                                              "No Events Found",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  themeProvider.isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  FontStyle.normal),
+                                            )),
+                                          ),
+                                        );
+                                      }
+                                      return SizedBox(
+                                        width: width * 0.9,
+                                        height: height * 0.45,
+                                        child: ListView.builder(
+                                          controller: scrollController,
+                                          shrinkWrap: true,
+                                          itemCount: eventsList["list"].length,
+                                          itemBuilder: (context, index) {
+                                            return ValueListenableBuilder(
+                                                valueListenable: selectedEvents,
+                                                builder:
+                                                    (context, value, child) {
+                                                  return ListTile(
+                                                      onTap: () {
+                                                        if (!selectedEvents
+                                                            .value
+                                                            .contains(eventsList[
+                                                                        "list"]
+                                                                    [index]
+                                                                ["_id"])) {
+                                                          selectedEvents.value
+                                                              .add(eventsList[
+                                                                          "list"]
+                                                                      [index]
+                                                                  ["_id"]);
+                                                        } else {
+                                                          selectedEvents.value
+                                                              .remove(eventsList[
+                                                                          "list"]
+                                                                      [index]
+                                                                  ["_id"]);
+                                                        }
+                                                        setState(() {});
+                                                      },
+                                                      title: Card(
+                                                        color: !themeProvider
+                                                                .isDarkMode
+                                                            ? Colors.white
+                                                            : HexColor(
+                                                                "#010A1C"),
+                                                        elevation: 8,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                        child: SizedBox(
+                                                          width: width,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10.0),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  eventsList["list"]
+                                                                          [
+                                                                          index]
+                                                                      ["title"],
+                                                                  style: textStyle(
+                                                                      14.sp,
+                                                                      FontWeight
+                                                                          .w500,
+                                                                      themeProvider.isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      FontStyle
+                                                                          .normal),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Text(
+                                                                  eventsList["list"]
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      "startDate"],
+                                                                  style: textStyle(
+                                                                      10.sp,
+                                                                      FontWeight
+                                                                          .w500,
+                                                                      themeProvider.isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      FontStyle
+                                                                          .normal),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Text(
+                                                                  "Total Rounds : ${eventsList["list"][index]["rounds"].length}",
+                                                                  style: textStyle(
+                                                                      10.sp,
+                                                                      FontWeight
+                                                                          .w500,
+                                                                      themeProvider.isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      FontStyle
+                                                                          .normal),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        eventsList["list"]
-                                                                [index]
-                                                            ["startDate"],
-                                                        style: textStyle(
-                                                            10.sp,
-                                                            FontWeight.w500,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        "Total Rounds : ${eventsList["list"][index]["rounds"].length}",
-                                                        style: textStyle(
-                                                            10.sp,
-                                                            FontWeight.w500,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            leading: selectedEvents.value
-                                                    .contains(eventsList["list"]
-                                                        [index]["_id"])
-                                                ? const Icon(
-                                                    Icons.radio_button_checked)
-                                                : const Icon(Icons
-                                                    .radio_button_unchecked));
-                                      });
-                                },
-                              ),
-                            );
-                          }
-                          return Container();
-                        })),
-              ],
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: studentList == null ||
-              studentList.toString().isEmpty
-          ? Container()
-          : MaterialButton(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              color: Colors.amber,
-              onPressed: createExcel,
-              child: Text("Generate Excel",
-                  style: textStyle(
-                      12.sp, FontWeight.bold, Colors.white, FontStyle.normal)),
-            ),
-    );
+                                                      leading: selectedEvents
+                                                              .value
+                                                              .contains(eventsList[
+                                                                      "list"][
+                                                                  index]["_id"])
+                                                          ? const Icon(Icons
+                                                              .radio_button_checked)
+                                                          : const Icon(Icons
+                                                              .radio_button_unchecked));
+                                                });
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Container();
+                                  })),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                floatingActionButton:
+                    studentList == null || studentList.toString().isEmpty
+                        ? Container()
+                        : MaterialButton(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: Colors.amber,
+                            onPressed: createExcel,
+                            child: Text("Generate Excel",
+                                style: textStyle(12.sp, FontWeight.bold,
+                                    Colors.white, FontStyle.normal)),
+                          ),
+              )
+            : const NoInternet());
   }
 
   var studentList;
@@ -432,7 +478,7 @@ class _UnselectedListState extends State<UnselectedList> {
       showError("Empty List", "You have not select any event");
       return;
     }
-    EasyLoading.show(dismissOnTap: false);
+    EasyLoading.show();
 
     final excel.Workbook workbook = excel.Workbook();
     final excel.Worksheet worksheet = workbook.worksheets[0];

@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                       showError("Empty Field", "Enter your password");
                       return;
                     } else {
-                      EasyLoading.show(dismissOnTap: false);
+                      EasyLoading.show();
                       userType["isType"] == "Student"
                           ? await userLogin(
                               email.text.toString(), password.text.toString())

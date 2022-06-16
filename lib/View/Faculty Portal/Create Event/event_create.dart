@@ -13,7 +13,9 @@ import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
+import 'package:suevents/View/no_connection.dart';
 
+import '../../../Controller/Internet Connection/connection_provider.dart';
 import '../../../Controller/providers/theme_service.dart';
 import 'event_created.dart';
 
@@ -62,6 +64,11 @@ class CreateEvent extends StatefulWidget {
 class CreateEventState extends State<CreateEvent> {
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,350 +76,404 @@ class CreateEventState extends State<CreateEvent> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            )),
-        flexibleSpace: const FlexibleSpaceBar(
-          centerTitle: true,
-        ),
-        elevation: 8,
-        backgroundColor: const Color.fromARGB(255, 30, 0, 255),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10))),
-        title: Text(
-          'Create Event',
-          style:
-              textStyle(15.sp, FontWeight.bold, Colors.white, FontStyle.normal),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stepper(
-              controlsBuilder: (context, details) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Row(
-                    children: [
-                      _currentStep != 2
-                          ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 4,
-                                  primary: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
-                              onPressed: details.onStepContinue,
-                              child: Text(
-                                'Next',
-                                style: textStyle(10.sp, FontWeight.bold,
-                                    Colors.black, FontStyle.normal),
-                              ),
-                            )
-                          : ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 4,
-                                  primary: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
-                              onPressed: () async {
-                                SharedPreferences sharedPreferences =
-                                    await SharedPreferences.getInstance();
-                                var token =
-                                    sharedPreferences.getString("accessToken");
-                                if (isVisible == true) {
-                                  eventPrice.value = "Free";
-                                }
+    return Consumer<ConnectivityProvider>(
+        builder: (context, value, child) => value.isOnline
+            ? Scaffold(
+                appBar: AppBar(
+                  leading: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      )),
+                  flexibleSpace: const FlexibleSpaceBar(
+                    centerTitle: true,
+                  ),
+                  elevation: 8,
+                  backgroundColor: const Color.fromARGB(255, 30, 0, 255),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10))),
+                  title: Text(
+                    'Create Event',
+                    style: textStyle(
+                        15.sp, FontWeight.bold, Colors.white, FontStyle.normal),
+                  ),
+                ),
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: Stepper(
+                        controlsBuilder: (context, details) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: Row(
+                              children: [
+                                _currentStep != 2
+                                    ? ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 4,
+                                            primary: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10))),
+                                        onPressed: details.onStepContinue,
+                                        child: Text(
+                                          'Next',
+                                          style: textStyle(
+                                              10.sp,
+                                              FontWeight.bold,
+                                              Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      )
+                                    : ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 4,
+                                            primary: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10))),
+                                        onPressed: () async {
+                                          SharedPreferences sharedPreferences =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          var token = sharedPreferences
+                                              .getString("accessToken");
+                                          if (isVisible == true) {
+                                            eventPrice.value = "Free";
+                                          }
 
-                                if (eventTitle.text.isEmpty) {
-                                  showError("Empty Field", "Add Event Title");
-                                  return;
-                                }
-                                if (eventType.value == "") {
-                                  showError("Empty Field", "Select Event Type");
-                                  return;
-                                }
-                                if (aboutEvent.text.isEmpty) {
-                                  showError("Empty Field",
-                                      "Add some points about event");
-                                  return;
-                                }
-                                if (finalDate.value.isEmpty) {
-                                  showError("Empty Field",
-                                      "Select Event starting date");
-                                  return;
-                                }
-                                if (eventPrice.value.isEmpty) {
-                                  showError("Empty Field",
-                                      "Event Price can't e empty");
-                                  return;
-                                }
-                                if (facultyListData.value.isEmpty) {
-                                  showError("Empty Field",
-                                      "Assign atleast one faculty");
-                                  return;
-                                }
-                                if (lab.text.isEmpty) {
-                                  showError("Empty Field", "Add Lab Details");
-                                  return;
-                                }
-                                if (roundType.value.isEmpty) {
-                                  showError("Empty Field", "Select Round Type");
-                                  return;
-                                }
-                                if (roundDate.value.isEmpty) {
-                                  showError("Empty Field", "Select Round Date");
-                                  return;
-                                }
-                                if (roundTime.value.isEmpty) {
-                                  showError("Empty Field", "Select Round Time");
-                                  return;
-                                }
+                                          if (eventTitle.text.isEmpty) {
+                                            showError("Empty Field",
+                                                "Add Event Title");
+                                            return;
+                                          }
+                                          if (eventType.value == "") {
+                                            showError("Empty Field",
+                                                "Select Event Type");
+                                            return;
+                                          }
+                                          if (aboutEvent.text.isEmpty) {
+                                            showError("Empty Field",
+                                                "Add some points about event");
+                                            return;
+                                          }
+                                          if (finalDate.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Select Event starting date");
+                                            return;
+                                          }
+                                          if (eventPrice.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Event Price can't e empty");
+                                            return;
+                                          }
+                                          if (facultyListData.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Assign atleast one faculty");
+                                            return;
+                                          }
+                                          if (lab.text.isEmpty) {
+                                            showError("Empty Field",
+                                                "Add Lab Details");
+                                            return;
+                                          }
+                                          if (roundType.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Select Round Type");
+                                            return;
+                                          }
+                                          if (roundDate.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Select Round Date");
+                                            return;
+                                          }
+                                          if (roundTime.value.isEmpty) {
+                                            showError("Empty Field",
+                                                "Select Round Time");
+                                            return;
+                                          }
 
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        backgroundColor:
-                                            themeProvider.isDarkMode
-                                                ? HexColor("#010A1C")
-                                                : Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        title: Text("Create Event",
-                                            style: textStyle(
-                                                15.sp,
-                                                FontWeight.bold,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal)),
-                                        content: Text(
-                                            "Note : Once an event is created, you will be able to undo it.",
-                                            style: textStyle(
-                                                12.sp,
-                                                FontWeight.w600,
-                                                themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                FontStyle.normal)),
-                                        elevation: 8,
-                                        actions: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              MaterialButton(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                elevation: 8,
-                                                onPressed: () async {
-                                                  Get.back();
-                                                },
-                                                child: Center(
-                                                    child: Text("Edit",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal))),
-                                              ),
-                                              MaterialButton(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                elevation: 8,
-                                                onPressed: () async {
-                                                  EasyLoading.show(
-                                                      dismissOnTap: false);
-
-                                                  title = eventTitle.text
-                                                      .toString();
-                                                  about = aboutEvent.text
-                                                      .toString();
-
-                                                  var event = await createEvent(
-                                                      token,
-                                                      eventTitle.text
-                                                          .toString(),
-                                                      eventType.value
-                                                          .toString(),
-                                                      aboutEvent.text
-                                                          .toString(),
-                                                      finalDate.value
-                                                          .toString(),
-                                                      endDate.value.toString(),
-                                                      eventPrice.value
-                                                          .toString());
-
-                                                  if (event == false) return;
-
-                                                  await assignFaculty(
-                                                      event["event"][0]["_id"]
-                                                          .toString(),
-                                                      facultyListData.value);
-                                                  var list = facultyListData
-                                                      .value
-                                                      .clear();
-
-                                                  await createRound(
-                                                      token,
-                                                      lab.text.toString(),
-                                                      event["event"][0]["_id"]
-                                                          .toString(),
-                                                      roundType.value
-                                                          .toString(),
-                                                      roundDate.value
-                                                          .toString(),
-                                                      roundTime.value
-                                                          .toString(),
-                                                      isLastRound.value);
-
-                                                  EasyLoading.dismiss();
-
-                                                  eventTitle.clear();
-                                                  aboutEvent.clear();
-                                                  lab.clear();
-                                                  roundNumber.clear();
-                                                  testType.clear();
-
-                                                  eventTitle.clear();
-                                                  aboutEvent.clear();
-                                                  lab.clear();
-                                                  roundNumber.clear();
-                                                  testType.clear();
-                                                  facultyListData.value.clear();
-                                                  setState(() {
-                                                    isVisible = false;
-                                                  });
-                                                  isLastRound.value = false;
-
-                                                  Get.offAll(
-                                                      () =>
-                                                          const CreateEventConfirm(),
-                                                      arguments: {
-                                                        "title":
-                                                            title.toString(),
-                                                        "date": finalDate.value
-                                                            .toString(),
-                                                        "type": eventType.value
-                                                            .toString(),
-                                                        "about":
-                                                            about.toString(),
-                                                      });
-                                                },
-                                                child: Center(
-                                                  child: Text("Create",
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  backgroundColor:
+                                                      themeProvider.isDarkMode
+                                                          ? HexColor("#010A1C")
+                                                          : Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  title: Text("Create Event",
+                                                      style: textStyle(
+                                                          15.sp,
+                                                          FontWeight.bold,
+                                                          themeProvider
+                                                                  .isDarkMode
+                                                              ? Colors.white
+                                                              : Colors.black,
+                                                          FontStyle.normal)),
+                                                  content: Text(
+                                                      "Note : Once an event is created, you will be able to undo it.",
                                                       style: textStyle(
                                                           12.sp,
-                                                          FontWeight.bold,
-                                                          const Color.fromARGB(
-                                                              212, 27, 124, 2),
+                                                          FontWeight.w600,
+                                                          themeProvider
+                                                                  .isDarkMode
+                                                              ? Colors.white
+                                                              : Colors.black,
                                                           FontStyle.normal)),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Text(
-                                'Finish',
-                                style: textStyle(10.sp, FontWeight.bold,
-                                    Colors.black, FontStyle.normal),
-                              ),
+                                                  elevation: 8,
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        MaterialButton(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                          elevation: 8,
+                                                          onPressed: () async {
+                                                            Get.back();
+                                                          },
+                                                          child: Center(
+                                                              child: Text(
+                                                                  "Edit",
+                                                                  style: textStyle(
+                                                                      12.sp,
+                                                                      FontWeight
+                                                                          .bold,
+                                                                      themeProvider.isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      FontStyle
+                                                                          .normal))),
+                                                        ),
+                                                        MaterialButton(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                          elevation: 8,
+                                                          onPressed: () async {
+                                                            EasyLoading.show(
+                                                                dismissOnTap:
+                                                                    false);
+
+                                                            title = eventTitle
+                                                                .text
+                                                                .toString();
+                                                            about = aboutEvent
+                                                                .text
+                                                                .toString();
+
+                                                            var event = await createEvent(
+                                                                token,
+                                                                eventTitle.text
+                                                                    .toString(),
+                                                                eventType.value
+                                                                    .toString(),
+                                                                aboutEvent.text
+                                                                    .toString(),
+                                                                finalDate.value
+                                                                    .toString(),
+                                                                endDate.value
+                                                                    .toString(),
+                                                                eventPrice.value
+                                                                    .toString());
+
+                                                            if (event == false)
+                                                              return;
+
+                                                            await assignFaculty(
+                                                                event["event"]
+                                                                            [0]
+                                                                        ["_id"]
+                                                                    .toString(),
+                                                                facultyListData
+                                                                    .value);
+                                                            var list =
+                                                                facultyListData
+                                                                    .value
+                                                                    .clear();
+
+                                                            await createRound(
+                                                                token,
+                                                                lab.text
+                                                                    .toString(),
+                                                                event["event"]
+                                                                            [0]
+                                                                        ["_id"]
+                                                                    .toString(),
+                                                                roundType.value
+                                                                    .toString(),
+                                                                roundDate.value
+                                                                    .toString(),
+                                                                roundTime.value
+                                                                    .toString(),
+                                                                isLastRound
+                                                                    .value);
+
+                                                            EasyLoading
+                                                                .dismiss();
+
+                                                            eventTitle.clear();
+                                                            aboutEvent.clear();
+                                                            lab.clear();
+                                                            roundNumber.clear();
+                                                            testType.clear();
+
+                                                            eventTitle.clear();
+                                                            aboutEvent.clear();
+                                                            lab.clear();
+                                                            roundNumber.clear();
+                                                            testType.clear();
+                                                            facultyListData
+                                                                .value
+                                                                .clear();
+                                                            setState(() {
+                                                              isVisible = false;
+                                                            });
+                                                            isLastRound.value =
+                                                                false;
+
+                                                            Get.offAll(
+                                                                () =>
+                                                                    const CreateEventConfirm(),
+                                                                arguments: {
+                                                                  "title": title
+                                                                      .toString(),
+                                                                  "date": finalDate
+                                                                      .value
+                                                                      .toString(),
+                                                                  "type": eventType
+                                                                      .value
+                                                                      .toString(),
+                                                                  "about": about
+                                                                      .toString(),
+                                                                });
+                                                          },
+                                                          child: Center(
+                                                            child: Text(
+                                                                "Create",
+                                                                style: textStyle(
+                                                                    12.sp,
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    const Color
+                                                                            .fromARGB(
+                                                                        212,
+                                                                        27,
+                                                                        124,
+                                                                        2),
+                                                                    FontStyle
+                                                                        .normal)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: Text(
+                                          'Finish',
+                                          style: textStyle(
+                                              10.sp,
+                                              FontWeight.bold,
+                                              Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      ),
+                                if (_currentStep != 0)
+                                  TextButton(
+                                    onPressed: details.onStepCancel,
+                                    child: Text(
+                                      'Back',
+                                      style: textStyle(
+                                          10.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black.withOpacity(0.3),
+                                          FontStyle.normal),
+                                    ),
+                                  ),
+                              ],
                             ),
-                      if (_currentStep != 0)
-                        TextButton(
-                          onPressed: details.onStepCancel,
-                          child: Text(
-                            'Back',
-                            style: textStyle(
-                                10.sp,
-                                FontWeight.bold,
-                                themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black.withOpacity(0.3),
-                                FontStyle.normal),
+                          );
+                        },
+                        type: stepperType,
+                        physics: const BouncingScrollPhysics(),
+                        currentStep: _currentStep,
+                        onStepTapped: (step) => tapped(step),
+                        onStepContinue: continued,
+                        elevation: 4,
+                        onStepCancel: cancel,
+                        steps: <Step>[
+                          Step(
+                            title: Text('Create Event',
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                            content: EventCreation(
+                              themeProvider: themeProvider,
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: StepState.disabled,
                           ),
-                        ),
-                    ],
-                  ),
-                );
-              },
-              type: stepperType,
-              physics: const BouncingScrollPhysics(),
-              currentStep: _currentStep,
-              onStepTapped: (step) => tapped(step),
-              onStepContinue: continued,
-              elevation: 4,
-              onStepCancel: cancel,
-              steps: <Step>[
-                Step(
-                  title: Text('Create Event',
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                  content: EventCreation(
-                    themeProvider: themeProvider,
-                  ),
-                  isActive: _currentStep >= 0,
-                  state: StepState.disabled,
+                          Step(
+                            title: Text('Round Details',
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                            content: RoundDetails(
+                              themeProvider: themeProvider,
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: StepState.disabled,
+                          ),
+                          Step(
+                            title: Text('Assign Faculty',
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal)),
+                            content:
+                                AssignFaculty(themeProvider: themeProvider),
+                            isActive: _currentStep >= 0,
+                            state: StepState.disabled,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Step(
-                  title: Text('Round Details',
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                  content: RoundDetails(
-                    themeProvider: themeProvider,
-                  ),
-                  isActive: _currentStep >= 0,
-                  state: StepState.disabled,
-                ),
-                Step(
-                  title: Text('Assign Faculty',
-                      style: textStyle(
-                          12.sp,
-                          FontWeight.bold,
-                          themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          FontStyle.normal)),
-                  content: AssignFaculty(themeProvider: themeProvider),
-                  isActive: _currentStep >= 0,
-                  state: StepState.disabled,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              )
+            : const NoInternet());
   }
 
   tapped(int step) {
