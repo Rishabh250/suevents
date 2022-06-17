@@ -41,17 +41,14 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
     if (time >= 6 && time <= 12) {
-      if (!mounted) return;
       setState(() {
         greet = "Good Morning";
       });
     } else if (time > 12 && time <= 16) {
-      if (!mounted) return;
       setState(() {
         greet = "Good Afternoon";
       });
     } else {
-      if (!mounted) return;
       setState(() {
         greet = "Good Evening";
       });
@@ -75,6 +72,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
   @override
   Widget build(BuildContext context) {
     createdEvents.clear();
+    createEventList = 0;
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
@@ -96,8 +94,10 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
             createdEvents.clear();
           });
         },
-        child: Consumer<ConnectivityProvider>(
-          builder: (context, value, child) => value.isOnline
+        child: Consumer<ConnectivityProvider>(builder: (context, value, child) {
+          // createEventList = 0;
+          // createdEvents.clear();
+          return value.isOnline
               ? Scaffold(
                   appBar: AppBar(
                     elevation: 0,
@@ -301,6 +301,8 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                                 generalEvent = facultyController.user["user"]
                                     ["eventsCreated"];
                                 if (generalEvent.length > 0) {
+                                  createdEvents.clear();
+                                  createEventList = 0;
                                   for (int i = 0;
                                       i < generalEvent.length;
                                       i++) {
@@ -711,8 +713,8 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                     ))
                   ]),
                 )
-              : const NoInternet(),
-        ));
+              : const NoInternet();
+        }));
   }
 
   var generalEvent;

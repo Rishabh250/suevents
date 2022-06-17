@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -36,7 +34,6 @@ class _EventDetailState extends State<EventDetail> {
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
 
-    log(widget.event.toString());
     if (widget.event["registration"] == false) {
       btnTxt.value = "Registration close";
     }
