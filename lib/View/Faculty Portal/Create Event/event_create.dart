@@ -681,7 +681,7 @@ class _EventCreationState extends State<EventCreation> {
                 Text(
                   picked == null
                       ? "Select Starting Date"
-                      : "Starting Date : ${finalDate.value}",
+                      : "${finalDate.value}",
                   style: textStyle(
                       12.sp,
                       FontWeight.bold,
@@ -973,7 +973,7 @@ class _RoundDetailsState extends State<RoundDetails> {
                       Text(
                         picked == null
                             ? "Select Starting Date"
-                            : "Starting Date : ${roundDate.value}",
+                            : "${roundDate.value}",
                         style: textStyle(
                             12.sp,
                             FontWeight.bold,
@@ -1011,9 +1011,7 @@ class _RoundDetailsState extends State<RoundDetails> {
                         width: 10,
                       ),
                       Text(
-                        timePick == null
-                            ? "Select Time"
-                            : "Starting Time : ${roundTime.value}",
+                        timePick == null ? "Select Time" : "${roundTime.value}",
                         style: textStyle(
                             12.sp,
                             FontWeight.bold,
