@@ -43,6 +43,9 @@ userLogin(email, pass, deviceID) async {
         showError(
             "Device Error", "You are trying to login with different device");
       }
+      if (body['msg'] == "Device Already in use") {
+        showError("Device Error", "Device Already in use");
+      }
     }
   } catch (e) {
     debugPrint(e.toString());

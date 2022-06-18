@@ -765,19 +765,25 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                                             .value);
                                                                       }
                                                                     },
-                                                                    child: Text(
-                                                                      picked ==
-                                                                              null
-                                                                          ? "Select Starting Date"
-                                                                          : "Starting Date : ${roundDate.value}",
-                                                                      style: textStyle(
-                                                                          12.sp,
-                                                                          FontWeight
-                                                                              .bold,
-                                                                          themeProvider.isDarkMode
-                                                                              ? Colors.white
-                                                                              : Colors.black,
-                                                                          FontStyle.normal),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        const Icon(
+                                                                            Icons.calendar_month_rounded),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              10,
+                                                                        ),
+                                                                        Text(
+                                                                          picked == null
+                                                                              ? "Select Starting Date"
+                                                                              : "${roundDate.value}",
+                                                                          style: textStyle(
+                                                                              12.sp,
+                                                                              FontWeight.bold,
+                                                                              themeProvider.isDarkMode ? Colors.white : Colors.black,
+                                                                              FontStyle.normal),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   );
                                                                 }),
@@ -814,19 +820,25 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                                             timePick.format(context);
                                                                       }
                                                                     },
-                                                                    child: Text(
-                                                                      timePick ==
-                                                                              null
-                                                                          ? "Select Time"
-                                                                          : "Starting Time : ${roundTime.value}",
-                                                                      style: textStyle(
-                                                                          12.sp,
-                                                                          FontWeight
-                                                                              .bold,
-                                                                          themeProvider.isDarkMode
-                                                                              ? Colors.white
-                                                                              : Colors.black,
-                                                                          FontStyle.normal),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        const Icon(
+                                                                            Icons.access_time_rounded),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              10,
+                                                                        ),
+                                                                        Text(
+                                                                          timePick == null
+                                                                              ? "Select Time"
+                                                                              : "${roundTime.value}",
+                                                                          style: textStyle(
+                                                                              12.sp,
+                                                                              FontWeight.bold,
+                                                                              themeProvider.isDarkMode ? Colors.white : Colors.black,
+                                                                              FontStyle.normal),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   );
                                                                 }),
