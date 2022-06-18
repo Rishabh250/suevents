@@ -12,13 +12,16 @@ import '../../View/Autentication/change_password.dart';
 import '../../View/Autentication/login.dart';
 import '../../View/Student Portal/Navigation Bar/zoom_drawer.dart';
 
-userLogin(email, pass) async {
+userLogin(email, pass, deviceID) async {
   try {
-    var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/loginUser"),
-        body: jsonEncode(
-            {"email": email.toString(), "password": pass.toString()}),
-        headers: {"Content-Type": "application/json"});
+    var response = await https
+        .post(Uri.parse("https://suevents2022.herokuapp.com/loginUser"),
+            body: jsonEncode({
+              "email": email.toString(),
+              "password": pass.toString(),
+              "deviceInfo": "$deviceID"
+            }),
+            headers: {"Content-Type": "application/json"});
     log(response.body.toString());
 
     var body = jsonDecode(response.body);
@@ -35,6 +38,10 @@ userLogin(email, pass) async {
       }
       if (body['msg'] == "user not found") {
         showError("Invaild Details", "User not found");
+      }
+      if (body['msg'] == "Device Model not same") {
+        showError(
+            "Device Error", "You are trying to login with different device");
       }
     }
   } catch (e) {

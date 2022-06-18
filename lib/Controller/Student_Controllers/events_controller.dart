@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +12,6 @@ class EventController {
 
   fetchUserData(getEvent) async {
     await userData();
-    log(getEvent.toString());
     await checkAttendence(getEvent, email.value);
   }
 
@@ -22,6 +19,7 @@ class EventController {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("accessToken");
     var user = await getUserData(token);
+
     email.value = user["user"]["email"];
     systemID.value = user["user"]["systemID"];
     name.value = user["user"]["name"];
@@ -31,15 +29,19 @@ class EventController {
     if (eventData.length > 0) {
       for (int i = 0; i < eventData.length; i++) {
         if (eventData[i]["email"].toString().contains(email)) {
-          log(eventData.toString());
           attendence.value = "Present";
+          EasyLoading.dismiss();
+          return;
+        } else {
+          attendence.value = "Not Selected";
           EasyLoading.dismiss();
         }
       }
     }
     if (eventData.length == 0) {
-      attendence.value = "Not Taken";
+      attendence.value = "Absent";
       EasyLoading.dismiss();
+      return;
     }
   }
 }
@@ -60,7 +62,6 @@ class UserDetailsController {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     user = await getUserData(token);
-
     name.value = user["user"]["name"];
     systemID.value = user["user"]["systemID"];
     email.value = user["user"]["email"];

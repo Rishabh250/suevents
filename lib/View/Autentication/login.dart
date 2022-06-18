@@ -1,7 +1,9 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -26,13 +28,30 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  ValueNotifier<String> deviceID = ValueNotifier("");
   var userType = Get.arguments;
   bool isPassVisible = true;
+  final deviceInfoPlugin = DeviceInfoPlugin();
 
   @override
   void initState() {
     log(userType["isType"]);
+    getDeviceInfo();
     super.initState();
+  }
+
+  getDeviceInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+      deviceID.value = androidInfo.androidId.toString();
+      log(deviceID.value.toString());
+    }
+    // if (Platform.isIOS) {
+    //   IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+    //   iosDeviceInfo.androidId.toString();
+    // }
   }
 
   @override
@@ -212,7 +231,9 @@ class _LoginPageState extends State<LoginPage> {
                       EasyLoading.show();
                       userType["isType"] == "Student"
                           ? await userLogin(
-                              email.text.toString(), password.text.toString())
+                              email.text.toString(),
+                              password.text.toString(),
+                              deviceID.value.toString())
                           : await facultyLogin(
                               email.text.toString(), password.text.toString());
                       EasyLoading.dismiss();

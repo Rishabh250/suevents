@@ -156,7 +156,7 @@ getSingleEvent(eventID) async {
       return jsonDecode(response.body);
     }
   } catch (e) {
-    showError("Something went wrong", "Please try again");
+    // showError("Something went wrong", "Please try again");
 
     debugPrint(e.toString());
   }

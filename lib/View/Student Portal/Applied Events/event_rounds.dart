@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:encrypt/encrypt.dart';
@@ -72,7 +71,7 @@ class _EventRoundsState extends State<EventRounds> {
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
     encrypter = Encrypter(AES(key));
-    EasyLoading.show();
+    EasyLoading.show(dismissOnTap: false);
     currentPage = widget.events["rounds"].length - 1;
     _currentIndex = currentPage;
     pageController = PageController(initialPage: currentPage);
@@ -110,6 +109,7 @@ class _EventRoundsState extends State<EventRounds> {
                   SliverAppBar(
                     leading: GestureDetector(
                         onTap: () {
+                          EasyLoading.dismiss();
                           Get.back();
                         },
                         child: const Icon(
@@ -420,13 +420,11 @@ class _EventRoundsState extends State<EventRounds> {
                                                         : () {
                                                             isDisable.value =
                                                                 true;
-                                                            log(isDisable.value
-                                                                .toString());
+                                                           
                                                             onQRViewCreated();
                                                           },
                                                     child: !finalDate.contains(
-                                                            widget
-                                                                .events['rounds']
+                                                            widget.events['rounds']
                                                                     [index]
                                                                     ["date"]
                                                                 .toString())
@@ -437,7 +435,7 @@ class _EventRoundsState extends State<EventRounds> {
                                                                 Colors.white,
                                                                 FontStyle
                                                                     .normal))
-                                                        : Text("Show Scanner",
+                                                        : Text("Mark Attendance",
                                                             style: textStyle(
                                                                 12.sp,
                                                                 FontWeight.bold,
