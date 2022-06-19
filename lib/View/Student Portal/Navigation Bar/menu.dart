@@ -10,6 +10,7 @@ import 'package:suevents/View/get_started.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../Controller/SharedPreferences/token.dart';
+import '../../about_app.dart';
 import '../Profile Page/profile.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -109,7 +110,11 @@ class _MenuScreenState extends State<MenuScreen> {
           height: 5.h,
         ),
         ListTile(
-          onTap: () {},
+          onTap: () {
+            ZoomDrawer.of(context)?.close();
+
+            Get.to(() => const AboutApp(), transition: Transition.fadeIn);
+          },
           title: Text("About app",
               style: textStyle(
                   10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
