@@ -683,8 +683,6 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
       for (int i = presentSTD.length + 1;
           i < presentSTD.length + absentSTD.length + 1;
           i++) {
-        print("$k : ${absentSTD[j]}");
-
         worksheet.getRangeByName("A${k + 2}").setText("${k + 1}");
         worksheet
             .getRangeByName("B${k + 2}")

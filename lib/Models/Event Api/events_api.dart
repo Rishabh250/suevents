@@ -27,7 +27,6 @@ getAllEvents(title) async {
             "https://suevents2022.herokuapp.com/getAllEvents/eventTitle=$title"),
         headers: {"Content-Type": "application/json"});
 
-    print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }

@@ -92,211 +92,211 @@ class _EventRoundsState extends State<EventRounds> {
     eventController.attendence.dispose();
   }
 
+  Future<bool> _onBackPressed() {
+    EasyLoading.dismiss();
+    return Future.value(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    return Consumer<ConnectivityProvider>(builder: (context, model, child) {
-      return model.isOnline
-          ? Scaffold(
-              body: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics()),
-                controller: _scrollController,
-                slivers: [
-                  SliverAppBar(
-                    leading: GestureDetector(
-                        onTap: () {
-                          EasyLoading.dismiss();
-                          Get.back();
-                        },
-                        child: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        )),
-                    pinned: true,
-                    forceElevated: true,
-                    flexibleSpace: const FlexibleSpaceBar(
-                      centerTitle: true,
-                    ),
-                    elevation: 8,
-                    backgroundColor: const Color.fromARGB(255, 30, 0, 255),
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10))),
-                    title: Text(
-                      widget.events['title'],
-                      style: textStyle(14.sp, FontWeight.bold, Colors.white,
-                          FontStyle.normal),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Consumer<ConnectivityProvider>(builder: (context, model, child) {
+        return model.isOnline
+            ? RefreshIndicator(
+                displacement: 100,
+                backgroundColor:
+                    themeProvider.isDarkMode ? Colors.grey[400] : Colors.white,
+                color: themeProvider.isDarkMode ? Colors.black : Colors.black,
+                strokeWidth: 3,
+                triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                onRefresh: () async {
+                  await Future.delayed(const Duration(milliseconds: 1500));
+                  await fetchEvents();
+                  setState(() {});
+                },
+                child: Scaffold(
+                  body: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics()),
+                    controller: _scrollController,
+                    slivers: [
+                      SliverAppBar(
+                        leading: GestureDetector(
+                            onTap: () {
+                              EasyLoading.dismiss();
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                            )),
+                        pinned: true,
+                        forceElevated: true,
+                        flexibleSpace: const FlexibleSpaceBar(
+                          centerTitle: true,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Text(
-                            "Rounds",
-                            style: textStyle(
-                                18.sp,
-                                FontWeight.w700,
-                                themeProvider.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                FontStyle.normal),
-                          ),
+                        elevation: 8,
+                        backgroundColor: const Color.fromARGB(255, 30, 0, 255),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10))),
+                        title: Text(
+                          widget.events['title'],
+                          style: textStyle(14.sp, FontWeight.bold, Colors.white,
+                              FontStyle.normal),
                         ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1),
-                          height: 50,
-                          width: width,
-                          child: ListView.builder(
-                              controller: _scrollController,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: widget.events['rounds'].length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    EasyLoading.show();
-                                    setState(() {
-                                      isVisible = false;
-                                      _currentIndex = index;
-                                      pageController.animateToPage(
-                                          _currentIndex,
-                                          curve: Curves.easeIn,
-                                          duration: const Duration(
-                                              milliseconds: 500));
-                                    });
-                                    await fetchEvents();
-                                    var event = roundData["present"];
+                      ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text(
+                                "Rounds",
+                                style: textStyle(
+                                    18.sp,
+                                    FontWeight.w700,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(left: 1),
+                              height: 50,
+                              width: width,
+                              child: ListView.builder(
+                                  controller: _scrollController,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: widget.events['rounds'].length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () async {
+                                        EasyLoading.show(dismissOnTap: false);
+                                        setState(() {
+                                          isVisible = false;
+                                          _currentIndex = index;
+                                          pageController.animateToPage(
+                                              _currentIndex,
+                                              curve: Curves.easeIn,
+                                              duration: const Duration(
+                                                  milliseconds: 500));
+                                        });
+                                        await fetchEvents();
+                                        var event = roundData["present"];
 
-                                    await eventController.checkAttendence(
-                                        event, eventController.email.value);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                          color: _currentIndex == index
-                                              ? Colors.blue
-                                              : Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Center(
-                                        child: Text(
-                                          "${index + 1}",
-                                          style: textStyle(
-                                              15.0,
-                                              FontWeight.bold,
-                                              _currentIndex == index
-                                                  ? Colors.white
-                                                  : const Color.fromARGB(
-                                                      255, 0, 0, 0),
-                                              FontStyle.normal),
+                                        await eventController.checkAttendence(
+                                            event, eventController.email.value);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              color: _currentIndex == index
+                                                  ? Colors.blue
+                                                  : Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Center(
+                                            child: Text(
+                                              "${index + 1}",
+                                              style: textStyle(
+                                                  15.0,
+                                                  FontWeight.bold,
+                                                  _currentIndex == index
+                                                      ? Colors.white
+                                                      : const Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                  FontStyle.normal),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ),
-                        SizedBox(
-                          height: height * 0.9,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: PageView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: pageController,
-                                scrollDirection: Axis.horizontal,
-                                // itemCount: 5,
-                                itemCount: widget.events['rounds'].length,
-                                itemBuilder: (context, index) {
-                                  roundID =
-                                      widget.events['rounds'][index]["_id"];
-                                  eventID = widget.events["_id"];
-
-                                  return ListView(
+                                    );
+                                  }),
+                            ),
+                            SizedBox(
+                              height: height * 0.9,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: PageView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
-                                    controller: _scrollController,
-                                    padding: const EdgeInsets.only(bottom: 50),
-                                    shrinkWrap: true,
-                                    children: [
-                                      Card(
-                                          color: Colors.transparent,
-                                          elevation: 8,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: Container(
-                                            width: width,
-                                            height: 300,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                gradient: LinearGradient(
-                                                    begin: Alignment.centerLeft,
-                                                    end: Alignment.centerRight,
-                                                    colors: [
-                                                      HexColor("7ec9f5")
-                                                          .withOpacity(0.5),
-                                                      HexColor("3957ed")
-                                                          .withOpacity(0.5)
-                                                    ])),
-                                            child: Visibility(
-                                              visible: isVisible,
-                                              replacement: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  ValueListenableBuilder(
-                                                    valueListenable:
-                                                        eventController.name,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text(
-                                                        "$value",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    0,
-                                                                    0,
-                                                                    0),
-                                                            FontStyle.normal),
-                                                      );
-                                                    },
-                                                  ),
-                                                  ValueListenableBuilder(
-                                                    valueListenable:
-                                                        eventController.email,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return SizedBox(
-                                                        width: width * 0.9,
-                                                        child: Center(
-                                                          child: Text(
+                                    controller: pageController,
+                                    scrollDirection: Axis.horizontal,
+                                    // itemCount: 5,
+                                    itemCount: widget.events['rounds'].length,
+                                    itemBuilder: (context, index) {
+                                      roundID =
+                                          widget.events['rounds'][index]["_id"];
+                                      eventID = widget.events["_id"];
+
+                                      return ListView(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        controller: _scrollController,
+                                        padding:
+                                            const EdgeInsets.only(bottom: 50),
+                                        shrinkWrap: true,
+                                        children: [
+                                          Card(
+                                              color: Colors.transparent,
+                                              elevation: 8,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: Container(
+                                                width: width,
+                                                height: 300,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment
+                                                            .centerLeft,
+                                                        end: Alignment
+                                                            .centerRight,
+                                                        colors: [
+                                                          HexColor("7ec9f5")
+                                                              .withOpacity(0.5),
+                                                          HexColor("3957ed")
+                                                              .withOpacity(0.5)
+                                                        ])),
+                                                child: Visibility(
+                                                  visible: isVisible,
+                                                  replacement: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      ValueListenableBuilder(
+                                                        valueListenable:
+                                                            eventController
+                                                                .name,
+                                                        builder: (context,
+                                                            value, child) {
+                                                          return Text(
                                                             "$value",
-                                                            textAlign: TextAlign
-                                                                .center,
                                                             style: textStyle(
                                                                 12.sp,
                                                                 FontWeight.bold,
@@ -312,222 +312,268 @@ class _EventRoundsState extends State<EventRounds> {
                                                                         0),
                                                                 FontStyle
                                                                     .normal),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                  ValueListenableBuilder(
-                                                    valueListenable:
-                                                        eventController
-                                                            .systemID,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text(
-                                                        "$value",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    0,
-                                                                    0,
-                                                                    0),
-                                                            FontStyle.normal),
-                                                      );
-                                                    },
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text("Status : ",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.w600,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal)),
+                                                          );
+                                                        },
+                                                      ),
                                                       ValueListenableBuilder(
-                                                          valueListenable:
-                                                              eventController
-                                                                  .attendence,
-                                                          builder: (context,
-                                                              value, child) {
-                                                            return Text(
+                                                        valueListenable:
+                                                            eventController
+                                                                .email,
+                                                        builder: (context,
+                                                            value, child) {
+                                                          return SizedBox(
+                                                            width: width * 0.9,
+                                                            child: Center(
+                                                              child: Text(
                                                                 "$value",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
                                                                 style: textStyle(
                                                                     12.sp,
                                                                     FontWeight
                                                                         .bold,
-                                                                    "$value" ==
-                                                                            "Present"
-                                                                        ? const Color.fromARGB(
+                                                                    themeProvider.isDarkMode
+                                                                        ? Colors
+                                                                            .white
+                                                                        : const Color.fromARGB(
                                                                             255,
-                                                                            7,
-                                                                            186,
-                                                                            10)
-                                                                        : Colors
-                                                                            .red,
+                                                                            0,
+                                                                            0,
+                                                                            0),
                                                                     FontStyle
-                                                                        .normal));
-                                                          })
+                                                                        .normal),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      ValueListenableBuilder(
+                                                        valueListenable:
+                                                            eventController
+                                                                .systemID,
+                                                        builder: (context,
+                                                            value, child) {
+                                                          return Text(
+                                                            "$value",
+                                                            style: textStyle(
+                                                                12.sp,
+                                                                FontWeight.bold,
+                                                                themeProvider
+                                                                        .isDarkMode
+                                                                    ? Colors
+                                                                        .white
+                                                                    : const Color
+                                                                            .fromARGB(
+                                                                        255,
+                                                                        0,
+                                                                        0,
+                                                                        0),
+                                                                FontStyle
+                                                                    .normal),
+                                                          );
+                                                        },
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text("Status : ",
+                                                              style: textStyle(
+                                                                  12.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal)),
+                                                          ValueListenableBuilder(
+                                                              valueListenable:
+                                                                  eventController
+                                                                      .attendence,
+                                                              builder: (context,
+                                                                  value,
+                                                                  child) {
+                                                                return Text(
+                                                                    "$value",
+                                                                    style: textStyle(
+                                                                        12.sp,
+                                                                        FontWeight
+                                                                            .bold,
+                                                                        "$value" ==
+                                                                                "Present"
+                                                                            ? const Color.fromARGB(
+                                                                                255,
+                                                                                7,
+                                                                                186,
+                                                                                10)
+                                                                            : Colors
+                                                                                .red,
+                                                                        FontStyle
+                                                                            .normal));
+                                                              })
+                                                        ],
+                                                      ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                              child: Container(),
-                                            ),
-                                          )),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          ValueListenableBuilder(
-                                              valueListenable: isDisable,
-                                              builder: (context, value, child) {
-                                                return AbsorbPointer(
-                                                  absorbing: isDisable.value,
-                                                  child: MaterialButton(
-                                                    elevation: 4,
-                                                    shape:
-                                                        RoundedRectangleBorder(
+                                                  child: Container(),
+                                                ),
+                                              )),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              ValueListenableBuilder(
+                                                  valueListenable: isDisable,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return AbsorbPointer(
+                                                      absorbing:
+                                                          isDisable.value,
+                                                      child: MaterialButton(
+                                                        elevation: 4,
+                                                        shape: RoundedRectangleBorder(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
                                                                         10)),
-                                                    color: Colors.blue,
-                                                    onPressed: !finalDate
-                                                            .contains(widget
-                                                                .events[
-                                                                    'rounds']
-                                                                    [index]
+                                                        color: Colors.blue,
+                                                        onPressed: !finalDate
+                                                                .contains(widget
+                                                                    .events[
+                                                                        'rounds']
+                                                                        [index]
+                                                                        ["date"]
+                                                                    .toString())
+                                                            ? null
+                                                            : () {
+                                                                isDisable
+                                                                        .value =
+                                                                    true;
+
+                                                                onQRViewCreated();
+                                                              },
+                                                        child: !finalDate.contains(widget
+                                                                .events['rounds'][index]
                                                                     ["date"]
                                                                 .toString())
-                                                        ? null
-                                                        : () {
-                                                            isDisable.value =
-                                                                true;
-                                                           
-                                                            onQRViewCreated();
-                                                          },
-                                                    child: !finalDate.contains(
-                                                            widget.events['rounds']
-                                                                    [index]
-                                                                    ["date"]
-                                                                .toString())
-                                                        ? Text("",
-                                                            style: textStyle(
-                                                                12.sp,
-                                                                FontWeight.bold,
-                                                                Colors.white,
-                                                                FontStyle
-                                                                    .normal))
-                                                        : Text("Mark Attendance",
-                                                            style: textStyle(
-                                                                12.sp,
-                                                                FontWeight.bold,
-                                                                Colors.white,
-                                                                FontStyle
-                                                                    .normal)),
-                                                  ),
-                                                );
-                                              })
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Card(
-                                        elevation: 8,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        color: Colors.transparent,
-                                        child: Container(
-                                          width: width * 0.95,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 0.2,
-                                                  color: themeProvider
-                                                          .isDarkMode
-                                                      ? Colors.white
-                                                      : const Color.fromARGB(
-                                                          255, 151, 194, 8)),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: themeProvider.isDarkMode
-                                                  ? HexColor("#020E26")
-                                                  : Colors.white),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    "Lab : ${widget.events['rounds'][index]["lab"]}",
-                                                    style: textStyle(
-                                                        12.sp,
-                                                        FontWeight.w600,
-                                                        themeProvider.isDarkMode
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        FontStyle.normal)),
-                                                const SizedBox(
-                                                  height: 10,
+                                                            ? Text("",
+                                                                style: textStyle(
+                                                                    12.sp,
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    Colors
+                                                                        .white,
+                                                                    FontStyle
+                                                                        .normal))
+                                                            : Text("Mark Attendance",
+                                                                style: textStyle(
+                                                                    12.sp,
+                                                                    FontWeight.bold,
+                                                                    Colors.white,
+                                                                    FontStyle.normal)),
+                                                      ),
+                                                    );
+                                                  })
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Card(
+                                            elevation: 8,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            color: Colors.transparent,
+                                            child: Container(
+                                              width: width * 0.95,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 0.2,
+                                                      color: themeProvider
+                                                              .isDarkMode
+                                                          ? Colors.white
+                                                          : const Color
+                                                                  .fromARGB(255,
+                                                              151, 194, 8)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color:
+                                                      themeProvider.isDarkMode
+                                                          ? HexColor("#020E26")
+                                                          : Colors.white),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                        "Lab : ${widget.events['rounds'][index]["lab"]}",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.w600,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                        "Test Type : ${widget.events['rounds'][index]["testType"]}",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.w600,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal)),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                        "Round Date : ${widget.events['rounds'][index]["date"]}",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.w600,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal))
+                                                  ],
                                                 ),
-                                                Text(
-                                                    "Test Type : ${widget.events['rounds'][index]["testType"]}",
-                                                    style: textStyle(
-                                                        12.sp,
-                                                        FontWeight.w600,
-                                                        themeProvider.isDarkMode
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        FontStyle.normal)),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                    "Round Date : ${widget.events['rounds'][index]["date"]}",
-                                                    style: textStyle(
-                                                        12.sp,
-                                                        FontWeight.w600,
-                                                        themeProvider.isDarkMode
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        FontStyle.normal))
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }),
-                          ),
+                                        ],
+                                      );
+                                    }),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : const NoInternet();
-    });
+                ),
+              )
+            : const NoInternet();
+      }),
+    );
   }
 
   var scanResult;

@@ -29,7 +29,6 @@ class _MenuScreenState extends State<MenuScreen> {
   var token;
   @override
   void initState() {
-    print("object");
     super.initState();
     userDetailsController.fetchUserData();
     getAppInfo();

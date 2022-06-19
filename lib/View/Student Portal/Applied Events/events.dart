@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ class _EventsPageState extends State<EventsPage> {
   @override
   void initState() {
     super.initState();
+    EasyLoading.dismiss();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
   }
 
@@ -48,6 +50,7 @@ class _EventsPageState extends State<EventsPage> {
                 triggerMode: RefreshIndicatorTriggerMode.onEdge,
                 onRefresh: () async {
                   await Future.delayed(const Duration(milliseconds: 1500));
+
                   setState(() {});
                 },
                 child: Scaffold(

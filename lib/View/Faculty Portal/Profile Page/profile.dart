@@ -49,12 +49,12 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
         imageURL.value = downloadURL;
       } on FirebaseException catch (error) {
         if (kDebugMode) {
-          print(error);
+          debugPrint(error.toString());
         }
       }
     } catch (err) {
       if (kDebugMode) {
-        print(err);
+        debugPrint(err.toString());
       }
     }
   }

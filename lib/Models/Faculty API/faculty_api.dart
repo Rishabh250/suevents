@@ -125,7 +125,6 @@ getAssignedFaculty(eventID) async {
 }
 
 getAssignedEvents(token) async {
-  print(token.toString());
   try {
     var response = await https.get(
         Uri.parse("https://suevents2022.herokuapp.com/getAssignedEvents"),
