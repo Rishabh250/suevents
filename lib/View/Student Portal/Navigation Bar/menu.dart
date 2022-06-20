@@ -67,7 +67,11 @@ class _MenuScreenState extends State<MenuScreen> {
                               ? CircleAvatar(
                                   radius: 50,
                                   backgroundImage: ExactAssetImage(
-                                    userDetailsController.gender.value == "Male"
+                                    userDetailsController.gender.value ==
+                                                "Male" ||
+                                            userDetailsController
+                                                    .gender.value ==
+                                                "male"
                                         ? "assets/images/boy.png"
                                         : "assets/images/girl.png",
                                   ),

@@ -11,6 +11,7 @@ import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart
 import 'package:suevents/Controller/Internet%20Connection/connection_provider.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/Models/Event%20Api/events_api.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/Faculty%20Portal/Create%20Event/event_create.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/event_details.dart';
@@ -62,6 +63,8 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     getUserDetails = await getFacultyData(token);
+    getPlacementEvents();
+    getGeneralEvents();
     if (!mounted) return;
     setState(() {
       name = getUserDetails["user"]["name"];

@@ -10,7 +10,6 @@ import 'package:suevents/Controller/Internet%20Connection/connection_provider.da
 import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
 
 import 'Controller/providers/theme_service.dart';
-import 'Models/Event Api/events_api.dart';
 import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
 import 'View/get_started.dart';
 
@@ -23,8 +22,6 @@ Future main() async {
   isLog = sharedPreferences.getBool("isLogged");
   userType = sharedPreferences.getString("getUser");
 
-  getPlacementEvents();
-  getGeneralEvents();
   runApp(const MyApp());
   configLoading();
 }
