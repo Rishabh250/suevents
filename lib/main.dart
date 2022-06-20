@@ -4,24 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Internet%20Connection/connection_provider.dart';
-import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
+import 'package:suevents/splash_screen.dart';
 
 import 'Controller/providers/theme_service.dart';
-import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
-import 'View/get_started.dart';
 
-var isLog;
-var userType;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  isLog = sharedPreferences.getBool("isLogged");
-  userType = sharedPreferences.getString("getUser");
-
   runApp(const MyApp());
   configLoading();
 }
@@ -29,10 +20,10 @@ Future main() async {
 void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(seconds: 10)
-    ..indicatorType = EasyLoadingIndicatorType.spinningCircle
+    ..indicatorType = EasyLoadingIndicatorType.circle
     ..animationStyle = EasyLoadingAnimationStyle.scale
     ..loadingStyle = EasyLoadingStyle.light
-    ..indicatorSize = 25.0
+    ..indicatorSize = 30.0
     ..radius = 15.0
     ..userInteractions = true
     ..dismissOnTap = true;
@@ -64,11 +55,7 @@ class MyAppState extends State<MyApp> {
                       themeMode: themeMode.value,
                       theme: MyThemes.lightTheme,
                       darkTheme: MyThemes.darkTheme,
-                      home: isLog == true
-                          ? userType == "Student"
-                              ? const MainScreen()
-                              : const FacultyMainScreen()
-                          : const Getstarted(),
+                      home: const SplastScreen(),
 
                       // home: const Getstarted(),
                       builder: EasyLoading.init(builder: (context, builder) {
@@ -93,11 +80,7 @@ class MyAppState extends State<MyApp> {
                   themeMode: themeMode.value,
                   theme: MyThemes.lightTheme,
                   darkTheme: MyThemes.darkTheme,
-                  home: isLog == true
-                      ? userType == "Student"
-                          ? const MainScreen()
-                          : const FacultyMainScreen()
-                      : const Getstarted(),
+                  home: const SplastScreen(),
 
                   // home: const Getstarted(),
                   builder: EasyLoading.init(builder: (context, builder) {

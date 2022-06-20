@@ -14,14 +14,15 @@ import '../../View/Student Portal/Navigation Bar/zoom_drawer.dart';
 
 userLogin(email, pass, deviceID) async {
   try {
-    var response = await https
-        .post(Uri.parse("https://suevents2022.herokuapp.com/loginUser"),
-            body: jsonEncode({
-              "email": email.toString(),
-              "password": pass.toString(),
-              "deviceInfo": "$deviceID"
-            }),
-            headers: {"Content-Type": "application/json"});
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/loginUser"),
+        body: jsonEncode({
+          "email": email.toString(),
+          "password": pass.toString(),
+          "deviceInfo": "$deviceID"
+        }),
+        headers: {"Content-Type": "application/json"});
     log(response.body.toString());
 
     var body = jsonDecode(response.body);
@@ -55,9 +56,9 @@ userLogin(email, pass, deviceID) async {
 resetPassword(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/forgetPassword"),
-        body: jsonEncode(
-            {"email": email.toString(), "password": pass.toString()}),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/forgetPassword"),
+        body: jsonEncode({"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
 
     var body = jsonDecode(response.body);
@@ -80,7 +81,8 @@ resetPassword(email, pass) async {
 sendOTP(email) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/sendOTP"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/sendOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString()}));
     if (response.statusCode == 200) {
@@ -98,7 +100,8 @@ sendOTP(email) async {
 verifyOTP(email, opt) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/verifyOTP"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/verifyOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
     if (response.statusCode == 200) {
@@ -121,7 +124,8 @@ verifyOTP(email, opt) async {
 getUserData(token) async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/userInfo"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/userInfo"),
         headers: {
           "Content-Type": "application/json",
           "x-access-token": token.toString()
@@ -142,7 +146,8 @@ uploadProfileImage(token, image) async {
   };
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/uploadImage"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/uploadImage"),
         headers: headers,
         body: jsonEncode({"profileImage": image.toString()}));
     log(response.body.toString());

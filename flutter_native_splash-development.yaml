@@ -1,0 +1,5 @@
+flutter_native_splash:
+  image: assets/images/shardaLogo.png
+  color: "F3F6F9"
+  image_dark: assets/images/shardaLogo.png
+  color_dark: "#010A1C"

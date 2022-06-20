@@ -15,9 +15,9 @@ import '../../View/Autentication/login.dart';
 facultyLogin(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultyloginUser"),
-        body: jsonEncode(
-            {"email": email.toString(), "password": pass.toString()}),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyloginUser"),
+        body: jsonEncode({"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
     log(response.body.toString());
 
@@ -45,9 +45,9 @@ facultyLogin(email, pass) async {
 facultyResetPassword(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultyforgetPassword"),
-        body: jsonEncode(
-            {"email": email.toString(), "password": pass.toString()}),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyforgetPassword"),
+        body: jsonEncode({"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
 
     var body = jsonDecode(response.body);
@@ -70,7 +70,8 @@ facultyResetPassword(email, pass) async {
 facultysendOTP(email) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultysendOTP"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultysendOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString()}));
     if (response.statusCode == 200) {
@@ -88,7 +89,8 @@ facultysendOTP(email) async {
 facultyverifyOTP(email, opt, user) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultyverifyOTP"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyverifyOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
     if (response.statusCode == 200) {
@@ -109,7 +111,8 @@ facultyverifyOTP(email, opt, user) async {
 getFacultyData(token) async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/facultygetSingleUser"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultygetSingleUser"),
         headers: {
           "Content-Type": "application/json",
           "x-access-token": token.toString()
@@ -132,7 +135,8 @@ facultyUploadImage(token, image) async {
   };
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultyUploadImage"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyUploadImage"),
         headers: headers,
         body: jsonEncode({"profileImage": image.toString()}));
     log(response.body.toString());

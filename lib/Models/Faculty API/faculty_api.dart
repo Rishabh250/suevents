@@ -8,7 +8,8 @@ import 'package:suevents/Controller/providers/global_snackbar.dart';
 createEvent(token, title, type, description, startDate, endDate, price) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/createEvent"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createEvent"),
         body: jsonEncode({
           "title": "$title",
           "type": "$type",
@@ -38,7 +39,8 @@ createEvent(token, title, type, description, startDate, endDate, price) async {
 assignFaculty(eventID, facultyList) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/facultyAssigned"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyAssigned"),
         body: jsonEncode({"eventID": eventID, "facultyID": facultyList}),
         headers: {"Content-Type": "application/json"});
     facultyList.clear();
@@ -59,7 +61,8 @@ assignFaculty(eventID, facultyList) async {
 createRound(token, lab, eventID, type, startDate, time, lastRound) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/createRound"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createRound"),
         body: jsonEncode({
           "eventID": "$eventID",
           "lab": "$lab",
@@ -90,7 +93,8 @@ createRound(token, lab, eventID, type, startDate, time, lastRound) async {
 getAllFaculty() async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/facultygetAllUser"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultygetAllUser"),
         headers: {
           "Content-Type": "application/json",
         });
@@ -108,7 +112,8 @@ getAllFaculty() async {
 getAssignedFaculty(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/singleEventFaculty"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/singleEventFaculty"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +132,8 @@ getAssignedFaculty(eventID) async {
 getAssignedEvents(token) async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/getAssignedEvents"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getAssignedEvents"),
         headers: {
           "Content-Type": "application/json",
           "x-access-token": "$token"
@@ -145,7 +151,8 @@ getAssignedEvents(token) async {
 getSingleEvent(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/getEventRound"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getEventRound"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",
@@ -164,7 +171,8 @@ getSingleEvent(eventID) async {
 getSelectedEvents(roundType) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/getSelectedEvents"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getSelectedEvents"),
         body: jsonEncode({"roundType": "$roundType"}),
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +191,8 @@ getSelectedEvents(roundType) async {
 getUnselectedStudents(roundType, eventList) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/getUnselectedStudents"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getUnselectedStudents"),
         body: jsonEncode({"eventList": eventList, "roundType": "$roundType"}),
         headers: {
           "Content-Type": "application/json",

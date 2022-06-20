@@ -58,7 +58,8 @@ class GetFacultyList extends GetxController {
     };
 
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/facultygetAllUser"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultygetAllUser"),
         headers: headers);
 
     if (response.statusCode == 201 || response.statusCode == 200) {

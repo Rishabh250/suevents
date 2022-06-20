@@ -6,7 +6,8 @@ import 'package:http/http.dart' as https;
 closeEvent(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/closeEvent"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/closeEvent"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",

@@ -9,7 +9,8 @@ import '../../Controller/providers/global_snackbar.dart';
 getPlacementEvents() async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/getPlacementEvents"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getPlacementEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -24,7 +25,7 @@ getAllEvents(title) async {
   try {
     var response = await https.get(
         Uri.parse(
-            "https://suevents2022.herokuapp.com/getAllEvents/eventTitle=$title"),
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getAllEvents/eventTitle=$title"),
         headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -38,7 +39,8 @@ getAllEvents(title) async {
 getGeneralEvents() async {
   try {
     var response = await https.get(
-        Uri.parse("https://suevents2022.herokuapp.com/getGeneralEvents"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getGeneralEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -56,7 +58,8 @@ applyEvent(token, eventID, event) async {
     };
 
     var response = await https.post(
-        Uri.parse("https://suevents2022.herokuapp.com/applyEvent"),
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/applyEvent"),
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
     log(response.statusCode.toString());
