@@ -6,7 +6,6 @@ import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
-import 'package:suevents/View/about_app.dart';
 import 'package:suevents/View/get_started.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -103,16 +102,16 @@ class _FacultyMenuScreenState extends State<FacultyMenuScreen> {
         SizedBox(
           height: 5.h,
         ),
-        ListTile(
-          onTap: () {
-            ZoomDrawer.of(context)?.close();
+        // ListTile(
+        //   onTap: () {
+        //     ZoomDrawer.of(context)?.close();
 
-            Get.to(() => const AboutApp(), transition: Transition.fadeIn);
-          },
-          title: Text("About app",
-              style: textStyle(
-                  10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
-        ),
+        //     Get.to(() => const AboutApp(), transition: Transition.fadeIn);
+        //   },
+        //   title: Text("About app",
+        //       style: textStyle(
+        //           10.sp, FontWeight.w400, Colors.white, FontStyle.normal)),
+        // ),
         ListTile(
           onTap: () async {
             final mailtoLink = Mailto(

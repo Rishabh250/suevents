@@ -1,11 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as https;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 
 import 'View/Faculty Portal/Navigation Bar/zoom_drawer.dart';
@@ -31,15 +31,21 @@ class _SplastScreenState extends State<SplastScreen> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     isLog = sharedPreferences.getBool("isLogged");
     userType = sharedPreferences.getString("getUser");
-    Future.delayed(const Duration(seconds: 1), () {
-      log(isLog.toString());
-      isLog == true
-          ? userType == "Student"
-              ? Get.to(() => const MainScreen(), transition: Transition.fadeIn)
-              : Get.to(() => const FacultyMainScreen(),
-                  transition: Transition.fadeIn)
-          : Get.to(() => const Getstarted(), transition: Transition.fadeIn);
-    });
+    var isConnected = await connection();
+    if (isConnected) {
+      Future.delayed(const Duration(seconds: 1), () {
+        isLog == true
+            ? userType == "Student"
+                ? Get.offAll(() => const MainScreen(),
+                    transition: Transition.fadeIn)
+                : Get.offAll(() => const FacultyMainScreen(),
+                    transition: Transition.fadeIn)
+            : Get.offAll(() => const Getstarted(),
+                transition: Transition.fadeIn);
+      });
+    } else {
+      showError("Server Down", "Please try again later");
+    }
   }
 
   @override
@@ -92,5 +98,19 @@ class _SplastScreenState extends State<SplastScreen> {
         ],
       ),
     );
+  }
+
+  connection() async {
+    try {
+      var response = await https.get(Uri.parse(
+          "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/"));
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
