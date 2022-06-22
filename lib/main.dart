@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Internet%20Connection/connection_provider.dart';
+import 'package:suevents/View/get_started.dart';
 import 'package:suevents/splash_screen.dart';
 
 import 'Controller/providers/theme_service.dart';
@@ -80,7 +81,7 @@ class MyAppState extends State<MyApp> {
                   themeMode: themeMode.value,
                   theme: MyThemes.lightTheme,
                   darkTheme: MyThemes.darkTheme,
-                  home: const SplastScreen(),
+                  home: const Getstarted(),
 
                   // home: const Getstarted(),
                   builder: EasyLoading.init(builder: (context, builder) {

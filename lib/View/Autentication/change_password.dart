@@ -1,7 +1,5 @@
 // ignore_for_file: unused_local_variable
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -29,8 +27,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   void initState() {
     super.initState();
-    log(userType["isType"]);
-    email = userType["email"];
+    email = userType[0]["email"];
   }
 
   bool isPassVisible = true;
@@ -103,7 +100,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: true,
                           decoration: InputDecoration(
-                              hintText: userType["email"],
+                              hintText: userType[0]["email"],
                               hintStyle: GoogleFonts.poppins(fontSize: 11.sp),
                               prefixIcon: const Icon(Icons.mail),
                               border: OutlineInputBorder(
@@ -165,7 +162,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                               return;
                             } else {
                               EasyLoading.show();
-                              userType["isType"] == "Faculty"
+                              userType[0]["isType"] == "Faculty"
                                   ? facultyResetPassword(email.toString(),
                                       password.text.toString())
                                   : await resetPassword(email.toString(),
