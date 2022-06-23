@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'package:suevents/Models/Event%20Api/events_api.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/Faculty%20Portal/Create%20Event/event_create.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/event_details.dart';
+import 'package:suevents/View/Faculty%20Portal/Profile%20Page/profile.dart';
 import 'package:suevents/View/Faculty%20Portal/Unselected%20List/unselected_list.dart';
 import 'package:suevents/View/Faculty%20Portal/View%20All%20Event/created_event_list.dart';
 import 'package:suevents/View/no_connection.dart';
@@ -115,7 +115,28 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TopBar(themeProvider: themeProvider),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => const FacultyProfilePage(),
+                                  transition: Transition.fadeIn);
+                            },
+                            child: ValueListenableBuilder(
+                                valueListenable: controller.userImage,
+                                builder: (context, value, child) {
+                                  return "$value" == ""
+                                      ? const CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: ExactAssetImage(
+                                            "assets/images/faculty.png",
+                                          ),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage:
+                                              NetworkImage("$value"),
+                                        );
+                                }),
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -130,7 +151,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                           const SizedBox(
                             height: 1,
                           ),
-                          Text("Hi, $name",
+                          Text("Hi, ${facultyController.name.value}",
                               style: Theme.of(context).textTheme.headline2),
                           const SizedBox(
                             height: 20,
@@ -721,73 +742,4 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
   }
 
   var generalEvent;
-}
-
-class TopBar extends StatelessWidget {
-  const TopBar({
-    Key? key,
-    required this.themeProvider,
-  }) : super(key: key);
-
-  final ThemeProvider themeProvider;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              ZoomDrawer.of(context)?.open();
-            },
-            child: Card(
-              elevation: 4,
-              color:
-                  !themeProvider.isDarkMode ? Colors.white : Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: !themeProvider.isDarkMode
-                        ? Colors.white
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12)),
-                width: 40,
-                height: 40,
-                child: Center(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 4,
-                      width: 25,
-                      decoration: BoxDecoration(
-                          color: themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Container(
-                      width: 15,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          color: themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ],
-                )),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

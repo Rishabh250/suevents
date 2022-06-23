@@ -7,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
+import 'package:suevents/View/Student%20Portal/Navigation%20Bar/navigation_bar.dart';
 
-import 'View/Faculty Portal/Navigation Bar/zoom_drawer.dart';
-import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
+import 'View/Faculty Portal/Navigation Bar/navigation_bar.dart';
 import 'View/get_started.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -36,9 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(seconds: 1), () {
         isLog == true
             ? userType == "Student"
-                ? Get.offAll(() => const MainScreen(),
+                ? Get.offAll(() => const NavigationBarPage(),
                     transition: Transition.fadeIn)
-                : Get.offAll(() => const FacultyMainScreen(),
+                : Get.offAll(() => const FacultyNavigationBarPage(),
                     transition: Transition.fadeIn)
             : Get.offAll(() => const Getstarted(),
                 transition: Transition.fadeIn);

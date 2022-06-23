@@ -6,11 +6,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
 import 'package:suevents/Controller/SharedPreferences/token.dart';
+import 'package:suevents/View/Autentication/verify_email.dart';
+import 'package:suevents/View/Student%20Portal/Navigation%20Bar/navigation_bar.dart';
 
 import '../../Controller/providers/global_snackbar.dart';
-import '../../View/Autentication/change_password.dart';
 import '../../View/Autentication/login.dart';
-import '../../View/Student Portal/Navigation Bar/zoom_drawer.dart';
 
 userLogin(email, pass, deviceID) async {
   try {
@@ -23,16 +23,24 @@ userLogin(email, pass, deviceID) async {
           "deviceInfo": "$deviceID"
         }),
         headers: {"Content-Type": "application/json"});
-    log(response.body.toString());
 
     var body = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      accessToken(jsonDecode(response.body)["token"]);
-      EasyLoading.dismiss();
-      loginStatus(true);
-      getUser("Student");
-      Get.off(const MainScreen(), transition: Transition.fadeIn);
+      if (body['verified'] == true) {
+        accessToken(jsonDecode(response.body)["token"]);
+
+        loginStatus(true);
+        getUser("Student");
+        Get.offAll(const NavigationBarPage(), transition: Transition.fadeIn);
+      } else {
+        await sendOTP(email);
+        EasyLoading.dismiss();
+
+        Get.to(() => const EmailVerify(),
+            arguments: {"isType": "Student", "email": email},
+            transition: Transition.fadeIn);
+      }
     } else {
       if (body['msg'] == "Password wrong") {
         showError("Invaild Details", "You have entered wrong password");
@@ -47,6 +55,39 @@ userLogin(email, pass, deviceID) async {
       if (body['msg'] == "Device Already in use") {
         showError("Device Error", "Device Already in use");
       }
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+createStudent(
+    email, pass, name, sysID, course, year, semester, gender, deviceID) async {
+  try {
+    print(deviceID);
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createUser"),
+        body: jsonEncode({
+          "email": email.toString(),
+          "password": pass.toString(),
+          "name": name.toString(),
+          "systemID": sysID.toString(),
+          "course": course.toString(),
+          "year": year,
+          "semester": semester,
+          "gender": gender.toString(),
+          "deviceInfo": "$deviceID",
+          "type": "Student"
+        }),
+        headers: {"Content-Type": "application/json"});
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   } catch (e) {
     debugPrint(e.toString());
@@ -97,22 +138,16 @@ sendOTP(email) async {
   }
 }
 
-verifyOTP(email, opt) async {
+verifyOTP(email, otp) async {
   try {
     var response = await https.post(
         Uri.parse(
             "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/verifyOTP"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
+        body: jsonEncode({"email": email.toString(), "otp": int.parse(otp)}));
     if (response.statusCode == 200) {
-      Get.to(() => const ChangePassword(),
-          transition: Transition.fadeIn,
-          arguments: [
-            {"email": email}
-          ]);
       return true;
     } else {
-      showError("Invalid OTP", "Enter a vaild otp");
       return false;
     }
   } catch (e) {
@@ -156,6 +191,29 @@ uploadProfileImage(token, image) async {
           "Profile Updated", "Profile pic has been upload successfully");
     } else {
       showError("Something went wrong", "Please try again later");
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+checkDevice(deviceID) async {
+  var headers = {
+    "Content-Type": "application/json",
+  };
+  try {
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/checkDevice"),
+        headers: headers,
+        body: jsonEncode({"deviceID": "$deviceID"}));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      showError("Device in use...",
+          "Another account is already connected with this device....");
+      return false;
     }
   } catch (e) {
     debugPrint(e.toString());

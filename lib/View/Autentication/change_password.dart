@@ -27,7 +27,8 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   void initState() {
     super.initState();
-    email = userType[0]["email"];
+    print(userType);
+    email = userType["email"];
   }
 
   bool isPassVisible = true;
@@ -100,7 +101,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: true,
                           decoration: InputDecoration(
-                              hintText: userType[0]["email"],
+                              hintText: userType["email"],
                               hintStyle: GoogleFonts.poppins(fontSize: 11.sp),
                               prefixIcon: const Icon(Icons.mail),
                               border: OutlineInputBorder(

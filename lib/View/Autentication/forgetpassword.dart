@@ -14,6 +14,8 @@ import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
 
+import 'change_password.dart';
+
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
@@ -227,14 +229,37 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   return;
                                 } else {
                                   EasyLoading.show();
-                                  userType["isType"] == "Student"
-                                      ? await verifyOTP(email.text.toString(),
-                                          otp.text.toString())
-                                      : await facultyverifyOTP(
-                                          email.text.toString(),
-                                          otp.text.toString(),
-                                          userType["isType"]);
-                                  EasyLoading.dismiss();
+                                  if (otp.text.isEmpty) {
+                                    showError("Empty Field", "Enter your OTP");
+                                    return;
+                                  } else {
+                                    EasyLoading.show();
+                                    bool isVerified =
+                                        userType["isType"] == "Student"
+                                            ? await verifyOTP(
+                                                email.text.toString(),
+                                                otp.text.toString())
+                                            : await facultyverifyOTP(
+                                                email.text.toString(),
+                                                otp.text.toString(),
+                                              );
+
+                                    EasyLoading.dismiss();
+
+                                    if (isVerified) {
+                                      Get.to(() => const ChangePassword(),
+                                          transition: Transition.fadeIn,
+                                          arguments: {
+                                            "email": email.text.toString(),
+                                            "isType": userType["isType"],
+                                          });
+                                      return;
+                                    } else {
+                                      showError(
+                                          "Invalid OTP", "Enter a vaild otp");
+                                      return;
+                                    }
+                                  }
                                 }
                               }
                             }

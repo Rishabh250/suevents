@@ -6,11 +6,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as https;
 import 'package:suevents/Controller/SharedPreferences/token.dart';
-import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
+import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/navigation_bar.dart';
 
 import '../../Controller/providers/global_snackbar.dart';
-import '../../View/Autentication/change_password.dart';
 import '../../View/Autentication/login.dart';
+import '../../View/Autentication/verify_email.dart';
 
 facultyLogin(email, pass) async {
   try {
@@ -24,11 +24,20 @@ facultyLogin(email, pass) async {
     var body = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      accessToken(jsonDecode(response.body)["token"]);
-      EasyLoading.dismiss();
-      loginStatus(true);
-      getUser("Faculty");
-      Get.off(const FacultyMainScreen(), transition: Transition.fadeIn);
+      if (body['verified'] == true) {
+        accessToken(jsonDecode(response.body)["token"]);
+        loginStatus(true);
+        getUser("Faculty");
+        Get.off(const FacultyNavigationBarPage(),
+            transition: Transition.fadeIn);
+      } else {
+        await facultysendOTP(email);
+        EasyLoading.dismiss();
+
+        Get.to(() => const EmailVerify(),
+            arguments: {"isType": "Faculty", "email": email},
+            transition: Transition.fadeIn);
+      }
     } else {
       if (body['msg'] == "Password wrong") {
         showError("Invaild Details", "You have entered wrong password");
@@ -36,6 +45,34 @@ facultyLogin(email, pass) async {
       if (body['msg'] == "user not found") {
         showError("Invaild Details", "User not found");
       }
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+createFaculty(email, pass, name, sysID, gender) async {
+  try {
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createFaculty"),
+        body: jsonEncode({
+          "email": email.toString(),
+          "password": pass.toString(),
+          "name": name.toString(),
+          "systemID": sysID.toString(),
+          "gender": gender.toString(),
+          "type": "Faculty"
+        }),
+        headers: {"Content-Type": "application/json"});
+
+    if (response.statusCode == 200) {
+      EasyLoading.dismiss();
+      return true;
+    } else {
+      EasyLoading.dismiss();
+
+      return false;
     }
   } catch (e) {
     debugPrint(e.toString());
@@ -86,7 +123,7 @@ facultysendOTP(email) async {
   }
 }
 
-facultyverifyOTP(email, opt, user) async {
+facultyverifyOTP(email, opt) async {
   try {
     var response = await https.post(
         Uri.parse(
@@ -94,12 +131,8 @@ facultyverifyOTP(email, opt, user) async {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
     if (response.statusCode == 200) {
-      Get.to(() => const ChangePassword(),
-          transition: Transition.fadeIn,
-          arguments: {"email": email, "isType": user});
       return true;
     } else {
-      showError("Invalid OTP", "Enter a vaild otp");
       return false;
     }
   } catch (e) {

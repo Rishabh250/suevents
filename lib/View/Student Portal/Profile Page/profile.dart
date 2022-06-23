@@ -17,8 +17,10 @@ import 'package:suevents/Models/Student%20API/authentication_api.dart';
 import 'package:suevents/View/no_connection.dart';
 
 import '../../../Controller/Internet Connection/connection_provider.dart';
+import '../../../Controller/SharedPreferences/token.dart';
 import '../../../Controller/Student_Controllers/events_controller.dart';
 import '../../../Models/Student API/student_api.dart';
+import '../../get_started.dart';
 
 UserDetailsController userDetailsController = UserDetailsController();
 
@@ -93,6 +95,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                 elevation: 0,
                                 backgroundColor:
                                     Theme.of(context).scaffoldBackgroundColor,
+                                actions: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10.0),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          loginStatus(false);
+                                          accessToken("");
+                                          Get.offAll(() => const Getstarted());
+                                        },
+                                        child:
+                                            const Icon(Icons.logout_rounded)),
+                                  )
+                                ],
                                 leading: GestureDetector(
                                   onTap: () => Get.back(),
                                   child: const Icon(
@@ -184,264 +199,176 @@ class _ProfilePageState extends State<ProfilePage> {
                                         );
                                       }),
                                   const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Card(
-                                    color: Colors.transparent,
-                                    elevation: 4,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Container(
-                                      width: width * 0.9,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 0.2,
-                                              color: themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : const Color.fromARGB(
-                                                      255, 151, 194, 8)),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: themeProvider.isDarkMode
-                                              ? HexColor("020E26")
-                                              : Colors.white),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "System ID : ",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                                ValueListenableBuilder(
-                                                    valueListenable:
-                                                        userDetailsController
-                                                            .systemID,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text("$value",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.bold,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal));
-                                                    })
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Course : ",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                                ValueListenableBuilder(
-                                                    valueListenable:
-                                                        userDetailsController
-                                                            .course,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text("$value",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.bold,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal));
-                                                    })
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Year : ",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    ValueListenableBuilder(
-                                                        valueListenable:
-                                                            userDetailsController
-                                                                .year,
-                                                        builder: (context,
-                                                            value, child) {
-                                                          return Text("$value",
-                                                              style: textStyle(
-                                                                  12.sp,
-                                                                  FontWeight
-                                                                      .bold,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal));
-                                                        }),
-                                                    ValueListenableBuilder(
-                                                        valueListenable:
-                                                            userDetailsController
-                                                                .semester,
-                                                        builder: (context,
-                                                            value, child) {
-                                                          return Text("$value",
-                                                              style: textStyle(
-                                                                  12.sp,
-                                                                  FontWeight
-                                                                      .bold,
-                                                                  themeProvider
-                                                                          .isDarkMode
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  FontStyle
-                                                                      .normal));
-                                                        })
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Gender : ",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                                ValueListenableBuilder(
-                                                    valueListenable:
-                                                        userDetailsController
-                                                            .gender,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text("$value",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.bold,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal));
-                                                    })
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Events Applied : ",
-                                                  style: textStyle(
-                                                      12.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                                ValueListenableBuilder(
-                                                    valueListenable:
-                                                        userDetailsController
-                                                            .events,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text("$value",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.bold,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal));
-                                                    })
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "Applied Events",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline1,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
                                     height: 10,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10),
-                                    child: StudentEvents(
-                                      token: userDetailsController.token,
-                                      width: width,
-                                      textScale: textScale,
-                                      themeProvider: themeProvider,
-                                    ),
-                                  )
+                                  ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.systemID,
+                                      builder: (context, value, child) {
+                                        return Text("$value",
+                                            style: textStyle(
+                                                12.sp,
+                                                FontWeight.bold,
+                                                themeProvider.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                FontStyle.normal));
+                                      }),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  Center(
+                                      child: SizedBox(
+                                    width: width * 0.9,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      userDetailsController
+                                                          .course,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return Text("$value",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal));
+                                                  }),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Course",
+                                                style: textStyle(
+                                                    10.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 20,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          Column(
+                                            children: [
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      userDetailsController
+                                                          .year,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return Text("$value",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal));
+                                                  }),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Year",
+                                                style: textStyle(
+                                                    10.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 20,
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          Column(
+                                            children: [
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      userDetailsController
+                                                          .events,
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return Text("$value",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal));
+                                                  }),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Applied",
+                                                style: textStyle(
+                                                    10.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                        ]),
+                                  )),
+
+                                  // const SizedBox(
+                                  //   height: 30,
+                                  // ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(left: 10.0),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Text(
+                                  //         "Applied Events",
+                                  //         style: Theme.of(context)
+                                  //             .textTheme
+                                  //             .headline1,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 10,
+                                  // ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(
+                                  //       left: 10.0, right: 10),
+                                  //   child: StudentEvents(
+                                  //     token: userDetailsController.token,
+                                  //     width: width,
+                                  //     textScale: textScale,
+                                  //     themeProvider: themeProvider,
+                                  //   ),
+                                  // )
                                 ],
                               ),
                             )
@@ -504,12 +431,11 @@ class StudentEvents extends StatelessWidget {
           }
           return SizedBox(
             width: _width,
-            height: 320,
             child: eventData["eventsApplied"].length == 0
                 ? Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Container(
                         width: _width * 0.9,
                         decoration: BoxDecoration(
@@ -518,12 +444,24 @@ class StudentEvents extends StatelessWidget {
                                 color: themeProvider.isDarkMode
                                     ? Colors.white
                                     : const Color.fromARGB(255, 151, 194, 8)),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             color: themeProvider.isDarkMode
                                 ? HexColor("#020E26")
                                 : Colors.white),
-                        child: const Center(
-                          child: Text("You havn'e applied any event yet..."),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "You havn'e applied any event yet...",
+                              style: textStyle(
+                                  10.sp,
+                                  FontWeight.w700,
+                                  themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  FontStyle.normal),
+                            ),
+                          ),
                         )),
                   )
                 : ShaderMask(

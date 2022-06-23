@@ -2,7 +2,6 @@
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +12,7 @@ import 'package:suevents/Controller/Internet%20Connection/connection_provider.da
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/View/Student%20Portal/Profile%20Page/profile.dart';
 import 'package:suevents/View/Student%20Portal/Search%20Page/search_page.dart';
 import 'package:suevents/View/Student%20Portal/View%20All%20Events/general_events.dart';
 import 'package:suevents/View/Student%20Portal/View%20All%20Events/placements_events.dart';
@@ -103,73 +103,36 @@ class _HomePageState extends State<HomePage>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10.0),
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          ZoomDrawer.of(context)?.open();
-                                        },
-                                        child: Card(
-                                          elevation: 4,
-                                          color: !themeProvider.isDarkMode
-                                              ? Colors.white
-                                              : Colors.transparent,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: !themeProvider.isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(12)),
-                                            width: 40,
-                                            height: 40,
-                                            child: Center(
-                                                child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  height: 4,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                      color: themeProvider
-                                                              .isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => const ProfilePage(),transition: Transition.fadeIn);
+                                  },
+                                  child: ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.userImage,
+                                      builder: (context, value, child) {
+                                        return "$value" == ""
+                                            ? CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage:
+                                                    ExactAssetImage(
+                                                  userDetailsController.gender
+                                                                  .value ==
+                                                              "Male" ||
+                                                          userDetailsController
+                                                                  .gender
+                                                                  .value ==
+                                                              "male"
+                                                      ? "assets/images/boy.png"
+                                                      : "assets/images/girl.png",
                                                 ),
-                                                const SizedBox(
-                                                  height: 4,
-                                                ),
-                                                Container(
-                                                  width: 15,
-                                                  height: 4,
-                                                  decoration: BoxDecoration(
-                                                      color: themeProvider
-                                                              .isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                ),
-                                              ],
-                                            )),
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                    ],
-                                  ),
+                                              )
+                                            : CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage:
+                                                    NetworkImage("$value"),
+                                              );
+                                      }),
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -189,14 +152,9 @@ class _HomePageState extends State<HomePage>
                                 const SizedBox(
                                   height: 1,
                                 ),
-                                ValueListenableBuilder(
-                                    valueListenable: name,
-                                    builder: (context, value, child) {
-                                      return Text("Hi, $value",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline2);
-                                    }),
+                                Text("Hi, ${userDetailsController.name.value}",
+                                    style:
+                                        Theme.of(context).textTheme.headline2),
                                 const SizedBox(
                                   height: 40,
                                 ),
