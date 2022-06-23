@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
+
 import 'dart:developer';
 
 import 'package:expandable_text/expandable_text.dart';
@@ -14,7 +16,7 @@ import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_event_api.dart';
 import 'package:suevents/Models/Student%20API/student_api.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
-import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/zoom_drawer.dart';
+import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/navigation_bar.dart';
 import 'package:suevents/View/no_connection.dart';
 
 import '../../../Controller/Internet Connection/connection_provider.dart';
@@ -29,7 +31,6 @@ class FacultyEventDetail extends StatefulWidget {
 }
 
 class _FacultyEventDetailState extends State<FacultyEventDetail> {
-  // ignore: prefer_typing_uninitialized_variables
   var picked, picked2, eventList, user, eventRound, timePick, timePicked;
 
   ValueNotifier<String> btnTxt = ValueNotifier("Participate");
@@ -967,7 +968,7 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                               "");
                                                           EasyLoading.dismiss();
                                                           Get.offAll(() =>
-                                                              const FacultyMainScreen());
+                                                              const FacultyNavigationBarPage());
                                                         } else {
                                                           showError(
                                                               "Unable to close event",
