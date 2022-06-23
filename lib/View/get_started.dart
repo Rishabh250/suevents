@@ -6,7 +6,10 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 
+import '../Controller/Student_Controllers/controller.dart';
 import 'Autentication/login.dart';
+
+GetUserData userData = GetUserData();
 
 class Getstarted extends StatefulWidget {
   const Getstarted({Key? key}) : super(key: key);

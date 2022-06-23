@@ -1,8 +1,5 @@
 // ignore_for_file: unused_local_variable
 
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -16,6 +13,8 @@ import 'package:suevents/Controller/providers/global_snackbar.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/View/Autentication/create_account.dart';
+import 'package:suevents/View/get_started.dart';
 import 'package:suevents/View/no_connection.dart';
 
 import 'forgetpassword.dart';
@@ -37,22 +36,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    log(userType["isType"]);
-    getDeviceInfo();
+    userData.getDeviceInfo();
     super.initState();
-  }
-
-  getDeviceInfo() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceID.value = androidInfo.androidId.toString();
-      log(deviceID.value.toString());
-    }
-    // if (Platform.isIOS) {
-    //   IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-    //   iosDeviceInfo.androidId.toString();
-    // }
   }
 
   @override
@@ -106,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           SizedBox(
-                            height: 15.h,
+                            height: 10.h,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 25.0),
@@ -260,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ? await userLogin(
                                             email.text.toString(),
                                             password.text.toString(),
-                                            deviceID.value.toString())
+                                            userData.deviceID.value.toString())
                                         : await facultyLogin(
                                             email.text.toString(),
                                             password.text.toString());
@@ -282,6 +267,39 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Don't have account ?",
+                                  style: textStyle(
+                                      10.sp,
+                                      FontWeight.w500,
+                                      themeProvider.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
+                                      FontStyle.normal),
+                                ),
+                                TextButton(
+                                  onPressed: () => Get.offAll(
+                                      () => const CreateAccount(),
+                                      arguments: {"isType": userType["isType"]},
+                                      transition: Transition.fadeIn),
+                                  child: Text(
+                                    "Create Account",
+                                    style: textStyle(
+                                        11.sp,
+                                        FontWeight.bold,
+                                        const Color.fromARGB(255, 8, 122, 0),
+                                        FontStyle.normal),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                         ]),
                   )
                 ]),

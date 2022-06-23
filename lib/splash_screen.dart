@@ -12,14 +12,14 @@ import 'View/Faculty Portal/Navigation Bar/zoom_drawer.dart';
 import 'View/Student Portal/Navigation Bar/zoom_drawer.dart';
 import 'View/get_started.dart';
 
-class SplastScreen extends StatefulWidget {
-  const SplastScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplastScreen> createState() => _SplastScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplastScreenState extends State<SplastScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   var isLog, userType;
   @override
   void initState() {
