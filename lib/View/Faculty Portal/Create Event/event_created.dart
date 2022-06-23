@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
+import 'package:suevents/View/Faculty%20Portal/Navigation%20Bar/navigation_bar.dart';
 
 import '../../../Controller/providers/theme_service.dart';
-import '../Navigation Bar/zoom_drawer.dart';
 
 class CreateEventConfirm extends StatefulWidget {
   const CreateEventConfirm({Key? key}) : super(key: key);
@@ -177,7 +177,7 @@ class _CreateEventConfirmState extends State<CreateEventConfirm> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Get.offAll(() => const FacultyMainScreen(),
+          Get.offAll(() => const FacultyNavigationBarPage(),
               transition: Transition.fadeIn);
         },
         label: Row(

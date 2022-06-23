@@ -532,7 +532,7 @@ class Create_AccountState extends State<CreateAccount> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
+                            padding: const EdgeInsets.only(bottom: 10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
