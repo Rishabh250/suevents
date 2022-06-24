@@ -142,6 +142,248 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                               const SizedBox(
                                 height: 30,
                               ),
+                              Center(
+                                child: SizedBox(
+                                  width: width * 0.9,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              width: 1,
+                                              color: Colors.white,
+                                            )),
+                                        child: MaterialButton(
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () async {
+                                              widget.event["registration"] ==
+                                                      true
+                                                  ? showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                          backgroundColor: Theme
+                                                                  .of(context)
+                                                              .scaffoldBackgroundColor,
+                                                          title: Text(
+                                                            widget.event[
+                                                                        "registration"] ==
+                                                                    true
+                                                                ? "Close Registration"
+                                                                : "Open Registration",
+                                                            style: textStyle(
+                                                                18.sp,
+                                                                FontWeight.bold,
+                                                                themeProvider
+                                                                        .isDarkMode
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black,
+                                                                FontStyle
+                                                                    .normal),
+                                                          ),
+                                                          content: Text(
+                                                              "You can open registration anytime...",
+                                                              style: textStyle(
+                                                                  12.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal)),
+                                                          elevation: 8,
+                                                          actions: [
+                                                            MaterialButton(
+                                                                elevation: 4,
+                                                                color: Colors
+                                                                    .white,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10)),
+                                                                onPressed:
+                                                                    () async {
+                                                                  EasyLoading.show(
+                                                                      dismissOnTap:
+                                                                          false);
+                                                                  bool isClose =
+                                                                      await closeRegistration(
+                                                                          widget
+                                                                              .event["_id"]);
+                                                                  if (isClose) {
+                                                                    showConfirm(
+                                                                        "Registration Close",
+                                                                        "");
+                                                                    Get.offAll(() =>
+                                                                        const FacultyNavigationBarPage());
+                                                                    EasyLoading
+                                                                        .dismiss();
+                                                                  } else {
+                                                                    showError(
+                                                                        "Unable to close event",
+                                                                        "Please try again later");
+                                                                    await EasyLoading
+                                                                        .dismiss();
+                                                                    Get.back();
+                                                                  }
+                                                                },
+                                                                child: Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                    child: ValueListenableBuilder(
+                                                                        valueListenable: btnTxt,
+                                                                        builder: (context, value, child) {
+                                                                          return Text(
+                                                                            "Close",
+                                                                            style: textStyle(
+                                                                                12.sp,
+                                                                                FontWeight.bold,
+                                                                                const Color.fromARGB(255, 0, 0, 0),
+                                                                                FontStyle.normal),
+                                                                          );
+                                                                        }))),
+                                                          ],
+                                                        );
+                                                      })
+                                                  : showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                          backgroundColor: Theme
+                                                                  .of(context)
+                                                              .scaffoldBackgroundColor,
+                                                          title: Text(
+                                                            widget.event[
+                                                                        "registration"] ==
+                                                                    true
+                                                                ? "Close Registration"
+                                                                : "Open Registration",
+                                                            style: textStyle(
+                                                                18.sp,
+                                                                FontWeight.bold,
+                                                                themeProvider
+                                                                        .isDarkMode
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black,
+                                                                FontStyle
+                                                                    .normal),
+                                                          ),
+                                                          content: Text(
+                                                              "Are you sure to open this event...",
+                                                              style: textStyle(
+                                                                  12.sp,
+                                                                  FontWeight
+                                                                      .w600,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal)),
+                                                          elevation: 8,
+                                                          actions: [
+                                                            MaterialButton(
+                                                                elevation: 4,
+                                                                color: Colors
+                                                                    .white,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10)),
+                                                                onPressed:
+                                                                    () async {
+                                                                  EasyLoading.show(
+                                                                      dismissOnTap:
+                                                                          false);
+                                                                  bool isClose =
+                                                                      await openRegistration(
+                                                                          widget
+                                                                              .event["_id"]);
+                                                                  if (isClose) {
+                                                                    showConfirm(
+                                                                        "Registration Open",
+                                                                        "");
+                                                                    EasyLoading
+                                                                        .dismiss();
+                                                                    Get.offAll(() =>
+                                                                        const FacultyNavigationBarPage());
+                                                                  } else {
+                                                                    showError(
+                                                                        "Unable to open event",
+                                                                        "Please try again later");
+                                                                    await EasyLoading
+                                                                        .dismiss();
+                                                                    Get.back();
+                                                                  }
+                                                                },
+                                                                child: Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                    child: ValueListenableBuilder(
+                                                                        valueListenable: btnTxt,
+                                                                        builder: (context, value, child) {
+                                                                          return Text(
+                                                                            "Open",
+                                                                            style: textStyle(
+                                                                                12.sp,
+                                                                                FontWeight.bold,
+                                                                                const Color.fromARGB(255, 0, 0, 0),
+                                                                                FontStyle.normal),
+                                                                          );
+                                                                        }))),
+                                                          ],
+                                                        );
+                                                      });
+                                            },
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: ValueListenableBuilder(
+                                                    valueListenable: btnTxt,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text(
+                                                        widget.event[
+                                                                    "registration"] ==
+                                                                true
+                                                            ? "Close Registration"
+                                                            : "Open Registration",
+                                                        style: textStyle(
+                                                            12.sp,
+                                                            FontWeight.bold,
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            FontStyle.normal),
+                                                      );
+                                                    }))),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               Card(
                                   shadowColor: themeProvider.isDarkMode
                                       ? const Color.fromARGB(255, 125, 125, 125)
@@ -1015,7 +1257,7 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                               valueListenable: btnTxt,
                                               builder: (context, value, child) {
                                                 return Text(
-                                                  "Close",
+                                                  "Close Event",
                                                   style: textStyle(
                                                       12.sp,
                                                       FontWeight.bold,

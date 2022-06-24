@@ -23,10 +23,8 @@ userLogin(email, pass, deviceID) async {
           "deviceInfo": "$deviceID"
         }),
         headers: {"Content-Type": "application/json"});
-    print(response.body);
 
     var body = jsonDecode(response.body);
-    print(response.body);
 
     if (response.statusCode == 200) {
       if (body['verified'] == true) {

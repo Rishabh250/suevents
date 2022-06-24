@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
+    userDetailsController.fetchUserData();
 
     if (time >= 6 && time <= 12) {
       greet.value = "Good Morning";
@@ -105,7 +106,8 @@ class _HomePageState extends State<HomePage>
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    Get.to(() => const ProfilePage(),transition: Transition.fadeIn);
+                                    Get.to(() => const ProfilePage(),
+                                        transition: Transition.fadeIn);
                                   },
                                   child: ValueListenableBuilder(
                                       valueListenable:
