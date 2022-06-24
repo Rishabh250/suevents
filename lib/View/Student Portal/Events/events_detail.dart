@@ -430,6 +430,32 @@ class _EventDetailState extends State<EventDetail> {
                                             ],
                                           ),
                                           const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Registration Close : ",
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.w400,
+                                                    themeProvider.isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    FontStyle.normal),
+                                              ),
+                                              Text(
+                                                widget.event["endDate"],
+                                                style: textStyle(
+                                                    12.sp,
+                                                    FontWeight.bold,
+                                                    const Color.fromARGB(
+                                                        255, 43, 6, 210),
+                                                    FontStyle.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
                                             height: 20,
                                           )
                                         ],

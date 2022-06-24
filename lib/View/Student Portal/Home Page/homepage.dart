@@ -126,7 +126,13 @@ class _HomePageState extends State<HomePage>
                                                                   .value ==
                                                               "male"
                                                       ? "assets/images/boy.png"
-                                                      : "assets/images/girl.png",
+                                                      : userDetailsController.gender
+                                                                  .value ==
+                                                              "Female" ||
+                                                          userDetailsController
+                                                                  .gender
+                                                                  .value ==
+                                                              "female" ? "assets/images/girl.png" : "assets/images/boy.png"
                                                 ),
                                               )
                                             : CircleAvatar(
@@ -154,9 +160,15 @@ class _HomePageState extends State<HomePage>
                                 const SizedBox(
                                   height: 1,
                                 ),
-                                Text("Hi, ${userDetailsController.name.value}",
-                                    style:
-                                        Theme.of(context).textTheme.headline2),
+                                ValueListenableBuilder(
+                                    valueListenable: userDetailsController.name,
+                                    builder: (context, value, child) {
+                                      return Text(
+                                          "Hi, ${userDetailsController.name.value}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2);
+                                    }),
                                 const SizedBox(
                                   height: 40,
                                 ),

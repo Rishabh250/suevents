@@ -154,7 +154,9 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
                                                 BorderRadius.circular(10),
                                             border: Border.all(
                                               width: 1,
-                                              color: Colors.white,
+                                              color: themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
                                             )),
                                         child: MaterialButton(
                                             elevation: 4,

@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mailto/mailto.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,6 +16,7 @@ import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
 import 'package:suevents/View/no_connection.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../Controller/Internet Connection/connection_provider.dart';
 import '../../../Controller/SharedPreferences/token.dart';
@@ -99,20 +101,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10.0),
                                     child: GestureDetector(
-                                        onTap: () {
-                                          loginStatus(false);
-                                          accessToken("");
-                                          Get.offAll(() => const Getstarted());
-                                        },
-                                        child:
-                                            const Icon(Icons.logout_rounded)),
+                                        onTap: () {},
+                                        child: const Icon(Icons.edit)),
                                   )
                                 ],
                                 leading: GestureDetector(
                                   onTap: () => Get.back(),
-                                  child: const Icon(
-                                      Icons.arrow_back_ios_rounded,
-                                      color: Colors.white),
+                                  child: Icon(Icons.arrow_back_ios_rounded,
+                                      color: themeProvider.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black),
                                 )),
                             SliverToBoxAdapter(
                               child: Column(
@@ -339,7 +337,92 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                         ]),
                                   )),
-
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  ListTile(
+                                    onTap: () async {
+                                      final mailtoLink = Mailto(
+                                        to: ['rishu25bansal@gmail.com'],
+                                        subject: 'Student Help & Support',
+                                        body:
+                                            'Hi,\n Myself ${userDetailsController.name} from ${userDetailsController.course} ${userDetailsController.year}\n',
+                                      );
+                                      await launchUrlString('$mailtoLink');
+                                    },
+                                    title: Row(
+                                      children: [
+                                        const Icon(Icons.help_outline_rounded),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          "Help & Support",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  ListTile(
+                                    onTap: () async {
+                                      final mailtoLink = Mailto(
+                                        to: ['rishu25bansal@gmail.com'],
+                                        subject: 'Student Report Bug',
+                                        body:
+                                            'Hi,\n Myself ${userDetailsController.name} from ${userDetailsController.course} ${userDetailsController.year}\n',
+                                      );
+                                      await launchUrlString('$mailtoLink');
+                                    },
+                                    title: Row(
+                                      children: [
+                                        const Icon(Icons.bug_report_rounded),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          "Report bugs and issue",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  ListTile(
+                                    onTap: () {
+                                      loginStatus(false);
+                                      accessToken("");
+                                      Get.offAll(() => const Getstarted());
+                                    },
+                                    title: Row(
+                                      children: [
+                                        const Icon(Icons.logout_rounded),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          "Logout",
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   // const SizedBox(
                                   //   height: 30,
                                   // ),

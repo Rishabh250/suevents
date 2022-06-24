@@ -175,6 +175,11 @@ class CreateEventState extends State<CreateEvent> {
                                                   "Select Event starting date");
                                               return;
                                             }
+                                            if (endDate.value.isEmpty) {
+                                              showError("Empty Field",
+                                                  "Select Registration close date");
+                                              return;
+                                            }
                                             if (eventPrice.value.isEmpty) {
                                               showError("Empty Field",
                                                   "Event Price can't e empty");
@@ -721,8 +726,8 @@ class _EventCreationState extends State<EventCreation> {
                 ),
                 Text(
                   picked2 == null
-                      ? "Select End Date (Optional)"
-                      : "End Date : ${endDate.value}",
+                      ? "Registration Close date"
+                      : "Close : ${endDate.value}",
                   style: textStyle(
                       12.sp,
                       FontWeight.bold,

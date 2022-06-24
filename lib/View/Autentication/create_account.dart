@@ -205,29 +205,59 @@ class Create_AccountState extends State<CreateAccount> {
                               width: width * 0.9,
                               child: Row(
                                 children: [
-                                  SizedBox(
-                                    width: width * 0.4,
-                                    child: TextField(
-                                      textInputAction: TextInputAction.next,
-                                      maxLength: 10,
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 11.5.sp,
-                                          fontWeight: FontWeight.w600),
-                                      controller: systemID,
-                                      keyboardType: TextInputType.number,
-                                      enableSuggestions: true,
-                                      decoration: InputDecoration(
-                                          counterText: "",
-                                          hintText: "System ID",
-                                          hintStyle: GoogleFonts.poppins(
-                                              fontSize: 12.sp),
-                                          border: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                  color: Colors.blue),
-                                              borderRadius:
-                                                  BorderRadius.circular(15))),
-                                    ),
-                                  ),
+                                  userType["isType"] == "Student"
+                                      ? SizedBox(
+                                          width: width * 0.4,
+                                          child: TextField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            maxLength: 10,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 11.5.sp,
+                                                fontWeight: FontWeight.w600),
+                                            controller: systemID,
+                                            keyboardType: TextInputType.number,
+                                            enableSuggestions: true,
+                                            decoration: InputDecoration(
+                                                counterText: "",
+                                                hintText: "System ID",
+                                                hintStyle: GoogleFonts.poppins(
+                                                    fontSize: 12.sp),
+                                                border: OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.blue),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15))),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: width * 0.7,
+                                          child: TextField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            maxLength: 10,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 11.5.sp,
+                                                fontWeight: FontWeight.w600),
+                                            controller: systemID,
+                                            keyboardType: TextInputType.number,
+                                            enableSuggestions: true,
+                                            decoration: InputDecoration(
+                                                counterText: "",
+                                                hintText: "System/Employee ID",
+                                                hintStyle: GoogleFonts.poppins(
+                                                    fontSize: 12.sp),
+                                                border: OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.blue),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15))),
+                                          ),
+                                        ),
                                   const Spacer(),
                                   userType["isType"] == "Student"
                                       ? SizedBox(
