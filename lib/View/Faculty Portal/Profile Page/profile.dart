@@ -95,14 +95,6 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                                 elevation: 0,
                                 backgroundColor:
                                     Theme.of(context).scaffoldBackgroundColor,
-                                actions: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10.0),
-                                    child: GestureDetector(
-                                        onTap: () {},
-                                        child: const Icon(Icons.edit)),
-                                  )
-                                ],
                                 leading: GestureDetector(
                                   onTap: () => Get.back(),
                                   child: Icon(Icons.arrow_back_ios_rounded,
@@ -271,7 +263,7 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                                         ]),
                                   )),
                                   const SizedBox(
-                                    height: 30,
+                                    height: 70,
                                   ),
                                   ListTile(
                                     onTap: () async {

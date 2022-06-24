@@ -62,7 +62,7 @@ applyEvent(token, eventID, event) async {
             "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/applyEvent"),
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
-    log(response.statusCode.toString());
+    log(response.body.toString());
     if (response.statusCode == 200 || response.statusCode == 201) {
       showConfirm("Applied", "You have applied for $event");
       return true;
@@ -72,6 +72,21 @@ applyEvent(token, eventID, event) async {
       showError("Registration Close", "Select another event");
     } else {
       showError("Something went wrong", "Please try again later");
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+singleEvent(eventID) async {
+  try {
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/singleEvent"),
+        body: jsonEncode({"eventID": "$eventID"}),
+        headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
     }
   } catch (e) {
     debugPrint(e.toString());
