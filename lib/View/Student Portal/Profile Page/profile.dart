@@ -15,6 +15,9 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Student%20API/authentication_api.dart';
+import 'package:suevents/View/Student%20Portal/Navigation%20Bar/navigation_bar.dart';
+import 'package:suevents/View/Student%20Portal/Profile%20Page/all_events.dart';
+import 'package:suevents/View/Student%20Portal/Profile%20Page/edit_profile.dart';
 import 'package:suevents/View/no_connection.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -73,6 +76,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
+  void dispose() {
+    EasyLoading.dismiss();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
@@ -101,12 +110,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10.0),
                                     child: GestureDetector(
-                                        onTap: () {},
+                                        onTap: () {
+                                          EasyLoading.dismiss();
+                                          Get.offAll(
+                                              () => const EditProfilePage(),
+                                              transition: Transition.fadeIn);
+                                        },
                                         child: const Icon(Icons.edit)),
                                   )
                                 ],
                                 leading: GestureDetector(
-                                  onTap: () => Get.back(),
+                                  onTap: () =>
+                                      Get.to(() => const NavigationBarPage()),
                                   child: Icon(Icons.arrow_back_ios_rounded,
                                       color: themeProvider.isDarkMode
                                           ? Colors.white
@@ -302,38 +317,46 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 ? Colors.white
                                                 : Colors.black,
                                           ),
-                                          Column(
-                                            children: [
-                                              ValueListenableBuilder(
-                                                  valueListenable:
-                                                      userDetailsController
-                                                          .events,
-                                                  builder:
-                                                      (context, value, child) {
-                                                    return Text("$value",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal));
-                                                  }),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "Applied",
-                                                style: textStyle(
-                                                    10.sp,
-                                                    FontWeight.w400,
-                                                    themeProvider.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                            ],
+                                          GestureDetector(
+                                            onTap: () => Get.to(
+                                                () =>
+                                                    const StudentAppliedEvents(),
+                                                transition: Transition.fadeIn),
+                                            child: Column(
+                                              children: [
+                                                ValueListenableBuilder(
+                                                    valueListenable:
+                                                        userDetailsController
+                                                            .events,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text("$value",
+                                                          style: textStyle(
+                                                              12.sp,
+                                                              FontWeight.bold,
+                                                              themeProvider
+                                                                      .isDarkMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
+                                                              FontStyle
+                                                                  .normal));
+                                                    }),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "Applied",
+                                                  style: textStyle(
+                                                      10.sp,
+                                                      FontWeight.w400,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ]),
                                   )),

@@ -219,3 +219,27 @@ checkDevice(deviceID) async {
     debugPrint(e.toString());
   }
 }
+
+updateDetails(id, course, year, semester) async {
+  try {
+    var response = await https.post(
+        Uri.parse(
+            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/updateDetails"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "id": "$id",
+          "course": "$course",
+          "year": year,
+          "semester": semester
+        }));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    showError("Something went wrong", "");
+    debugPrint(e.toString());
+  }
+}

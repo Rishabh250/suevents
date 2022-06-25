@@ -116,24 +116,25 @@ class _HomePageState extends State<HomePage>
                                         return "$value" == ""
                                             ? CircleAvatar(
                                                 radius: 30,
-                                                backgroundImage:
-                                                    ExactAssetImage(
-                                                  userDetailsController.gender
-                                                                  .value ==
-                                                              "Male" ||
-                                                          userDetailsController
-                                                                  .gender
-                                                                  .value ==
-                                                              "male"
-                                                      ? "assets/images/boy.png"
-                                                      : userDetailsController.gender
-                                                                  .value ==
-                                                              "Female" ||
-                                                          userDetailsController
-                                                                  .gender
-                                                                  .value ==
-                                                              "female" ? "assets/images/girl.png" : "assets/images/boy.png"
-                                                ),
+                                                backgroundImage: ExactAssetImage(
+                                                    userDetailsController.gender
+                                                                    .value ==
+                                                                "Male" ||
+                                                            userDetailsController
+                                                                    .gender
+                                                                    .value ==
+                                                                "male"
+                                                        ? "assets/images/boy.png"
+                                                        : userDetailsController
+                                                                        .gender
+                                                                        .value ==
+                                                                    "Female" ||
+                                                                userDetailsController
+                                                                        .gender
+                                                                        .value ==
+                                                                    "female"
+                                                            ? "assets/images/girl.png"
+                                                            : "assets/images/boy.png"),
                                               )
                                             : CircleAvatar(
                                                 radius: 30,
@@ -634,7 +635,7 @@ class _HomePageState extends State<HomePage>
                                                   BorderRadius.circular(20)),
                                           child: Container(
                                               width: width * 0.9,
-                                              height: 250.0,
+                                              height: 120.0,
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 0.2,
@@ -1046,7 +1047,7 @@ class _HomePageState extends State<HomePage>
                                                   BorderRadius.circular(20)),
                                           child: Container(
                                               width: width * 0.9,
-                                              height: 250.0,
+                                              height: 120.0,
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 0.2,
@@ -1089,7 +1090,7 @@ class _HomePageState extends State<HomePage>
                                                 BorderRadius.circular(20)),
                                         child: Container(
                                             width: width * 0.9,
-                                            height: 250.0,
+                                            height: 120.0,
                                             decoration: BoxDecoration(
                                                 border: Border.all(
                                                     width: 0.2,
