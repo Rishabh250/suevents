@@ -4,20 +4,20 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Internet%20Connection/connection_provider.dart';
-import 'package:suevents/View/Student%20Portal/Profile%20Page/profile.dart';
+import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
 import 'package:suevents/View/no_connection.dart';
 
 import '../../../Controller/providers/const.dart';
 import '../../../Controller/providers/theme_service.dart';
 
-class StudentAppliedEvents extends StatefulWidget {
-  const StudentAppliedEvents({Key? key}) : super(key: key);
+class FacultyEventCreated extends StatefulWidget {
+  const FacultyEventCreated({Key? key}) : super(key: key);
 
   @override
-  State<StudentAppliedEvents> createState() => Student_AppliedEventsState();
+  State<FacultyEventCreated> createState() => Student_AppliedEventsState();
 }
 
-class Student_AppliedEventsState extends State<StudentAppliedEvents> {
+class Student_AppliedEventsState extends State<FacultyEventCreated> {
   ScrollController scrollController = ScrollController();
   @override
   void initState() {
@@ -58,7 +58,7 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10))),
                     title: Text(
-                      "Events History",
+                      "Events Created",
                       style: textStyle(14.sp, FontWeight.bold, Colors.white,
                           FontStyle.normal),
                     ),
@@ -67,29 +67,29 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                       child: ListView.builder(
                           controller: scrollController,
                           shrinkWrap: true,
-                          itemCount: userDetailsController.events.value,
+                          itemCount: facultyController.events.value,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(10),
-                              child: ClipRRect(
-                                child: Card(
-                                    margin: const EdgeInsets.all(2),
-                                    color: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Banner(
-                                      location: BannerLocation.topEnd,
-                                      color: userDetailsController.allEvents
-                                                  .value[index]["type"] ==
-                                              "Placement Event"
-                                          ? Colors.red
-                                          : Colors.green,
-                                      message: userDetailsController.allEvents
-                                                  .value[index]["type"] ==
-                                              "Placement Event"
-                                          ? "Placement"
-                                          : "General",
+                              child: SizedBox(
+                                child: Banner(
+                                  color: facultyController
+                                              .allEvents.value[index]["type"] ==
+                                          "Placement Event"
+                                      ? Colors.red
+                                      : Colors.green,
+                                  location: BannerLocation.topStart,
+                                  message: facultyController
+                                              .allEvents.value[index]["type"] ==
+                                          "Placement Event"
+                                      ? "Placement"
+                                      : "General",
+                                  child: Card(
+                                      color: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      elevation: 8,
                                       child: Container(
                                         width: width * 0.6,
                                         decoration: (BoxDecoration(
@@ -105,8 +105,7 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  userDetailsController
-                                                      .allEvents
+                                                  facultyController.allEvents
                                                       .value[index]["title"],
                                                   textAlign: TextAlign.left,
                                                   overflow:
@@ -124,7 +123,7 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                                                   height: 20,
                                                 ),
                                                 Text(
-                                                  "Event Type : ${userDetailsController.allEvents.value[index]["type"]}",
+                                                  "Event Type : ${facultyController.allEvents.value[index]["type"]}",
                                                   textAlign: TextAlign.center,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -141,7 +140,7 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "Date : ${userDetailsController.allEvents.value[index]["startDate"]}",
+                                                  "Date : ${facultyController.allEvents.value[index]["startDate"]}",
                                                   textAlign: TextAlign.center,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -158,7 +157,7 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "Price : ${userDetailsController.allEvents.value[index]["eventPrice"]}",
+                                                  "Price : ${facultyController.allEvents.value[index]["eventPrice"]}",
                                                   textAlign: TextAlign.center,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -173,8 +172,8 @@ class Student_AppliedEventsState extends State<StudentAppliedEvents> {
                                                 ),
                                               ]),
                                         ),
-                                      ),
-                                    )),
+                                      )),
+                                ),
                               ),
                             );
                           }))

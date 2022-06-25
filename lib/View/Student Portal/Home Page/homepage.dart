@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage>
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
     userDetailsController.fetchUserData();
-
     if (time >= 6 && time <= 12) {
       greet.value = "Good Morning";
     } else if (time > 12 && time <= 16) {

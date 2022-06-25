@@ -40,7 +40,6 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
   void initState() {
     super.initState();
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
-    facultyController.fetchAllFacultyData();
     if (time >= 6 && time <= 12) {
       setState(() {
         greet = "Good Morning";
@@ -63,6 +62,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
     getUserDetails = await getFacultyData(token);
+    await facultyController.fetchAllFacultyData();
     if (!mounted) return;
     setState(() {
       name = getUserDetails["user"]["name"];
@@ -149,8 +149,14 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                           const SizedBox(
                             height: 1,
                           ),
-                          Text("Hi, ${facultyController.name.value}",
-                              style: Theme.of(context).textTheme.headline2),
+                          ValueListenableBuilder(
+                            valueListenable: facultyController.name,
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return Text("Hi, $value",
+                                  style: Theme.of(context).textTheme.headline2);
+                            },
+                          ),
                           const SizedBox(
                             height: 20,
                           ),

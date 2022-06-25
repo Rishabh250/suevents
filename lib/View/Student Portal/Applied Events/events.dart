@@ -236,92 +236,113 @@ class _EventsPageState extends State<EventsPage> {
                                                         .fadeThrough,
                                                 closedBuilder:
                                                     (context, action) {
-                                                  return Container(
-                                                    width: width * 0.9,
-                                                    color: themeProvider
-                                                            .isDarkMode
-                                                        ? HexColor("#020E26")
-                                                        : Colors.white,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              10.0),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            eventData[
-                                                                    "eventsApplied"]
-                                                                [
-                                                                index]["title"],
-                                                            style: textStyle(
-                                                                14.sp,
-                                                                FontWeight.w700,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "Starting from  " +
-                                                                eventData["eventsApplied"]
-                                                                        [index][
-                                                                    "startDate"],
-                                                            style: textStyle(
-                                                                10.sp,
-                                                                FontWeight.w700,
-                                                                themeProvider
-                                                                        .isDarkMode
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                FontStyle
-                                                                    .normal),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                "Price :  " +
-                                                                    eventData["eventsApplied"]
-                                                                            [
-                                                                            index]
-                                                                        [
-                                                                        "eventPrice"],
-                                                                style: textStyle(
-                                                                    10.sp,
-                                                                    FontWeight
-                                                                        .w700,
-                                                                    themeProvider.isDarkMode
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black,
-                                                                    FontStyle
-                                                                        .normal),
-                                                              ),
-                                                              const Spacer(),
-                                                              GestureDetector(
-                                                                onTap: action,
-                                                                child: const Icon(
-                                                                    Icons
-                                                                        .arrow_circle_right_rounded),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ],
+                                                  return Banner(
+                                                    location:
+                                                        BannerLocation.topEnd,
+                                                    color:
+                                                        eventData["eventsApplied"]
+                                                                        [index]
+                                                                    ["type"] ==
+                                                                "Placement Event"
+                                                            ? Colors.red
+                                                            : Colors.green,
+                                                    message:
+                                                        eventData["eventsApplied"]
+                                                                        [index]
+                                                                    ["type"] ==
+                                                                "Placement Event"
+                                                            ? "Placement"
+                                                            : "General",
+                                                    child: Container(
+                                                      width: width * 0.9,
+                                                      color: themeProvider
+                                                              .isDarkMode
+                                                          ? HexColor("#020E26")
+                                                          : Colors.white,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              eventData["eventsApplied"]
+                                                                      [index]
+                                                                  ["title"],
+                                                              style: textStyle(
+                                                                  14.sp,
+                                                                  FontWeight
+                                                                      .w700,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(
+                                                              "Starting from  " +
+                                                                  eventData["eventsApplied"]
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      "startDate"],
+                                                              style: textStyle(
+                                                                  10.sp,
+                                                                  FontWeight
+                                                                      .w700,
+                                                                  themeProvider
+                                                                          .isDarkMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                                  FontStyle
+                                                                      .normal),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  "Price :  " +
+                                                                      eventData["eventsApplied"]
+                                                                              [
+                                                                              index]
+                                                                          [
+                                                                          "eventPrice"],
+                                                                  style: textStyle(
+                                                                      10.sp,
+                                                                      FontWeight
+                                                                          .w700,
+                                                                      themeProvider.isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      FontStyle
+                                                                          .normal),
+                                                                ),
+                                                                const Spacer(),
+                                                                GestureDetector(
+                                                                  onTap: action,
+                                                                  child: const Icon(
+                                                                      Icons
+                                                                          .arrow_circle_right_rounded),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   );

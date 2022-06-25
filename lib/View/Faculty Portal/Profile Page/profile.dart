@@ -15,6 +15,7 @@ import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/Models/Faculty%20API/faculty_auth.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
+import 'package:suevents/View/Faculty%20Portal/Profile%20Page/event_created.dart';
 import 'package:suevents/View/get_started.dart';
 import 'package:suevents/View/no_connection.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -188,37 +189,49 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Column(
-                                            children: [
-                                              ValueListenableBuilder(
-                                                  valueListenable:
-                                                      facultyController.events,
-                                                  builder:
-                                                      (context, value, child) {
-                                                    return Text("$value",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal));
-                                                  }),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "Events Created",
-                                                style: textStyle(
-                                                    10.sp,
-                                                    FontWeight.w400,
-                                                    themeProvider.isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                            ],
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(
+                                                  () =>
+                                                      const FacultyEventCreated(),
+                                                  transition:
+                                                      Transition.fadeIn);
+                                            },
+                                            child: Column(
+                                              children: [
+                                                ValueListenableBuilder(
+                                                    valueListenable:
+                                                        facultyController
+                                                            .events,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return Text("$value",
+                                                          style: textStyle(
+                                                              12.sp,
+                                                              FontWeight.bold,
+                                                              themeProvider
+                                                                      .isDarkMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
+                                                              FontStyle
+                                                                  .normal));
+                                                    }),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "Events Created",
+                                                  style: textStyle(
+                                                      10.sp,
+                                                      FontWeight.w400,
+                                                      themeProvider.isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      FontStyle.normal),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Container(
                                             width: 1,

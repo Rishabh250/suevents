@@ -162,7 +162,11 @@ class _EventRoundsState extends State<EventRounds> {
                             Padding(
                               padding: const EdgeInsets.only(left: 10.0),
                               child: Text(
-                                "Rounds",
+                                widget.events['type']
+                                        .toString()
+                                        .contains("Placement")
+                                    ? "Rounds"
+                                    : "Session",
                                 style: textStyle(
                                     18.sp,
                                     FontWeight.w700,

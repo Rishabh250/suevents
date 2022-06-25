@@ -120,8 +120,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   )
                                 ],
                                 leading: GestureDetector(
-                                  onTap: () =>
-                                      Get.to(() => const NavigationBarPage()),
+                                  onTap: () async {
+                                    await EasyLoading.dismiss();
+                                    EasyLoading.removeAllCallbacks();
+                                    Get.offAll(() => const NavigationBarPage());
+                                  },
                                   child: Icon(Icons.arrow_back_ios_rounded,
                                       color: themeProvider.isDarkMode
                                           ? Colors.white

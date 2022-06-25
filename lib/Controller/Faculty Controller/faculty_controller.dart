@@ -17,7 +17,8 @@ class FacultyController {
       name = ValueNotifier<String>(""),
       userImage = ValueNotifier<String>(""),
       gender = ValueNotifier<String>(""),
-      events = ValueNotifier([]);
+      events = ValueNotifier([]),
+      allEvents = ValueNotifier([]);
   var user, token, facultyList, assignedEvents;
 
   fetchFacultyData() async {
@@ -30,6 +31,7 @@ class FacultyController {
     userImage.value = user["user"]["profileImage"];
     gender.value = user["user"]["gender"];
     events.value = user["user"]["eventsCreated"].length;
+    allEvents.value = user["user"]["eventsCreated"];
     return user;
   }
 
