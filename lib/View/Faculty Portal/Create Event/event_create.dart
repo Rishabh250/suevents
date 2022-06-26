@@ -82,6 +82,18 @@ class CreateEventState extends State<CreateEvent> {
                 appBar: AppBar(
                   leading: GestureDetector(
                       onTap: () {
+                        eventTitle.clear();
+                        aboutEvent.clear();
+                        lab.clear();
+                        roundNumber.clear();
+                        testType.clear();
+
+                        eventTitle.clear();
+                        aboutEvent.clear();
+                        lab.clear();
+                        roundNumber.clear();
+                        testType.clear();
+                        facultyListData.value.clear();
                         Get.back();
                       },
                       child: const Icon(
