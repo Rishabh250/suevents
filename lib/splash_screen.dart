@@ -1,12 +1,12 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as https;
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
-import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/View/Student%20Portal/Navigation%20Bar/navigation_bar.dart';
 
 import 'View/Faculty Portal/Navigation Bar/navigation_bar.dart';
@@ -50,8 +50,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

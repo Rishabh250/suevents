@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,9 +30,7 @@ class FacultyHomePage extends StatefulWidget {
 }
 
 class _FacultyHomePageState extends State<FacultyHomePage> {
-  var token;
-  var getUserDetails;
-  var eventData;
+  var token, getUserDetails, eventData;
   String name = "", greet = "", searchEvents = "", searchValue = "";
   int eventsIndexLength = 1, eventSearchLength = 0;
   var time = DateTime.now().hour;
@@ -77,7 +77,6 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
     return RefreshIndicator(
         displacement: 100,
@@ -96,8 +95,6 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
           });
         },
         child: Consumer<ConnectivityProvider>(builder: (context, value, child) {
-          // createEventList = 0;
-          // createdEvents.clear();
           return value.isOnline
               ? Scaffold(
                   appBar: AppBar(
@@ -181,8 +178,7 @@ class _FacultyHomePageState extends State<FacultyHomePage> {
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 transitionDuration:
                                     const Duration(milliseconds: 500),
-                                transitionType:
-                                    ContainerTransitionType.fadeThrough,
+                                transitionType: ContainerTransitionType.fade,
                                 closedBuilder: ((context, action) {
                                   return Container(
                                     width: width * 0.95,

@@ -42,7 +42,6 @@ class MyAppState extends State<MyApp> {
       create: (context) => ThemeProvider(),
       builder: (context, _) {
         EasyLoading.init();
-        final themeProvider = Provider.of<ThemeProvider>(context);
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(

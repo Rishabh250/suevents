@@ -24,6 +24,8 @@ class FacultyController {
   fetchFacultyData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("accessToken");
+    await Future.delayed(const Duration(milliseconds: 1500));
+
     user = await getFacultyData(token);
     name.value = user["user"]["name"];
     systemID.value = user["user"]["systemID"];

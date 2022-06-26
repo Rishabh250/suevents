@@ -44,8 +44,10 @@ class _EventDetailState extends State<EventDetail> {
   getData() async {
     user = await getUserData.fetchUserData();
     eventList = user["user"]["events"];
-    if (eventList.contains(widget.event["_id"])) {
-      btnTxt.value = "Participated";
+    for (int i = 0; i < eventList.length; i++) {
+      if (eventList[i]["_id"].toString().contains(widget.event["_id"])) {
+        btnTxt.value = "Participated";
+      }
     }
   }
 

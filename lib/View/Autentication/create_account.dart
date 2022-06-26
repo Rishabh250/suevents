@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -20,10 +22,10 @@ class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
 
   @override
-  State<CreateAccount> createState() => Create_AccountState();
+  State<CreateAccount> createState() => CreateAccountState();
 }
 
-class Create_AccountState extends State<CreateAccount> {
+class CreateAccountState extends State<CreateAccount> {
   var userType = Get.arguments;
   ValueNotifier isPassVisible = ValueNotifier(true);
   ValueNotifier gropuValue = ValueNotifier(0);
@@ -40,7 +42,6 @@ class Create_AccountState extends State<CreateAccount> {
   @override
   void initState() {
     super.initState();
-    print(userType["isType"]);
     Provider.of<ConnectivityProvider>(context, listen: false).startMontering();
   }
 

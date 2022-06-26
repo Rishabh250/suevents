@@ -64,7 +64,6 @@ userLogin(email, pass, deviceID) async {
 createStudent(
     email, pass, name, sysID, course, year, semester, gender, deviceID) async {
   try {
-    print(deviceID);
     var response = await https.post(
         Uri.parse(
             "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createUser"),
@@ -81,8 +80,6 @@ createStudent(
           "type": "Student"
         }),
         headers: {"Content-Type": "application/json"});
-
-    print(response.body);
 
     if (response.statusCode == 200) {
       return true;

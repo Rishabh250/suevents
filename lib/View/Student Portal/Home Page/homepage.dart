@@ -106,7 +106,9 @@ class _HomePageState extends State<HomePage>
                                 GestureDetector(
                                   onTap: () {
                                     Get.to(() => const ProfilePage(),
-                                        transition: Transition.fadeIn);
+                                        transition: Transition.fadeIn,
+                                        duration:
+                                            const Duration(milliseconds: 500));
                                   },
                                   child: ValueListenableBuilder(
                                       valueListenable:
@@ -1135,11 +1137,13 @@ class _HomePageState extends State<HomePage>
   }
 
   getGeneral() async {
+    await Future.delayed(const Duration(milliseconds: 1500));
     generalEvent = await getGeneralEvents();
     return generalEvent;
   }
 
   getPlacments() async {
+    await Future.delayed(const Duration(milliseconds: 1500));
     eventData = await getPlacementEvents();
     return eventData;
   }

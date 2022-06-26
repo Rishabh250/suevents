@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -78,7 +80,6 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
     return Scaffold(
       body: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -137,7 +138,6 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.event['rounds'].length,
-                        // itemCount: 5,
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
@@ -196,7 +196,6 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                         physics: const NeverScrollableScrollPhysics(),
                         controller: pageController,
                         scrollDirection: Axis.horizontal,
-                        // itemCount: 5,
                         itemCount: widget.event['rounds'].length,
                         itemBuilder: (BuildContext context, int index) {
                           roundID = widget.event['rounds'][index]["_id"];
@@ -207,7 +206,7 @@ class _AttendanceEventDetailsState extends State<AttendanceEventDetails> {
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  EasyLoading.show();
+                                  EasyLoading.show(dismissOnTap: false);
                                   return Container();
                                 }
                                 EasyLoading.dismiss();

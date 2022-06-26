@@ -1,8 +1,6 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:suevents/Controller/providers/theme_service.dart';
 import 'package:suevents/View/Faculty%20Portal/Assigned%20Events/assigned_events.dart';
 import 'package:suevents/View/Faculty%20Portal/Home%20Page/homepage.dart';
 
@@ -28,8 +26,6 @@ class _FacultyNavigationBarPageState extends State<FacultyNavigationBarPage> {
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: PageView(

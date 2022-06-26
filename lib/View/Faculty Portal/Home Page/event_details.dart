@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
+// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +101,6 @@ class _FacultyEventDetailState extends State<FacultyEventDetail> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
     return Consumer<ConnectivityProvider>(
         builder: (context, value, child) => value.isOnline
             ? NotificationListener<OverscrollIndicatorNotification>(

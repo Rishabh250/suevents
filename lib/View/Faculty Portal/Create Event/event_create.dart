@@ -73,9 +73,7 @@ class CreateEventState extends State<CreateEvent> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+
     return Consumer<ConnectivityProvider>(
         builder: (context, value, child) => value.isOnline
             ? Scaffold(
@@ -353,10 +351,10 @@ class CreateEventState extends State<CreateEvent> {
                                                                       .toString(),
                                                                   facultyListData
                                                                       .value);
-                                                              var list =
-                                                                  facultyListData
-                                                                      .value
-                                                                      .clear();
+
+                                                              facultyListData
+                                                                  .value
+                                                                  .clear();
 
                                                               await createRound(
                                                                   token,
@@ -1168,7 +1166,6 @@ class _AssignFacultyState extends State<AssignFaculty> {
       searchList = facultyList;
       return searchList;
     } else {
-      log(value.toString());
       searchList = facultyList.where((user) {
         return user["systemID"].toString().contains(value.toString());
       }).toList();

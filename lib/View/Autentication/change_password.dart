@@ -27,7 +27,6 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   void initState() {
     super.initState();
-    print(userType);
     email = userType["email"];
   }
 

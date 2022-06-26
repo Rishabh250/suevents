@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -22,7 +21,6 @@ class GetUserData {
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       deviceID.value = androidInfo.androidId.toString();
-      log(deviceID.value.toString());
     }
     // if (Platform.isIOS) {
     //   IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;

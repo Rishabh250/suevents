@@ -28,8 +28,7 @@ class _CreateEventConfirmState extends State<CreateEventConfirm> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [

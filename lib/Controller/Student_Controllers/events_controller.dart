@@ -58,6 +58,7 @@ class UserDetailsController {
       gender = ValueNotifier<String>(""),
       events = ValueNotifier([]),
       allEvents = ValueNotifier([]);
+  // ignore: prefer_typing_uninitialized_variables
   var user, token;
 
   fetchUserData() async {
