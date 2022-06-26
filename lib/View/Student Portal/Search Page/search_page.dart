@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,15 +47,26 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
         builder: (context, value, child) => value.isOnline
             ? Scaffold(
                 body: CustomScrollView(controller: _scrollController, slivers: [
-                const SliverAppBar(
+                SliverAppBar(
                   automaticallyImplyLeading: true,
                   pinned: true,
                   forceElevated: true,
-                  flexibleSpace: FlexibleSpaceBar(
+                  flexibleSpace: const FlexibleSpaceBar(
                     centerTitle: true,
                   ),
+                  leading: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: themeProvider.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
                   backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10))),

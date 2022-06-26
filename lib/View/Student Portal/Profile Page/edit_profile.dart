@@ -83,226 +83,243 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final textScale = MediaQuery.of(context).textScaleFactor;
     return Consumer<ConnectivityProvider>(
         builder: (context, value, child) => value.isOnline
-            ? Scaffold(
-                body: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    SliverAppBar(
-                        elevation: 0,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        leading: GestureDetector(
-                          onTap: () => Get.offAll(() => const ProfilePage()),
-                          child: Icon(Icons.arrow_back_ios_rounded,
-                              color: themeProvider.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black),
-                        )),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          ValueListenableBuilder(
-                              valueListenable: userDetailsController.name,
-                              builder: (context, value, child) {
-                                return Text(
-                                  "$value",
-                                  style: textStyle(
-                                      15.sp,
-                                      FontWeight.bold,
-                                      themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
-                                      FontStyle.normal),
-                                );
-                              }),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          ValueListenableBuilder(
-                              valueListenable: userDetailsController.email,
-                              builder: (context, value, child) {
-                                return Text(
-                                  "$value",
-                                  style: textStyle(
-                                      10.sp,
-                                      FontWeight.w600,
-                                      themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
-                                      FontStyle.normal),
-                                );
-                              }),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          ValueListenableBuilder(
-                              valueListenable: userDetailsController.systemID,
-                              builder: (context, value, child) {
-                                return Text("$value",
+            ? WillPopScope(
+                onWillPop: () {
+                  Get.offAll(() => const ProfilePage(),
+                      transition: Transition.fadeIn,
+                      duration: const Duration(milliseconds: 500));
+                  return Future.value(true);
+                },
+                child: Scaffold(
+                  body: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      SliverAppBar(
+                          elevation: 0,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                          leading: GestureDetector(
+                            onTap: () => Get.offAll(() => const ProfilePage()),
+                            child: Icon(Icons.arrow_back_ios_rounded,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black),
+                          )),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ValueListenableBuilder(
+                                valueListenable: userDetailsController.name,
+                                builder: (context, value, child) {
+                                  return Text(
+                                    "$value",
                                     style: textStyle(
-                                        12.sp,
+                                        15.sp,
                                         FontWeight.bold,
                                         themeProvider.isDarkMode
                                             ? Colors.white
                                             : Colors.black,
-                                        FontStyle.normal));
-                              }),
-                          const SizedBox(
-                            height: 80,
-                          ),
-                          Center(
-                              child: SizedBox(
-                            width: width * 0.9,
-                            child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ValueListenableBuilder(
-                                    valueListenable:
-                                        userDetailsController.course,
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return TextField(
-                                        textInputAction: TextInputAction.next,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 11.5.sp,
-                                            fontWeight: FontWeight.w600),
-                                        controller: program,
-                                        keyboardType: TextInputType.text,
-                                        enableSuggestions: true,
-                                        decoration: InputDecoration(
-                                            hintText: "Course : $value",
-                                            hintStyle: GoogleFonts.poppins(
-                                                fontSize: 12.sp),
-                                            border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  ValueListenableBuilder(
-                                    valueListenable: userDetailsController.year,
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return TextField(
-                                        textInputAction: TextInputAction.next,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 11.5.sp,
-                                            fontWeight: FontWeight.w600),
-                                        controller: year,
-                                        keyboardType: TextInputType.text,
-                                        enableSuggestions: true,
-                                        decoration: InputDecoration(
-                                            hintText: "Year : $value",
-                                            hintStyle: GoogleFonts.poppins(
-                                                fontSize: 12.sp),
-                                            border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  ValueListenableBuilder(
-                                    valueListenable:
-                                        userDetailsController.semester,
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return TextField(
-                                        textInputAction: TextInputAction.done,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 11.5.sp,
-                                            fontWeight: FontWeight.w600),
-                                        controller: semester,
-                                        keyboardType: TextInputType.text,
-                                        enableSuggestions: true,
-                                        decoration: InputDecoration(
-                                            hintText: "Semester : $value",
-                                            hintStyle: GoogleFonts.poppins(
-                                                fontSize: 12.sp),
-                                            border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    children: [
-                                      MaterialButton(
-                                        elevation: 8,
-                                        color: const Color.fromARGB(
-                                            255, 0, 8, 255),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        onPressed: () async {
-                                          if (program.text.toString().isEmpty) {
-                                            program.text = userDetailsController
-                                                .course.value
-                                                .toString();
-                                          }
-                                          if (year.text.toString().isEmpty) {
-                                            year.text = userDetailsController
-                                                .year.value
-                                                .toString();
-                                          }
-                                          if (semester.text
-                                              .toString()
-                                              .isEmpty) {
-                                            semester.text =
-                                                userDetailsController
-                                                    .semester.value
-                                                    .toString();
-                                          } else {
-                                            EasyLoading.show();
+                                        FontStyle.normal),
+                                  );
+                                }),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ValueListenableBuilder(
+                                valueListenable: userDetailsController.email,
+                                builder: (context, value, child) {
+                                  return Text(
+                                    "$value",
+                                    style: textStyle(
+                                        10.sp,
+                                        FontWeight.w600,
+                                        themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        FontStyle.normal),
+                                  );
+                                }),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ValueListenableBuilder(
+                                valueListenable: userDetailsController.systemID,
+                                builder: (context, value, child) {
+                                  return Text("$value",
+                                      style: textStyle(
+                                          12.sp,
+                                          FontWeight.bold,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal));
+                                }),
+                            const SizedBox(
+                              height: 80,
+                            ),
+                            Center(
+                                child: SizedBox(
+                              width: width * 0.9,
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.course,
+                                      builder: (BuildContext context,
+                                          dynamic value, Widget? child) {
+                                        return TextField(
+                                          textInputAction: TextInputAction.next,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 11.5.sp,
+                                              fontWeight: FontWeight.w600),
+                                          controller: program,
+                                          keyboardType: TextInputType.text,
+                                          enableSuggestions: true,
+                                          decoration: InputDecoration(
+                                              hintText: "Course : $value",
+                                              hintStyle: GoogleFonts.poppins(
+                                                  fontSize: 12.sp),
+                                              border: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.blue),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15))),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.year,
+                                      builder: (BuildContext context,
+                                          dynamic value, Widget? child) {
+                                        return TextField(
+                                          textInputAction: TextInputAction.next,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 11.5.sp,
+                                              fontWeight: FontWeight.w600),
+                                          controller: year,
+                                          keyboardType: TextInputType.text,
+                                          enableSuggestions: true,
+                                          decoration: InputDecoration(
+                                              hintText: "Year : $value",
+                                              hintStyle: GoogleFonts.poppins(
+                                                  fontSize: 12.sp),
+                                              border: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.blue),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15))),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    ValueListenableBuilder(
+                                      valueListenable:
+                                          userDetailsController.semester,
+                                      builder: (BuildContext context,
+                                          dynamic value, Widget? child) {
+                                        return TextField(
+                                          textInputAction: TextInputAction.done,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 11.5.sp,
+                                              fontWeight: FontWeight.w600),
+                                          controller: semester,
+                                          keyboardType: TextInputType.text,
+                                          enableSuggestions: true,
+                                          decoration: InputDecoration(
+                                              hintText: "Semester : $value",
+                                              hintStyle: GoogleFonts.poppins(
+                                                  fontSize: 12.sp),
+                                              border: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.blue),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15))),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        MaterialButton(
+                                          elevation: 8,
+                                          color: const Color.fromARGB(
+                                              255, 0, 8, 255),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          onPressed: () async {
+                                            if (program.text
+                                                .toString()
+                                                .isEmpty) {
+                                              program.text =
+                                                  userDetailsController
+                                                      .course.value
+                                                      .toString();
+                                            }
+                                            if (year.text.toString().isEmpty) {
+                                              year.text = userDetailsController
+                                                  .year.value
+                                                  .toString();
+                                            }
+                                            if (semester.text
+                                                .toString()
+                                                .isEmpty) {
+                                              semester.text =
+                                                  userDetailsController
+                                                      .semester.value
+                                                      .toString();
+                                            } else {
+                                              EasyLoading.show();
 
-                                            await updateDetails(
-                                                userDetailsController.id.value,
-                                                program.text.toString(),
-                                                year.text.toString(),
-                                                semester.text.toString());
-                                            await userDetailsController
-                                                .fetchUserData();
-                                            EasyLoading.dismiss();
-                                            showConfirm("Profile Updated", "");
-                                            setState(() {});
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Text("Save",
-                                              style: textStyle(
-                                                  15.sp,
-                                                  FontWeight.bold,
-                                                  Colors.white,
-                                                  FontStyle.normal)),
+                                              await updateDetails(
+                                                  userDetailsController
+                                                      .id.value,
+                                                  program.text.toString(),
+                                                  year.text.toString(),
+                                                  semester.text.toString());
+                                              await userDetailsController
+                                                  .fetchUserData();
+                                              EasyLoading.dismiss();
+                                              showConfirm(
+                                                  "Profile Updated", "");
+                                              setState(() {});
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text("Save",
+                                                style: textStyle(
+                                                    15.sp,
+                                                    FontWeight.bold,
+                                                    Colors.white,
+                                                    FontStyle.normal)),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ]),
-                          )),
-                        ],
+                                      ],
+                                    ),
+                                  ]),
+                            )),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               )
             : const NoInternet());

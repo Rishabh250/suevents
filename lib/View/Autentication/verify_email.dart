@@ -73,9 +73,9 @@ class _EmailVerifyState extends State<EmailVerify> {
               onTap: () {
                 Get.back();
               },
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
               )),
           elevation: 0,
           backgroundColor: Colors.transparent,
