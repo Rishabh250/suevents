@@ -71,14 +71,14 @@ class Student_AppliedEventsState extends State<FacultyEventCreated> {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(10),
-                              child: SizedBox(
+                              child: ClipRRect(
                                 child: Banner(
                                   color: facultyController
                                               .allEvents.value[index]["type"] ==
                                           "Placement Event"
                                       ? Colors.red
                                       : Colors.green,
-                                  location: BannerLocation.topStart,
+                                  location: BannerLocation.topEnd,
                                   message: facultyController
                                               .allEvents.value[index]["type"] ==
                                           "Placement Event"
@@ -89,7 +89,6 @@ class Student_AppliedEventsState extends State<FacultyEventCreated> {
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20)),
-                                      elevation: 8,
                                       child: Container(
                                         width: width * 0.6,
                                         decoration: (BoxDecoration(

@@ -80,297 +80,267 @@ class _FacultyProfilePageState extends State<FacultyProfilePage> {
     return Consumer<ConnectivityProvider>(
         builder: (context, value, child) => value.isOnline
             ? Scaffold(
-                body: FutureBuilder(
-                    future: controller.fetchFacultyData(),
-                    builder: ((context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        EasyLoading.show();
-                        return Container();
-                      }
-                      if (controller.user != null) {
-                        EasyLoading.dismiss(animation: true);
-
-                        return CustomScrollView(
-                          slivers: [
-                            SliverAppBar(
-                                elevation: 0,
-                                backgroundColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                leading: GestureDetector(
-                                  onTap: () => Get.back(),
-                                  child: Icon(Icons.arrow_back_ios_rounded,
-                                      color: themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black),
-                                )),
-                            SliverToBoxAdapter(
-                              child: Column(
-                                children: [
-                                  Stack(
+                body: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                      elevation: 0,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      leading: GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Icon(Icons.arrow_back_ios_rounded,
+                            color: themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black),
+                      )),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            ValueListenableBuilder(
+                                valueListenable: controller.userImage,
+                                builder: (context, value, child) {
+                                  return "$value" == ""
+                                      ? const CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: ExactAssetImage(
+                                            "assets/images/faculty.png",
+                                          ),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 12.w,
+                                          backgroundImage:
+                                              NetworkImage("$value"),
+                                        );
+                                }),
+                            Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    EasyLoading.show();
+                                    await _upload();
+                                    await facultyUploadImage(
+                                        controller.token, imageURL.value);
+                                    await controller.fetchFacultyData();
+                                    EasyLoading.dismiss();
+                                  },
+                                  child: const Icon(
+                                    Icons.camera_alt_rounded,
+                                  ),
+                                ))
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ValueListenableBuilder(
+                            valueListenable: facultyController.name,
+                            builder: (context, value, child) {
+                              return Text(
+                                "$value",
+                                style: textStyle(
+                                    15.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              );
+                            }),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ValueListenableBuilder(
+                            valueListenable: facultyController.email,
+                            builder: (context, value, child) {
+                              return Text(
+                                "$value",
+                                style: textStyle(
+                                    10.sp,
+                                    FontWeight.w600,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              );
+                            }),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Center(
+                            child: SizedBox(
+                          width: width * 0.9,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => const FacultyEventCreated(),
+                                        transition: Transition.fadeIn);
+                                  },
+                                  child: Column(
                                     children: [
                                       ValueListenableBuilder(
-                                          valueListenable: controller.userImage,
+                                          valueListenable:
+                                              facultyController.events,
                                           builder: (context, value, child) {
-                                            return "$value" == ""
-                                                ? const CircleAvatar(
-                                                    radius: 50,
-                                                    backgroundImage:
-                                                        ExactAssetImage(
-                                                      "assets/images/faculty.png",
-                                                    ),
-                                                  )
-                                                : CircleAvatar(
-                                                    radius: 12.w,
-                                                    backgroundImage:
-                                                        NetworkImage("$value"),
-                                                  );
-                                          }),
-                                      Positioned(
-                                          bottom: 0,
-                                          right: 0,
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              EasyLoading.show();
-                                              await _upload();
-                                              await facultyUploadImage(
-                                                  controller.token,
-                                                  imageURL.value);
-                                              await controller
-                                                  .fetchFacultyData();
-                                              EasyLoading.dismiss();
-                                            },
-                                            child: const Icon(
-                                              Icons.camera_alt_rounded,
-                                            ),
-                                          ))
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  ValueListenableBuilder(
-                                      valueListenable: facultyController.name,
-                                      builder: (context, value, child) {
-                                        return Text(
-                                          "$value",
-                                          style: textStyle(
-                                              15.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal),
-                                        );
-                                      }),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  ValueListenableBuilder(
-                                      valueListenable: facultyController.email,
-                                      builder: (context, value, child) {
-                                        return Text(
-                                          "$value",
-                                          style: textStyle(
-                                              10.sp,
-                                              FontWeight.w600,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal),
-                                        );
-                                      }),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Center(
-                                      child: SizedBox(
-                                    width: width * 0.9,
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Get.to(
-                                                  () =>
-                                                      const FacultyEventCreated(),
-                                                  transition:
-                                                      Transition.fadeIn);
-                                            },
-                                            child: Column(
-                                              children: [
-                                                ValueListenableBuilder(
-                                                    valueListenable:
-                                                        facultyController
-                                                            .events,
-                                                    builder: (context, value,
-                                                        child) {
-                                                      return Text("$value",
-                                                          style: textStyle(
-                                                              12.sp,
-                                                              FontWeight.bold,
-                                                              themeProvider
-                                                                      .isDarkMode
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black,
-                                                              FontStyle
-                                                                  .normal));
-                                                    }),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  "Events Created",
-                                                  style: textStyle(
-                                                      10.sp,
-                                                      FontWeight.w400,
-                                                      themeProvider.isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      FontStyle.normal),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 1,
-                                            height: 20,
-                                            color: themeProvider.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                          Column(
-                                            children: [
-                                              ValueListenableBuilder(
-                                                  valueListenable:
-                                                      facultyController
-                                                          .systemID,
-                                                  builder:
-                                                      (context, value, child) {
-                                                    return Text("$value",
-                                                        style: textStyle(
-                                                            12.sp,
-                                                            FontWeight.bold,
-                                                            themeProvider
-                                                                    .isDarkMode
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                            FontStyle.normal));
-                                                  }),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "System ID",
+                                            return Text("$value",
                                                 style: textStyle(
-                                                    10.sp,
-                                                    FontWeight.w400,
+                                                    12.sp,
+                                                    FontWeight.bold,
                                                     themeProvider.isDarkMode
                                                         ? Colors.white
                                                         : Colors.black,
-                                                    FontStyle.normal),
-                                              ),
-                                            ],
-                                          ),
-                                        ]),
-                                  )),
-                                  const SizedBox(
-                                    height: 70,
+                                                    FontStyle.normal));
+                                          }),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        "Events Created",
+                                        style: textStyle(
+                                            10.sp,
+                                            FontWeight.w400,
+                                            themeProvider.isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            FontStyle.normal),
+                                      ),
+                                    ],
                                   ),
-                                  ListTile(
-                                    onTap: () async {
-                                      final mailtoLink = Mailto(
-                                        to: ['rishu25bansal@gmail.com'],
-                                        subject: 'Faculty Help & Support',
-                                        body:
-                                            'Hi,\n Myself ${facultyController.name} from ${facultyController.systemID} \n',
-                                      );
-                                      await launchUrlString('$mailtoLink');
-                                    },
-                                    title: Row(
-                                      children: [
-                                        const Icon(Icons.help_outline_rounded),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          "Help & Support",
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal),
-                                        ),
-                                      ],
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 20,
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                Column(
+                                  children: [
+                                    ValueListenableBuilder(
+                                        valueListenable:
+                                            facultyController.systemID,
+                                        builder: (context, value, child) {
+                                          return Text("$value",
+                                              style: textStyle(
+                                                  12.sp,
+                                                  FontWeight.bold,
+                                                  themeProvider.isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  FontStyle.normal));
+                                        }),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                  ListTile(
-                                    onTap: () async {
-                                      final mailtoLink = Mailto(
-                                        to: ['rishu25bansal@gmail.com'],
-                                        subject: 'Faculty Report Bug',
-                                        body:
-                                            'Hi,\n Myself ${facultyController.name} from ${facultyController.systemID} \n',
-                                      );
-                                      await launchUrlString('$mailtoLink');
-                                    },
-                                    title: Row(
-                                      children: [
-                                        const Icon(Icons.bug_report_rounded),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          "Report bugs and issue",
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal),
-                                        ),
-                                      ],
+                                    Text(
+                                      "System ID",
+                                      style: textStyle(
+                                          10.sp,
+                                          FontWeight.w400,
+                                          themeProvider.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                          FontStyle.normal),
                                     ),
-                                  ),
-                                  ListTile(
-                                    onTap: () {
-                                      loginStatus(false);
-                                      accessToken("");
-                                      Get.offAll(() => const Getstarted());
-                                    },
-                                    title: Row(
-                                      children: [
-                                        const Icon(Icons.logout_rounded),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          "Logout",
-                                          style: textStyle(
-                                              12.sp,
-                                              FontWeight.bold,
-                                              themeProvider.isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              FontStyle.normal),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                              ]),
+                        )),
+                        const SizedBox(
+                          height: 70,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            final mailtoLink = Mailto(
+                              to: ['rishu25bansal@gmail.com'],
+                              subject: 'Faculty Help & Support',
+                              body:
+                                  'Hi,\n Myself ${facultyController.name} from ${facultyController.systemID} \n',
+                            );
+                            await launchUrlString('$mailtoLink');
+                          },
+                          title: Row(
+                            children: [
+                              const Icon(Icons.help_outline_rounded),
+                              const SizedBox(
+                                width: 20,
                               ),
-                            )
-                          ],
-                        );
-                      }
-
-                      return const Center(child: Text("Something went wrong"));
-                    })),
-              )
+                              Text(
+                                "Help & Support",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            final mailtoLink = Mailto(
+                              to: ['rishu25bansal@gmail.com'],
+                              subject: 'Faculty Report Bug',
+                              body:
+                                  'Hi,\n Myself ${facultyController.name} from ${facultyController.systemID} \n',
+                            );
+                            await launchUrlString('$mailtoLink');
+                          },
+                          title: Row(
+                            children: [
+                              const Icon(Icons.bug_report_rounded),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Report bugs and issue",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            loginStatus(false);
+                            accessToken("");
+                            Get.offAll(() => const Getstarted());
+                          },
+                          title: Row(
+                            children: [
+                              const Icon(Icons.logout_rounded),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Logout",
+                                style: textStyle(
+                                    12.sp,
+                                    FontWeight.bold,
+                                    themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    FontStyle.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ))
             : const NoInternet());
   }
 }

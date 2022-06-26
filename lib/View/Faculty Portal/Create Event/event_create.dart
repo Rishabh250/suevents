@@ -12,11 +12,11 @@ import 'package:sizer/sizer.dart';
 import 'package:suevents/Controller/Faculty%20Controller/faculty_controller.dart';
 import 'package:suevents/Controller/providers/const.dart';
 import 'package:suevents/Controller/providers/global_snackbar.dart';
-import 'package:suevents/Models/Faculty%20API/faculty_api.dart';
 import 'package:suevents/View/no_connection.dart';
 
 import '../../../Controller/Internet Connection/connection_provider.dart';
 import '../../../Controller/providers/theme_service.dart';
+import '../../../Models/Faculty API/faculty_api.dart';
 import 'event_created.dart';
 
 TextEditingController eventTitle = TextEditingController();
@@ -292,6 +292,16 @@ class CreateEventState extends State<CreateEvent> {
                                                                   dismissOnTap:
                                                                       false);
 
+                                                              if (eventType
+                                                                  .value
+                                                                  .toString()
+                                                                  .contains(
+                                                                      "General")) {
+                                                                isLastRound
+                                                                        .value =
+                                                                    true;
+                                                              }
+
                                                               title = eventTitle
                                                                   .text
                                                                   .toString();
@@ -479,14 +489,24 @@ class CreateEventState extends State<CreateEvent> {
                               state: StepState.disabled,
                             ),
                             Step(
-                              title: Text('Round Details',
-                                  style: textStyle(
-                                      12.sp,
-                                      FontWeight.bold,
-                                      themeProvider.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
-                                      FontStyle.normal)),
+                              title:
+                                  eventType.value.toString().contains("General")
+                                      ? Text('Session Details',
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal))
+                                      : Text('Round Details',
+                                          style: textStyle(
+                                              12.sp,
+                                              FontWeight.bold,
+                                              themeProvider.isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              FontStyle.normal)),
                               content: RoundDetails(
                                 themeProvider: themeProvider,
                               ),
@@ -616,6 +636,7 @@ class _EventCreationState extends State<EventCreation> {
                             gropuValue.value =
                                 int.parse(changeValue.toString());
                             eventType.value = "Placement Event";
+                            setState(() {});
                           });
                     }),
                     valueListenable: gropuValue,
@@ -661,10 +682,9 @@ class _EventCreationState extends State<EventCreation> {
               onTap: () async {
                 picked = await showDatePicker(
                   context: context,
-                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
-                  lastDate: DateTime(2100, 12, 31),
-                  // the latest allowable
-                  initialDate: selectedDate,
+                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                  firstDate: DateTime.now().add(const Duration(days: 1)),
+                  lastDate: DateTime(2101),
                 );
                 if (picked != null && picked != selectedDate) {
                   setState(() {
@@ -702,10 +722,9 @@ class _EventCreationState extends State<EventCreation> {
               onTap: () async {
                 picked2 = await showDatePicker(
                   context: context,
-                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
-                  lastDate: DateTime(2100, 12, 31),
-                  // the latest allowable
-                  initialDate: selectedDate,
+                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                  firstDate: DateTime.now().add(const Duration(days: 1)),
+                  lastDate: DateTime(2101),
                 );
                 if (picked2 != null && picked2 != selectedDate) {
                   setState(() {
@@ -822,7 +841,9 @@ class _RoundDetailsState extends State<RoundDetails> {
             decoration: InputDecoration(
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                hintText: "Lab number & Block",
+                hintText: eventType.value.toString().contains("General")
+                    ? "Venue"
+                    : "Lab number & Block",
                 hintStyle: textStyle(
                     12.sp, FontWeight.bold, Colors.grey, FontStyle.normal)),
           ),
@@ -832,118 +853,160 @@ class _RoundDetailsState extends State<RoundDetails> {
         ),
         ListTile(
           title: Text(
-            "Round Type",
+            eventType.value.toString().contains("General")
+                ? "Session Type"
+                : "Round Type",
             style: textStyle(
                 12.sp,
                 FontWeight.bold,
                 widget.themeProvider.isDarkMode ? Colors.white : Colors.black,
                 FontStyle.normal),
           ),
-          subtitle: Column(
-            children: [
-              ListTile(
-                leading: ValueListenableBuilder(
-                  builder: ((context, value, child) {
-                    return Radio(
-                        value: 1,
-                        groupValue: value,
-                        onChanged: (changeValue) {
-                          gropuValue.value = int.parse(changeValue.toString());
-                          roundType.value = "Aptitude Test";
-                        });
-                  }),
-                  valueListenable: gropuValue,
-                ),
-                title: Text("Aptitude Test",
+          subtitle: eventType.value.toString().contains("General")
+              ? ListTile(
+                  leading: ValueListenableBuilder(
+                    builder: ((context, value, child) {
+                      return Radio(
+                          value: gropuValue.value,
+                          groupValue: value,
+                          onChanged: (changeValue) {
+                            gropuValue.value =
+                                int.parse(changeValue.toString());
+                          });
+                    }),
+                    valueListenable: gropuValue,
+                  ),
+                  title: TextField(
+                    onChanged: ((roundValue) {
+                      roundType.value = roundValue;
+                    }),
+                    autocorrect: true,
+                    enableSuggestions: true,
+                    keyboardType: TextInputType.text,
                     style: textStyle(
                         12.sp,
                         FontWeight.bold,
                         widget.themeProvider.isDarkMode
                             ? Colors.white
                             : Colors.black,
-                        FontStyle.normal)),
-              ),
-              ListTile(
-                leading: ValueListenableBuilder(
-                  builder: ((context, value, child) {
-                    return Radio(
-                        value: 2,
-                        groupValue: value,
-                        onChanged: (changeValue) {
-                          gropuValue.value = int.parse(changeValue.toString());
-                          roundType.value = "Technical Round";
-                        });
-                  }),
-                  valueListenable: gropuValue,
+                        FontStyle.normal),
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        hintStyle: textStyle(12.sp, FontWeight.bold,
+                            Colors.grey, FontStyle.normal)),
+                  ),
+                )
+              : Column(
+                  children: [
+                    ListTile(
+                      leading: ValueListenableBuilder(
+                        builder: ((context, value, child) {
+                          return Radio(
+                              value: 1,
+                              groupValue: value,
+                              onChanged: (changeValue) {
+                                gropuValue.value =
+                                    int.parse(changeValue.toString());
+                                roundType.value = "Aptitude Test";
+                              });
+                        }),
+                        valueListenable: gropuValue,
+                      ),
+                      title: Text("Aptitude Test",
+                          style: textStyle(
+                              12.sp,
+                              FontWeight.bold,
+                              widget.themeProvider.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              FontStyle.normal)),
+                    ),
+                    ListTile(
+                      leading: ValueListenableBuilder(
+                        builder: ((context, value, child) {
+                          return Radio(
+                              value: 2,
+                              groupValue: value,
+                              onChanged: (changeValue) {
+                                gropuValue.value =
+                                    int.parse(changeValue.toString());
+                                roundType.value = "Technical Round";
+                              });
+                        }),
+                        valueListenable: gropuValue,
+                      ),
+                      title: Text("Technical Round",
+                          style: textStyle(
+                              12.sp,
+                              FontWeight.bold,
+                              widget.themeProvider.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              FontStyle.normal)),
+                    ),
+                    ListTile(
+                      leading: ValueListenableBuilder(
+                        builder: ((context, value, child) {
+                          return Radio(
+                              value: 3,
+                              groupValue: value,
+                              onChanged: (changeValue) {
+                                gropuValue.value =
+                                    int.parse(changeValue.toString());
+                                roundType.value = "HR";
+                              });
+                        }),
+                        valueListenable: gropuValue,
+                      ),
+                      title: Text("HR",
+                          style: textStyle(
+                              12.sp,
+                              FontWeight.bold,
+                              widget.themeProvider.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              FontStyle.normal)),
+                    ),
+                    ListTile(
+                      leading: ValueListenableBuilder(
+                        builder: ((context, value, child) {
+                          return Radio(
+                              value: 4,
+                              groupValue: value,
+                              onChanged: (changeValue) {
+                                gropuValue.value =
+                                    int.parse(changeValue.toString());
+                              });
+                        }),
+                        valueListenable: gropuValue,
+                      ),
+                      title: TextField(
+                        onChanged: ((roundValue) {
+                          roundType.value = roundValue;
+                        }),
+                        autocorrect: true,
+                        enableSuggestions: true,
+                        keyboardType: TextInputType.text,
+                        style: textStyle(
+                            12.sp,
+                            FontWeight.bold,
+                            widget.themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
+                            FontStyle.normal),
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            hintText: "Other",
+                            hintStyle: textStyle(12.sp, FontWeight.bold,
+                                Colors.grey, FontStyle.normal)),
+                      ),
+                    ),
+                  ],
                 ),
-                title: Text("Technical Round",
-                    style: textStyle(
-                        12.sp,
-                        FontWeight.bold,
-                        widget.themeProvider.isDarkMode
-                            ? Colors.white
-                            : Colors.black,
-                        FontStyle.normal)),
-              ),
-              ListTile(
-                leading: ValueListenableBuilder(
-                  builder: ((context, value, child) {
-                    return Radio(
-                        value: 3,
-                        groupValue: value,
-                        onChanged: (changeValue) {
-                          gropuValue.value = int.parse(changeValue.toString());
-                          roundType.value = "HR";
-                        });
-                  }),
-                  valueListenable: gropuValue,
-                ),
-                title: Text("HR",
-                    style: textStyle(
-                        12.sp,
-                        FontWeight.bold,
-                        widget.themeProvider.isDarkMode
-                            ? Colors.white
-                            : Colors.black,
-                        FontStyle.normal)),
-              ),
-              ListTile(
-                leading: ValueListenableBuilder(
-                  builder: ((context, value, child) {
-                    return Radio(
-                        value: 4,
-                        groupValue: value,
-                        onChanged: (changeValue) {
-                          gropuValue.value = int.parse(changeValue.toString());
-                        });
-                  }),
-                  valueListenable: gropuValue,
-                ),
-                title: TextField(
-                  onChanged: ((roundValue) {
-                    roundType.value = roundValue;
-                  }),
-                  autocorrect: true,
-                  enableSuggestions: true,
-                  keyboardType: TextInputType.text,
-                  style: textStyle(
-                      12.sp,
-                      FontWeight.bold,
-                      widget.themeProvider.isDarkMode
-                          ? Colors.white
-                          : Colors.black,
-                      FontStyle.normal),
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      hintText: "Other",
-                      hintStyle: textStyle(12.sp, FontWeight.bold, Colors.grey,
-                          FontStyle.normal)),
-                ),
-              ),
-            ],
-          ),
         ),
         ListTile(
           title: ValueListenableBuilder(
@@ -953,10 +1016,9 @@ class _RoundDetailsState extends State<RoundDetails> {
                   onTap: () async {
                     picked = await showDatePicker(
                       context: context,
-                      firstDate: DateTime(2022, 1, 1), // the earliest allowable
-                      lastDate: DateTime(2100, 12, 31),
-                      // the latest allowable
-                      initialDate: selectedDate,
+                      initialDate: DateTime.now().add(const Duration(days: 1)),
+                      firstDate: DateTime.now().add(const Duration(days: 1)),
+                      lastDate: DateTime(2101),
                     );
                     if (picked != null && picked != selectedDate) {
                       selectedDate != picked;
@@ -1030,29 +1092,31 @@ class _RoundDetailsState extends State<RoundDetails> {
                 );
               }),
         ),
-        ValueListenableBuilder(
-            valueListenable: isLastRound,
-            builder: (context, value, child) {
-              return ListTile(
-                leading: Checkbox(
-                  shape: const CircleBorder(),
-                  checkColor: Colors.amber,
-                  onChanged: (value) {
-                    isLastRound.value = !isLastRound.value;
-                  },
-                  value: isLastRound.value,
-                  activeColor: Colors.amber,
-                ),
-                title: Text("Final Round",
-                    style: textStyle(
-                        12.sp,
-                        FontWeight.bold,
-                        widget.themeProvider.isDarkMode
-                            ? Colors.white
-                            : Colors.black,
-                        FontStyle.normal)),
-              );
-            })
+        eventType.value.toString().contains("General")
+            ? Container()
+            : ValueListenableBuilder(
+                valueListenable: isLastRound,
+                builder: (context, value, child) {
+                  return ListTile(
+                    leading: Checkbox(
+                      shape: const CircleBorder(),
+                      checkColor: Colors.amber,
+                      onChanged: (value) {
+                        isLastRound.value = !isLastRound.value;
+                      },
+                      value: isLastRound.value,
+                      activeColor: Colors.amber,
+                    ),
+                    title: Text("Final Round",
+                        style: textStyle(
+                            12.sp,
+                            FontWeight.bold,
+                            widget.themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
+                            FontStyle.normal)),
+                  );
+                })
       ],
     );
   }
@@ -1071,9 +1135,10 @@ class AssignFaculty extends StatefulWidget {
 
 class _AssignFacultyState extends State<AssignFaculty> {
   FacultyController facultyController = FacultyController();
+  String searchByID = "";
 
   bool isSelected = false;
-  var facultyData;
+  var facultyData, searchList, facultyList;
   @override
   void initState() {
     super.initState();
@@ -1082,6 +1147,22 @@ class _AssignFacultyState extends State<AssignFaculty> {
 
   getData() async {
     facultyData = await facultyController.fetchAllFacultyData();
+    await filterList(searchByID);
+  }
+
+  filterList(value) {
+    facultyList = facultyController.facultyList["user"];
+    if (searchByID == "") {
+      searchList = facultyList;
+      return searchList;
+    } else {
+      log(value.toString());
+      searchList = facultyList.where((user) {
+        return user["systemID"].toString().contains(value.toString());
+      }).toList();
+      setState(() {});
+      return searchList;
+    }
   }
 
   @override
@@ -1090,58 +1171,86 @@ class _AssignFacultyState extends State<AssignFaculty> {
         ? Container()
         : facultyController.facultyList["user"].length == 0
             ? const Text("Not Found")
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: facultyController.facultyList["user"].length,
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder(
-                      valueListenable: facultyListData,
-                      builder: (context, value, _) {
-                        return ListTile(
-                            onTap: () {
-                              log(facultyController.facultyList["user"][index]
-                                  ["_id"]);
-                              if (!facultyListData.value.contains(
-                                  facultyController.facultyList["user"][index]
-                                      ["_id"])) {
-                                facultyListData.value.add(facultyController
-                                    .facultyList["user"][index]["_id"]);
-                              } else {
-                                facultyListData.value.remove(facultyController
-                                    .facultyList["user"][index]["_id"]);
-                              }
-                              setState(() {});
-                              log(facultyListData.value.toString());
-                            },
-                            title: Text(
-                              facultyController.facultyList["user"][index]
-                                      ["name"]
-                                  .toString(),
-                              style: textStyle(
-                                  12.sp,
-                                  FontWeight.bold,
-                                  widget.themeProvider.isDarkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  FontStyle.normal),
-                            ),
-                            subtitle: Text(
-                              facultyController.facultyList["user"][index]
-                                      ["email"]
-                                  .toString(),
-                              style: textStyle(
-                                  10.sp,
-                                  FontWeight.bold,
-                                  const Color.fromARGB(255, 92, 89, 89),
-                                  FontStyle.normal),
-                            ),
-                            leading: facultyListData.value.contains(
+            : Column(
+                children: [
+                  TextField(
+                    autocorrect: true,
+                    onChanged: (value) async {
+                      searchByID = value;
+                      log(searchByID.toString());
+                      await filterList(searchByID);
+                    },
+                    enableSuggestions: true,
+                    keyboardType: TextInputType.number,
+                    style: textStyle(
+                        12.sp,
+                        FontWeight.bold,
+                        widget.themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        FontStyle.normal),
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        hintText: "Search by Employee ID",
+                        hintStyle: textStyle(12.sp, FontWeight.bold,
+                            Colors.grey, FontStyle.normal)),
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: searchList.length,
+                      itemBuilder: (context, index) {
+                        return ValueListenableBuilder(
+                            valueListenable: facultyListData,
+                            builder: (context, value, _) {
+                              return ListTile(
+                                  onTap: () {
+                                    if (!facultyListData.value.contains(
+                                        facultyController.facultyList["user"]
+                                            [index]["_id"])) {
+                                      facultyListData.value.add(
+                                          facultyController.facultyList["user"]
+                                              [index]["_id"]);
+                                    } else {
+                                      facultyListData.value.remove(
+                                          facultyController.facultyList["user"]
+                                              [index]["_id"]);
+                                    }
+                                    setState(() {});
+                                  },
+                                  title: Text(
                                     facultyController.facultyList["user"][index]
-                                        ["_id"])
-                                ? const Icon(Icons.radio_button_checked)
-                                : const Icon(Icons.radio_button_unchecked));
-                      });
-                });
+                                            ["name"]
+                                        .toString(),
+                                    style: textStyle(
+                                        12.sp,
+                                        FontWeight.bold,
+                                        widget.themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        FontStyle.normal),
+                                  ),
+                                  subtitle: Text(
+                                    facultyController.facultyList["user"][index]
+                                            ["systemID"]
+                                        .toString(),
+                                    style: textStyle(
+                                        10.sp,
+                                        FontWeight.bold,
+                                        const Color.fromARGB(255, 92, 89, 89),
+                                        FontStyle.normal),
+                                  ),
+                                  leading: facultyListData.value.contains(
+                                          facultyController.facultyList["user"]
+                                              [index]["_id"])
+                                      ? const Icon(Icons.radio_button_checked)
+                                      : const Icon(
+                                          Icons.radio_button_unchecked));
+                            });
+                      }),
+                ],
+              );
   }
 }

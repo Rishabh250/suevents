@@ -120,9 +120,11 @@ class _StudentEventsSearchState extends State<StudentEventsSearch> {
                               width: 10,
                             ),
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 searchEvents.value = searchValue.value;
                                 eventSearchLength = 0;
+                                await fetchAllEvents();
+                                setState(() {});
                               },
                               child: Container(
                                 width: width * 0.14,

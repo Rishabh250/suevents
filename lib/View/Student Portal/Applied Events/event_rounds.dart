@@ -523,7 +523,12 @@ class _EventRoundsState extends State<EventRounds> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        "Lab : ${widget.events['rounds'][index]["lab"]}",
+                                                        widget.events['type']
+                                                                .toString()
+                                                                .contains(
+                                                                    "Placement")
+                                                            ? "Lab : ${widget.events['rounds'][index]["lab"]}"
+                                                            : "Venue :  ${widget.events['rounds'][index]["lab"]}",
                                                         style: textStyle(
                                                             12.sp,
                                                             FontWeight.w600,
@@ -536,7 +541,12 @@ class _EventRoundsState extends State<EventRounds> {
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                        "Test Type : ${widget.events['rounds'][index]["testType"]}",
+                                                        widget.events['type']
+                                                                .toString()
+                                                                .contains(
+                                                                    "Placement")
+                                                            ? "Test Type : ${widget.events['rounds'][index]["testType"]}"
+                                                            : "Session Type : ${widget.events['rounds'][index]["testType"]}",
                                                         style: textStyle(
                                                             12.sp,
                                                             FontWeight.w600,
@@ -549,7 +559,12 @@ class _EventRoundsState extends State<EventRounds> {
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                        "Round Date : ${widget.events['rounds'][index]["date"]}",
+                                                        widget.events['type']
+                                                                .toString()
+                                                                .contains(
+                                                                    "Placement")
+                                                            ? "Round Date : ${widget.events['rounds'][index]["date"]}"
+                                                            : "Session Date : ${widget.events['rounds'][index]["date"]}",
                                                         style: textStyle(
                                                             12.sp,
                                                             FontWeight.w600,

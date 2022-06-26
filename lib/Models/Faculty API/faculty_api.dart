@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as https;
 import 'package:suevents/Controller/providers/global_snackbar.dart';
 
@@ -26,7 +27,17 @@ createEvent(token, title, type, description, startDate, endDate, price) async {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
+    }
+
+    if (jsonDecode(response.body)['msg']
+        .toString()
+        .contains("Invalid Event Date")) {
+      EasyLoading.dismiss();
+      showError("Invalid Date", "Please Select future date");
+      return false;
     } else {
+      EasyLoading.dismiss();
+
       return false;
     }
   } catch (e) {
