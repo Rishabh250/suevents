@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
   connection() async {
     try {
       var response = await https.get(Uri.parse(
-          "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/"));
+          "https://suevents2022.herokuapp.com/"));
       if (response.statusCode == 200) {
         return true;
       } else {

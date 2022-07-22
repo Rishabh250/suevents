@@ -6,8 +6,7 @@ import 'package:http/http.dart' as https;
 closeEvent(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/closeEvent"),
+        Uri.parse("https://suevents2022.herokuapp.com/closeEvent"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",
@@ -26,8 +25,7 @@ closeEvent(eventID) async {
 closeRegistration(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/closeRegistration"),
+        Uri.parse("https://suevents2022.herokuapp.com/closeRegistration"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",
@@ -46,8 +44,7 @@ closeRegistration(eventID) async {
 openRegistration(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/openRegistration"),
+        Uri.parse("https://suevents2022.herokuapp.com/openRegistration"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",

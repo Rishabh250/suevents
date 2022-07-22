@@ -8,8 +8,7 @@ getStudentEvents(token) async {
   log(token.toString());
   try {
     var response = await https.get(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/studentEvents"),
+        Uri.parse("https://suevents2022.herokuapp.com/studentEvents"),
         headers: {"Content-Type": "application/json", "x-access-token": token});
 
     if (response.statusCode == 200) {
@@ -23,8 +22,7 @@ getStudentEvents(token) async {
 getSingleEvents(eventID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/singleEvent"),
+        Uri.parse("https://suevents2022.herokuapp.com/singleEvent"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {
           "Content-Type": "application/json",
@@ -42,8 +40,7 @@ getSingleEvents(eventID) async {
 getSingleRound(eventID, roundID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getSingleRound"),
+        Uri.parse("https://suevents2022.herokuapp.com/getSingleRound"),
         body: jsonEncode({"eventID": "$eventID", "roundID": "$roundID"}),
         headers: {
           "Content-Type": "application/json",
@@ -61,8 +58,7 @@ getSingleRound(eventID, roundID) async {
 applyForRound(token, eventID, roundID) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/selectedStudents"),
+        Uri.parse("https://suevents2022.herokuapp.com/selectedStudents"),
         body: jsonEncode({"eventID": "$eventID", "roundID": "$roundID"}),
         headers: {
           "Content-Type": "application/json",

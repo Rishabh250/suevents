@@ -15,9 +15,9 @@ import '../../View/Autentication/verify_email.dart';
 facultyLogin(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyloginUser"),
-        body: jsonEncode({"email": email.toString(), "password": pass.toString()}),
+        Uri.parse("https://suevents2022.herokuapp.com/facultyloginUser"),
+        body: jsonEncode(
+            {"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
     log(response.body.toString());
 
@@ -53,18 +53,17 @@ facultyLogin(email, pass) async {
 
 createFaculty(email, pass, name, sysID, gender) async {
   try {
-    var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/createFaculty"),
-        body: jsonEncode({
-          "email": email.toString(),
-          "password": pass.toString(),
-          "name": name.toString(),
-          "systemID": sysID.toString(),
-          "gender": gender.toString(),
-          "type": "Faculty"
-        }),
-        headers: {"Content-Type": "application/json"});
+    var response = await https
+        .post(Uri.parse("https://suevents2022.herokuapp.com/createFaculty"),
+            body: jsonEncode({
+              "email": email.toString(),
+              "password": pass.toString(),
+              "name": name.toString(),
+              "systemID": sysID.toString(),
+              "gender": gender.toString(),
+              "type": "Faculty"
+            }),
+            headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
       EasyLoading.dismiss();
@@ -82,9 +81,9 @@ createFaculty(email, pass, name, sysID, gender) async {
 facultyResetPassword(email, pass) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyforgetPassword"),
-        body: jsonEncode({"email": email.toString(), "password": pass.toString()}),
+        Uri.parse("https://suevents2022.herokuapp.com/facultyforgetPassword"),
+        body: jsonEncode(
+            {"email": email.toString(), "password": pass.toString()}),
         headers: {"Content-Type": "application/json"});
 
     var body = jsonDecode(response.body);
@@ -107,8 +106,7 @@ facultyResetPassword(email, pass) async {
 facultysendOTP(email) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultysendOTP"),
+        Uri.parse("https://suevents2022.herokuapp.com/facultysendOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString()}));
     if (response.statusCode == 200) {
@@ -126,8 +124,7 @@ facultysendOTP(email) async {
 facultyverifyOTP(email, opt) async {
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyverifyOTP"),
+        Uri.parse("https://suevents2022.herokuapp.com/facultyverifyOTP"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email.toString(), "otp": int.parse(opt)}));
     if (response.statusCode == 200) {
@@ -144,8 +141,7 @@ facultyverifyOTP(email, opt) async {
 getFacultyData(token) async {
   try {
     var response = await https.get(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultygetSingleUser"),
+        Uri.parse("https://suevents2022.herokuapp.com/facultygetSingleUser"),
         headers: {
           "Content-Type": "application/json",
           "x-access-token": token.toString()
@@ -168,8 +164,7 @@ facultyUploadImage(token, image) async {
   };
   try {
     var response = await https.post(
-        Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/facultyUploadImage"),
+        Uri.parse("https://suevents2022.herokuapp.com/facultyUploadImage"),
         headers: headers,
         body: jsonEncode({"profileImage": image.toString()}));
     log(response.body.toString());

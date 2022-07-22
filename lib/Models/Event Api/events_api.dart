@@ -10,7 +10,7 @@ getPlacementEvents() async {
   try {
     var response = await https.get(
         Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getPlacementEvents"),
+            "https://suevents2022.herokuapp.com/getPlacementEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -25,7 +25,7 @@ getAllEvents(title) async {
   try {
     var response = await https.get(
         Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getAllEvents/eventTitle=$title"),
+            "https://suevents2022.herokuapp.com/getAllEvents/eventTitle=$title"),
         headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -40,7 +40,7 @@ getGeneralEvents() async {
   try {
     var response = await https.get(
         Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/getGeneralEvents"),
+            "https://suevents2022.herokuapp.com/getGeneralEvents"),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -59,7 +59,7 @@ applyEvent(token, eventID, event) async {
 
     var response = await https.post(
         Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/applyEvent"),
+            "https://suevents2022.herokuapp.com/applyEvent"),
         body: jsonEncode({"eventID": eventID}),
         headers: headers);
     log(response.body.toString());
@@ -82,7 +82,7 @@ singleEvent(eventID) async {
   try {
     var response = await https.post(
         Uri.parse(
-            "http://shardaevents-env.eba-nddxcy3c.ap-south-1.elasticbeanstalk.com/singleEvent"),
+            "https://suevents2022.herokuapp.com/singleEvent"),
         body: jsonEncode({"eventID": "$eventID"}),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {

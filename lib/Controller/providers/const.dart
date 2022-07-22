@@ -12,10 +12,10 @@ var titleText = GoogleFonts.montserrat(
 
 textStyle(fontSize, fontWeight, fontColor, fontStyle) {
   return GoogleFonts.montserrat(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      color: fontColor,
-      fontStyle: fontStyle);
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: fontColor,
+  );
 }
 
 textStyleGradient(fontSize, fontWeight, fontStyle) {
